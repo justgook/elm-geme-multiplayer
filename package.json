@@ -1,0 +1,17 @@
+{
+  "name": "horror",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "client": "elm-live src/Client.elm -uo --host=$(ipconfig getifaddr en0) --dir=public -- --output=./public/client.js --debug",
+    "server": "elm-live src/Server.elm --no-server -- --output=./public/server.js",
+    "peer": "node ./development/index.js",
+    "tmux": "tmux new-session 'yarn peer; read'\\; split-window  'yarn client; read'\\; split-window 'yarn server; read'\\; select-layout even-horizontal"
+
+  },
+  "devDependencies": {
+    "concurrently": "5.2.0",
+    "peer": "0.5.3"
+  }
+}

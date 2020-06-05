@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+            name="viewport"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    >
+    <meta
+            http-equiv="X-UA-Compatible"
+            content="ie=edge"
+    >
+    <title>Document</title>
+    <style>
+        html,body{
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <script>
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+            history.replaceState(null, null, redirect);
+        }
+    </script>
+</head>
+<body>
+<script type="module">
+    import { loadScript } from "/load.mjs"
+
+    const options = { host: location.hostname, port: 9000, debug: 2 }
+
+    if (location.pathname.startsWith("/create/")) {
+        const id = location.pathname.replace("/create/", "");
+        document.body.innerText = "I'm Server";
+        Promise.all([
+            import("/Connect.mjs"),
+            loadScript("/server.js"),
+            loadScript("/peerjs.min.js"),
+        ])
+            .then(function ([{ Server }]) {
+                const app = Elm.Server.init();
+                const peer = new Server(id, options);
+                peer.join(app.ports.join.send);
+                peer.receive(function (cnn, data) {
+                    app.ports.receive.send([cnn, data])
+                });
+                peer.leave(app.ports.leave.send);
+                peer.error(app.ports.error.send);
+
+                // peer.receive((cnn, data) => console.log("ServerPeer::receive", cnn, data))
+            })
+    } else if (location.pathname.startsWith("/join/")) {
+        const id = location.pathname.replace("/join/", "");
+        document.body.innerText = "I'm Client";
+        Promise.all([
+            import("/Connect.mjs"),
+            loadScript("/client.js"),
+            loadScript("/peerjs.min.js"),
+        ])
+            .then(function ([{ Client }]) {
+                const peer = new Client(id, options);
+                const app = Elm.Client.init();
+                peer.join(app.ports.join.send);
+                peer.receive(app.ports.receive.send);
+                peer.leave(app.ports.leave.send);
+                peer.error(app.ports.error.send);
+
+            })
+    }
+</script>
+<posthtml-head-elements>
+    <script>
+        const input = document.createElement("input");
+        const create = document.createElement("button");
+        const join = document.createElement("button");
+        input.value = "Age-World";
+        create.innerText = "Create";
+        join.innerText = "Join";
+
+        function createIframe(src) {
+            const iframe = document.createElement("iframe");
+            iframe.src = `/${src}/${input.value}`;
+            document.body.appendChild(iframe);
+        }
+
+        create.onclick = createIframe.bind(null, "create");
+        join.onclick = createIframe.bind(null, "join");
+        document.body.appendChild(input);
+        document.body.appendChild(document.createElement("br"));
+        document.body.appendChild(create);
+        document.body.appendChild(join);
+        document.body.appendChild(document.createElement("br"));
+    </script>
+<!--FMOD testing-->
+<!--    <script type="text/javascript" src="/fmod/fmodstudio.js"></script>-->
+<!--    <script type="text/javascript" src="/fmod.js"></script>-->
+
+</posthtml-head-elements>
+
+</body>
+</html>

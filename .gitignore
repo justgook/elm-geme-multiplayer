@@ -1,0 +1,38 @@
+#Logs
+logs
+*.log
+
+#Dependencies
+node_modules/
+elm-stuff/
+
+# Develop
+examples/index.html
+examples/bundle.js
+
+# Yarn Integrity file
+.yarn-integrity
+
+#Generated tests
+tests/VerifyExamples
+
+#OS stuff
+.DS_Store
+.vscode
+*.iml
+/.idea
+
+#Other stuff
+documentation.json
+
+#Deployment
+public/*
+!public/assets
+!public/assets/*
+!public/404.html
+!public/index.html
+!public/app.css
+!public/favicon.png
+!public/screenshot.png
+!public/script.js
+!public/CNAME
