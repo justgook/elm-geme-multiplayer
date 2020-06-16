@@ -1,43 +1,90 @@
-module Client.Asset.Text exposing (chat, text)
+module Client.Asset.Text exposing (chat, text, tileAnsiFont)
 
 import Dict
-import Playground exposing (rgb)
+import Playground exposing (Color, group, move, rgb)
 import WebGL.Shape2d exposing (Shape2d)
-import WebGL.Ui
+import WebGL.Ui.Advanced
+import WebGL.Ui.AnsiText
+import WebGL.Ui.Util
 
 
 text : String -> Shape2d
 text =
-    tileFont (rgb 18 147 216)
+    tileAnsiFont (.shapes >> group) (rgb 18 147 216)
 
 
 chat : String -> Shape2d
 chat =
-    tileFontChat (rgb 0 0 255)
+    tileAnsiFont (.shapes >> group >> move 0 7) (rgb 18 147 216)
 
 
-tileFont =
-    WebGL.Ui.tileFont
-        { charW = 7
-        , charH = 9
-        , src = "/assets/charmap-oldschool_white.png"
-        , getIndex = getIndex
-        }
+charW =
+    7
 
 
-tileFontChat =
-    WebGL.Ui.tileFontLeftBottom
-        { charW = 7
-        , charH = 9
-        , src = "/assets/charmap-oldschool_white.png"
-        , getIndex = getIndex
-        }
+charH =
+    9
+
+
+tileAnsiFont fn color string =
+    let
+        fn2 code acc =
+            case code of
+                0 ->
+                    { acc | color = color }
+
+                31 ->
+                    { acc | color = Playground.red }
+
+                _ ->
+                    acc
+
+        start =
+            { x = 4.5
+            , y = -3.5
+            , shapes = []
+            , color = color
+            }
+    in
+    WebGL.Ui.Util.withTexture "/assets/charmap-oldschool_white.png"
+        (\texture ->
+            let
+                fn1__ c acc =
+                    case c of
+                        '\n' ->
+                            { acc | x = start.x, y = acc.y - charH }
+
+                        ' ' ->
+                            { acc | x = charW + acc.x }
+
+                        _ ->
+                            { acc
+                                | shapes =
+                                    WebGL.Ui.Advanced.char
+                                        texture
+                                        (WebGL.Ui.Util.textureSize texture)
+                                        charW
+                                        charH
+                                        acc.color
+                                        acc.x
+                                        acc.y
+                                        (getIndex c)
+                                        :: acc.shapes
+                                , x = charW + acc.x
+                            }
+            in
+            WebGL.Ui.AnsiText.parse fn1__
+                fn2
+                start
+                string
+                |> fn
+        )
 
 
 getIndex : Char -> Float
 getIndex c =
     Dict.get c letters
-        |> Maybe.withDefault 0
+        |> Maybe.withDefault 97
 
 
 letters =

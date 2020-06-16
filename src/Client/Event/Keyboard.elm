@@ -1,12 +1,14 @@
 module Client.Event.Keyboard exposing (subscription)
 
 import Browser.Events as Browser
-import Client.System.Render.Chat as Chat
+import Client.System.Chat as Chat exposing (ChatCacheWorld)
 import Json.Decode as D
+import Platform.Sub exposing (Sub)
 
 
-subscription ({ chat } as world) =
-    if chat.active then
+subscription : ChatCacheWorld world -> Sub (ChatCacheWorld world)
+subscription ({ chat_ } as world) =
+    if chat_.active then
         Browser.onKeyUp (D.field "key" D.string |> D.andThen (Chat.input world))
 
     else

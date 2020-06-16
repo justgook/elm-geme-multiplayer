@@ -3,6 +3,7 @@ module Server exposing (main)
 import Json.Decode as Json
 import Server.Port as Port
 import Server.System.Join as Joint
+import Server.System.Receive as Receive
 import Server.World as World exposing (Message(..), World)
 import Time
 
@@ -23,21 +24,27 @@ init flags =
 
 update : Message -> World -> ( World, Cmd Message )
 update msg world =
+    let
+        _ =
+            case msg of
+                Tick _ ->
+                    msg
+
+                _ ->
+                    Debug.log "Server" msg
+    in
     case msg of
         Tick posix ->
             let
                 now =
                     Time.posixToMillis posix
             in
-            ( { world
-                | time = now
-                , frame = world.frame + 1
-              }
+            ( { world | time = now, frame = world.frame + 1 }
             , World.tick world.time now
             )
 
-        Receive ( cnn, income ) ->
-            ( world, Cmd.none )
+        Receive income ->
+            Receive.system income world
 
         Join cnn ->
             Joint.system cnn world

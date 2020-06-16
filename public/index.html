@@ -12,9 +12,13 @@
     >
     <title>Document</title>
     <style>
-        html,body{
+        html, body, canvas {
             padding: 0;
             margin: 0;
+        }
+
+        canvas {
+            display: block
         }
     </style>
     <script>
@@ -48,8 +52,9 @@
                 });
                 peer.leave(app.ports.leave.send);
                 peer.error(app.ports.error.send);
-
-                // peer.receive((cnn, data) => console.log("ServerPeer::receive", cnn, data))
+                app.ports.send.subscribe(function ([cnn, data]) {
+                    peer.send(cnn, data);
+                })
             })
     } else if (location.pathname.startsWith("/join/")) {
         const id = location.pathname.replace("/join/", "");
@@ -66,7 +71,7 @@
                 peer.receive(app.ports.receive.send);
                 peer.leave(app.ports.leave.send);
                 peer.error(app.ports.error.send);
-
+                app.ports.send.subscribe(peer.send);
             })
     }
 </script>
@@ -81,8 +86,10 @@
 
         function createIframe(src) {
             const iframe = document.createElement("iframe");
+            iframe.width = iframe.height = "400";
             iframe.src = `/${src}/${input.value}`;
             document.body.appendChild(iframe);
+            iframe.contentWindow.focus();
         }
 
         create.onclick = createIframe.bind(null, "create");
@@ -93,9 +100,9 @@
         document.body.appendChild(join);
         document.body.appendChild(document.createElement("br"));
     </script>
-<!--FMOD testing-->
-<!--    <script type="text/javascript" src="/fmod/fmodstudio.js"></script>-->
-<!--    <script type="text/javascript" src="/fmod.js"></script>-->
+    <!--FMOD testing-->
+    <!--    <script type="text/javascript" src="/fmod/fmodstudio.js"></script>-->
+    <!--    <script type="text/javascript" src="/fmod.js"></script>-->
 
 </posthtml-head-elements>
 

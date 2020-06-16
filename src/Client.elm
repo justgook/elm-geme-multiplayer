@@ -1,14 +1,19 @@
 module Client exposing (main)
 
+import Base64
 import Browser exposing (Document)
 import Browser.Dom as Dom
 import Browser.Events as Browser
+import Bytes.Encode as Bytes
 import Client.Event.Keyboard
 import Client.Port as Port
 import Client.System as System
+import Client.System.Join as Join
+import Client.System.Receive as Receive
 import Client.Util as Util
 import Client.View as View
 import Client.World as World exposing (Message(..), Model)
+import Common.Contract as Contract
 import Dict
 import Json.Decode as Json
 import Set
@@ -46,11 +51,37 @@ view model =
 update : Message -> Model -> ( Model, Cmd Message )
 update msg ({ textures } as model) =
     case msg of
-        Tick d ->
-            System.system d model
+        Tick time ->
+            System.system time model
 
         Subscription world ->
-            ( { model | world = world }, Cmd.none )
+            let
+                changed =
+                    (if world.chat /= model.world.chat then
+                        let
+                            diffWorld =
+                                List.head world.chat |> Maybe.map (\chat -> { chat = [ chat ] })
+                        in
+                        diffWorld
+
+                     else
+                        Nothing
+                    )
+                        |> Maybe.andThen
+                            (\aa ->
+                                Contract.toServer
+                                    |> Tuple.first
+                                    |> (\fn -> fn aa)
+                                    |> Bytes.encode
+                                    |> Base64.fromBytes
+                            )
+            in
+            case changed of
+                Just str ->
+                    ( { model | world = world }, Port.send str )
+
+                Nothing ->
+                    ( { model | world = world }, Cmd.none )
 
         Event fn ->
             ( { model | world = fn model.world }, Cmd.none )
@@ -74,10 +105,10 @@ update msg ({ textures } as model) =
 
         ---- NETWORK
         Receive income ->
-            ( model, Cmd.none )
+            ( { model | world = Receive.system income model.world }, Cmd.none )
 
         Join ->
-            ( model, Cmd.none )
+            ( { model | world = Join.system model.world }, Cmd.none )
 
         Leave ->
             ( model, Cmd.none )

@@ -20,7 +20,6 @@ import AltMath.Vector2 as AltVec2
 import Bytes exposing (Bytes, Endianness(..))
 import Bytes.Decode as D exposing (Decoder, Step(..))
 import Logic.Component as Component
-import Logic.Entity as Entity
 
 
 sequence : List (Decoder (a -> a)) -> Decoder (a -> a)

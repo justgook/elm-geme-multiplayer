@@ -1,8 +1,10 @@
 module Client.System exposing (system)
 
-import Animator
+import Client.Component.ChatCache as ChatCache
+import Client.System.Chat as Chat
 import Client.System.Render as Render
 import Client.World exposing (Message(..), Model)
+import Common.Util as Util
 import Set
 import Task
 import Time exposing (Posix)
@@ -14,6 +16,7 @@ system time ({ textures } as model) =
     let
         world =
             model.world
+                |> Util.update ChatCache.spec (Chat.system time)
 
         --                        |> (\w -> { w | delme = Intro.system time w.delme })
         --|> Path.system delta
@@ -28,6 +31,7 @@ system time ({ textures } as model) =
     in
     ( { model
         | entities = entities
+        , time = time
         , textures =
             { textures
                 | loading = Set.union missing textures.loading

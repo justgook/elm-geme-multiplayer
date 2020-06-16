@@ -1,19 +1,10 @@
-module WebGL.Ui exposing (repeat, slice9, tileFont, tileFontLeftBottom)
+module WebGL.Ui exposing (repeat, slice9)
 
 import Math.Vector2 exposing (Vec2, vec2)
 import Math.Vector4 exposing (Vec4, vec4)
 import WebGL.Shape2d exposing (Form(..), Render, Shape2d(..))
 import WebGL.Texture exposing (Texture)
 import WebGL.Ui.Slice exposing (spriteRender)
-import WebGL.Ui.Text
-
-
-tileFont =
-    WebGL.Ui.Text.tileFont
-
-
-tileFontLeftBottom =
-    WebGL.Ui.Text.tileFontLeftBottom
 
 
 slice9 =

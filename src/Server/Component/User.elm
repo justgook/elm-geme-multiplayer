@@ -20,4 +20,4 @@ empty =
 
 
 spawn id cnn world =
-    world
+    { world | user = Dict.insert cnn id world.user }
