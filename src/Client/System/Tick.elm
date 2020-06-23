@@ -1,4 +1,4 @@
-module Client.System exposing (system)
+module Client.System.Tick exposing (system)
 
 import Client.Component.ChatCache as ChatCache
 import Client.System.Chat as Chat
@@ -18,24 +18,13 @@ system time ({ textures } as model) =
             model.world
                 |> Util.update ChatCache.spec (Chat.system time)
 
-        --                        |> (\w -> { w | delme = Intro.system time w.delme })
-        --|> Path.system delta
-        --|> Input.system 5
-        --|> Movement.system
-        --|> Action.system delta
-        --|> PathRandomizer.system model.screen
-        --|> Fx.system model.screen delta
-        --|> Grid.system delta
         ( entities, missing ) =
             Render.system { model | world = world }
     in
     ( { model
         | entities = entities
         , time = time
-        , textures =
-            { textures
-                | loading = Set.union missing textures.loading
-            }
+        , textures = { textures | loading = Set.union missing textures.loading }
         , world = world
       }
     , Set.diff missing textures.loading

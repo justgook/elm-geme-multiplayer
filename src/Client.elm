@@ -1,19 +1,18 @@
 module Client exposing (main)
 
-import Base64
 import Browser exposing (Document)
 import Browser.Dom as Dom
 import Browser.Events as Browser
-import Bytes.Encode as Bytes
 import Client.Event.Keyboard
 import Client.Port as Port
-import Client.System as System
+import Client.Sync
+import Client.System.Event
 import Client.System.Join as Join
-import Client.System.Receive as Receive
+import Client.System.Tick as Tick
 import Client.Util as Util
 import Client.View as View
 import Client.World as World exposing (Message(..), Model)
-import Common.Contract as Contract
+import Contract exposing (contract)
 import Dict
 import Json.Decode as Json
 import Set
@@ -33,6 +32,9 @@ main =
 init : Json.Value -> ( Model, Cmd Message )
 init flags =
     let
+        _ =
+            contract
+
         cmd =
             Dom.getViewport
                 |> Task.map (\{ viewport } -> Util.toScreen viewport.width viewport.height)
@@ -52,39 +54,14 @@ update : Message -> Model -> ( Model, Cmd Message )
 update msg ({ textures } as model) =
     case msg of
         Tick time ->
-            System.system time model
+            Tick.system time model
 
         Subscription world ->
-            let
-                changed =
-                    (if world.chat /= model.world.chat then
-                        let
-                            diffWorld =
-                                List.head world.chat |> Maybe.map (\chat -> { chat = [ chat ] })
-                        in
-                        diffWorld
-
-                     else
-                        Nothing
-                    )
-                        |> Maybe.andThen
-                            (\aa ->
-                                Contract.toServer
-                                    |> Tuple.first
-                                    |> (\fn -> fn aa)
-                                    |> Bytes.encode
-                                    |> Base64.fromBytes
-                            )
-            in
-            case changed of
-                Just str ->
-                    ( { model | world = world }, Port.send str )
-
-                Nothing ->
-                    ( { model | world = world }, Cmd.none )
+            Client.System.Event.system model world
 
         Event fn ->
-            ( { model | world = fn model.world }, Cmd.none )
+            fn model.world
+                |> Client.System.Event.system model
 
         Resize screen ->
             ( { model | screen = screen }, Cmd.none )
@@ -105,7 +82,7 @@ update msg ({ textures } as model) =
 
         ---- NETWORK
         Receive income ->
-            ( { model | world = Receive.system income model.world }, Cmd.none )
+            ( { model | world = Client.Sync.receive income model.world }, Cmd.none )
 
         Join ->
             ( { model | world = Join.system model.world }, Cmd.none )

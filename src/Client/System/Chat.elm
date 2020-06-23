@@ -1,4 +1,4 @@
-module Client.System.Chat exposing (ChatCacheWorld, input, system, view)
+module Client.System.Chat exposing (ChatCacheWorld, system, view)
 
 import Animator exposing (Movement)
 import Client.Asset.Text
@@ -47,43 +47,3 @@ view chat =
     , Client.Asset.Text.chat (chat.input ++ "|") |> fade fader
     ]
         |> group
-
-
-input : ChatCacheWorld world -> String -> Decoder (ChatCacheWorld world)
-input ({ chat_, chat, me } as world) key =
-    case key of
-        "Backspace" ->
-            D.succeed { world | chat_ = { chat_ | input = String.dropRight 1 chat_.input } }
-
-        "Enter" ->
-            D.succeed (exec me world)
-
-        _ ->
-            case String.toList key of
-                [ _ ] ->
-                    D.succeed { world | chat_ = { chat_ | input = chat_.input ++ key } }
-
-                _ ->
-                    D.fail ""
-
-
-exec : EntityID -> ChatCacheWorld world -> ChatCacheWorld world
-exec entityId ({ chat, chat_ } as w) =
-    if chat_.input == "" then
-        w
-
-    else if String.startsWith ".add" chat_.input then
-        w
-
-    else
-        let
-            newChat =
-                ( entityId, chat_.input ) :: chat
-
-            newCache =
-                ChatCache.cache newChat w.chat_
-        in
-        { w
-            | chat = newChat
-            , chat_ = { newCache | input = "" }
-        }

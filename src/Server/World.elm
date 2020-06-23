@@ -1,5 +1,6 @@
 module Server.World exposing (Message(..), World, empty, tick, tickTime)
 
+import Common.Component.Body as Body exposing (Body)
 import Common.Component.Chat as Chat exposing (Chat)
 import Common.Component.Name as Name exposing (Name)
 import Common.Component.Position as Position exposing (Position)
@@ -36,6 +37,7 @@ type alias World =
     --    , connections: Dict Int String
     , p : Component.Set Position
     , name : Component.Set Name
+    , body : Component.Set Body
     }
 
 
@@ -51,6 +53,7 @@ empty =
     ---
     , p = Position.empty
     , name = Name.empty
+    , body = Body.empty
     }
 
 

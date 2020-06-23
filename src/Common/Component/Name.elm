@@ -1,5 +1,9 @@
-module Common.Component.Name exposing (Name, empty, spec)
+module Common.Component.Name exposing (Name, decode, empty, encode, spec)
 
+import Bytes.Decode exposing (Decoder)
+import Bytes.Encode exposing (Encoder)
+import Common.Bytes.Decode as D
+import Common.Bytes.Encode as E
 import Logic.Component as Component
 
 
@@ -15,3 +19,13 @@ spec =
 empty : Component.Set Name
 empty =
     Component.empty
+
+
+encode : Name -> Encoder
+encode =
+    E.sizedString
+
+
+decode : Decoder Name
+decode =
+    D.sizedString

@@ -1,11 +1,12 @@
 module Server exposing (main)
 
+import Contract exposing (contract)
 import Json.Decode as Json
 import Server.Port as Port
-import Server.System.Join as Joint
-import Server.System.Receive as Receive
+import Server.Sync
+import Server.System.Tick as Tick
+import Server.System.User as User
 import Server.World as World exposing (Message(..), World)
-import Time
 
 
 main : Program Json.Value World Message
@@ -19,38 +20,37 @@ main =
 
 init : Json.Value -> ( World, Cmd Message )
 init flags =
+    let
+        _ =
+            contract
+    in
     ( World.empty, World.tick 0 30 )
 
 
 update : Message -> World -> ( World, Cmd Message )
 update msg world =
-    let
-        _ =
-            case msg of
-                Tick _ ->
-                    msg
-
-                _ ->
-                    Debug.log "Server" msg
-    in
+    --    let
+    --        _ =
+    --            case msg of
+    --                Tick _ ->
+    --                    msg
+    --
+    --                _ ->
+    --                    Debug.log "Server" msg
+    --    in
     case msg of
-        Tick posix ->
-            let
-                now =
-                    Time.posixToMillis posix
-            in
-            ( { world | time = now, frame = world.frame + 1 }
-            , World.tick world.time now
-            )
+        Tick t ->
+            Tick.system t world
 
         Receive income ->
-            Receive.system income world
+            Server.Sync.receive income world
 
+        --            Receive.system income world
         Join cnn ->
-            Joint.system cnn world
+            User.join cnn world
 
         Leave cnn ->
-            ( world, Cmd.none )
+            User.leave cnn world
 
         Error err ->
             ( world, Cmd.none )

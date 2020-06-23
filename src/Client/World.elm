@@ -2,7 +2,9 @@ module Client.World exposing (Message(..), Model, World, empty)
 
 import Client.Component.ChatCache as ChatCache exposing (ChatCache)
 import Client.Component.Pointer as Pointer exposing (Pointer)
+import Client.Component.Timeline as Timeline exposing (Timeline)
 import Client.Util as Util
+import Common.Component.Body as Body exposing (Body)
 import Common.Component.Chat as Chat exposing (Chat)
 import Common.Component.Name as Name exposing (Name)
 import Common.Component.Position as Position exposing (Position)
@@ -23,7 +25,9 @@ type alias World =
     , chat_ : ChatCache
     , chat : Chat
     , p : Component.Set Position
+    , timeline : Component.Set Timeline
     , name : Component.Set Name
+    , body : Component.Set Body
     }
 
 
@@ -39,7 +43,9 @@ world =
     , chat_ = ChatCache.empty chat
     , chat = chat
     , p = Position.empty
+    , timeline = Timeline.empty
     , name = Name.empty
+    , body = Body.empty
     }
 
 

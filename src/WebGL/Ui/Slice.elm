@@ -6,48 +6,29 @@ import WebGL exposing (Mesh, Shader)
 import WebGL.Shape2d exposing (Form(..), Render, Shape2d(..))
 import WebGL.Texture exposing (Texture)
 import WebGL.Ui.Internal exposing (defaultEntitySettings, mesh)
+import WebGL.Ui.Util as Util
 
 
 slice9 atlas { bounds, slice } w h =
-    Shape2d
-        { x = 0
-        , y = 0
-        , z = 0
-        , a = 0
-        , sx = 1
-        , sy = 1
-        , o = 1
-        , form =
-            Textured atlas <|
-                \texture ->
-                    let
-                        ( tW_, tH_ ) =
-                            WebGL.Texture.size texture
+    Util.withTexture atlas <|
+        \texture ->
+            let
+                ( tW_, tH_ ) =
+                    WebGL.Texture.size texture
 
-                        tw =
-                            toFloat tW_
+                tw =
+                    toFloat tW_
 
-                        th =
-                            toFloat tH_
-                    in
-                    Shape2d
-                        { x = 0
-                        , y = 0
-                        , z = 0
-                        , a = 0
-                        , sx = 1
-                        , sy = 1
-                        , o = 1
-                        , form =
-                            Form w h <|
-                                slice9Render
-                                    texture
-                                    (vec2 tw th)
-                                    (vec2 w h)
-                                    (vec4 bounds.x bounds.y bounds.w bounds.h)
-                                    (vec4 slice.x slice.y slice.w slice.h)
-                        }
-        }
+                th =
+                    toFloat tH_
+            in
+            Util.shape w h <|
+                slice9Render
+                    texture
+                    (vec2 tw th)
+                    (vec2 w h)
+                    (vec4 bounds.x bounds.y bounds.w bounds.h)
+                    (vec4 slice.x slice.y slice.w slice.h)
 
 
 slice9Render img imageSize uSize uBounds uSlice uP uT z opacity =

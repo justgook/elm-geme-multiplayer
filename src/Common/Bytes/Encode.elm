@@ -2,7 +2,6 @@ module Common.Bytes.Encode exposing
     ( bool
     , components
     , encodedList
-    , encoder
     , float
     , id
     , int
@@ -19,12 +18,6 @@ import AltMath.Vector2 as AltVec2
 import Bytes exposing (Endianness(..))
 import Bytes.Encode as E exposing (Encoder)
 import Logic.Component as Component
-
-
-encoder : List (b -> Encoder) -> b -> Encoder
-encoder encoders w =
-    List.map (\f -> f w) encoders
-        |> E.sequence
 
 
 float : Float -> Encoder
