@@ -1,4 +1,4 @@
-module Common.Patch exposing (Patch, apply, decode, diff, encode)
+module Common.Patch exposing (Patch, apply, applyWith, decode, diff, encode)
 
 import Array exposing (Array)
 import Bytes.Decode as D exposing (Decoder)
@@ -34,6 +34,12 @@ encode e { add, remove } =
 apply : Component.Spec comp world -> Patch comp -> world -> world
 apply spec { add, remove } =
     System.update spec (\was -> List.foldl (\( id, v ) -> Component.spawn id v) was add)
+        >> System.update spec (\was -> List.foldl Component.remove was remove)
+
+
+applyWith : (comp -> Maybe comp1 -> comp1) -> Component.Spec comp1 world -> Patch comp -> world -> world
+applyWith fn spec { add, remove } =
+    System.update spec (\was -> List.foldl (\( id, v ) acc -> Component.spawn id (fn v (Component.get id acc)) acc) was add)
         >> System.update spec (\was -> List.foldl Component.remove was remove)
 
 

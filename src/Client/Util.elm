@@ -1,5 +1,8 @@
-module Client.Util exposing (toScreen)
+module Client.Util exposing (onEvent, toScreen)
 
+import Html exposing (Attribute)
+import Html.Events
+import Json.Decode exposing (Decoder)
 import Playground exposing (Screen)
 
 
@@ -12,3 +15,17 @@ toScreen width height =
     , right = width * 0.5
     , bottom = -height * 0.5
     }
+
+
+onEvent : String -> Decoder a -> Attribute a
+onEvent e decoder =
+    Html.Events.custom e
+        (decoder
+            |> Json.Decode.map
+                (\a ->
+                    { message = a
+                    , stopPropagation = True
+                    , preventDefault = True
+                    }
+                )
+        )

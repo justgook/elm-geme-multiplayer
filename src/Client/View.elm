@@ -1,7 +1,6 @@
 module Client.View exposing (view, wrap)
 
-import Client.Component.Pointer as PointerComponent
-import Client.Event.Pointer as Pointer
+import Client.Event.UI as UI
 import Client.World exposing (Message(..), Model, World)
 import Html exposing (Html)
 import Html.Attributes as H
@@ -13,7 +12,7 @@ view { screen, entities, world } =
     wrap
         (H.width (round screen.width)
             :: H.height (round screen.height)
-            :: Pointer.event PointerComponent.spec world
+            :: UI.pointer world
         )
         entities
         |> Html.map Event

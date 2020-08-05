@@ -1,9 +1,12 @@
 module Client.System.Tick exposing (system)
 
-import Client.Component.ChatCache as ChatCache
-import Client.System.Chat as Chat
+import Client.Component.UI as UI
 import Client.System.Render as Render
+import Client.System.UI as UISystem
 import Client.World exposing (Message(..), Model)
+import Common.Component.Position as Position
+import Common.Component.Velocity as Velocity
+import Common.System.VelocityPosition as VelocityPosition
 import Common.Util as Util
 import Set
 import Task
@@ -14,9 +17,19 @@ import WebGL.Texture as Texture
 system : Posix -> Model -> ( Model, Cmd Message )
 system time ({ textures } as model) =
     let
+        newTime =
+            Time.posixToMillis time
+
+        wasTime =
+            Time.posixToMillis model.time
+
+        delta =
+            newTime - wasTime
+
         world =
             model.world
-                |> Util.update ChatCache.spec (Chat.system time)
+                |> UISystem.system time
+                |> VelocityPosition.system delta Velocity.spec Position.spec
 
         ( entities, missing ) =
             Render.system { model | world = world }

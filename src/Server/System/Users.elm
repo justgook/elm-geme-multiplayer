@@ -1,8 +1,9 @@
-module Server.System.User exposing (join, leave)
+module Server.System.Users exposing (join, leave)
 
 import Common.Component.Body as Body
 import Common.Component.Name as Name
 import Common.Component.Position as Position
+import Common.Component.Velocity as Velocity
 import Common.Sync
 import Dict
 import Logic.Component as Component
@@ -10,7 +11,7 @@ import Logic.Entity as Entity
 import Random
 import Server.Component.IdSource as ID
 import Server.Component.Name as Name
-import Server.Component.User as User exposing (User)
+import Server.Component.Users as User exposing (Users)
 import Server.Sync
 import Server.World as World exposing (Message, World)
 
@@ -27,7 +28,7 @@ leave cnn was =
                 |> Common.Sync.compose
                 |> Server.Sync.send
     in
-    ( now, Dict.foldl (\k _ -> (::) (toAll k)) [] now.user |> Cmd.batch )
+    ( now, Dict.foldl (\k _ -> (::) (toAll k)) [] now.users |> Cmd.batch )
 
 
 join : String -> World -> ( World, Cmd Message )
@@ -46,13 +47,13 @@ join cnn was =
                 |> Common.Sync.compose
                 |> Server.Sync.send
     in
-    ( now, cmd cnn :: Dict.foldl (\k _ -> (::) (toAll k)) [] was.user |> Cmd.batch )
+    ( now, cmd cnn :: Dict.foldl (\k _ -> (::) (toAll k)) [] was.users |> Cmd.batch )
 
 
 spawn cnn world =
     world
         |> ID.create
-        --                |> Entity.with ( Position.spec, Position.spawn { x = 0, y = 0 } )
+        |> Entity.with ( Velocity.spec, Velocity.spawn { x = 0, y = 0 } )
         |> (\( id, w ) ->
                 ( id
                 , { w | p = Component.spawn id { x = id * 16 |> toFloat, y = 0 } w.p }

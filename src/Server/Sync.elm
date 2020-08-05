@@ -1,7 +1,6 @@
 module Server.Sync exposing (pack, receive, send)
 
 import Base64
-import Bytes
 import Bytes.Decode as D
 import Bytes.Encode as E exposing (Encoder)
 import Common.Bytes.Decode as D
@@ -10,9 +9,14 @@ import Common.Component.Body as Body
 import Common.Component.Chat exposing (Chat)
 import Common.Component.Name as Name
 import Common.Component.Position as Position
+import Common.Component.Velocity as Velocity
+import Common.Direction as Direction
 import Common.Patch as Patch
 import Common.Sync
+import Common.Util as Util
 import Dict exposing (Dict)
+import Logic.Component as Component
+import Server.Component.Users as Users
 import Server.Port as Port exposing (ConnectionId)
 
 
@@ -20,10 +24,21 @@ pack was now =
     [ Patch.diff (Name.spec.get was) (Name.spec.get now) |> Patch.encode Name.encode
     , Patch.diff (Position.spec.get was) (Position.spec.get now) |> Patch.encode Position.encode
     , Patch.diff (Body.spec.get was) (Body.spec.get now) |> Patch.encode Body.encode
+    , Patch.diff (Velocity.spec.get was) (Velocity.spec.get now) |> Patch.encode Velocity.encode
     , E.id 666
     , chatEncoder was.chat now.chat
     ]
         |> List.reverse
+
+
+unpack cnn =
+    let
+        ll =
+            [ D.map2 Tuple.pair D.id D.sizedString |> D.map (\chat w -> { w | chat = chat :: w.chat })
+            , D.int |> D.map (Direction.fromInt >> Direction.toRecord >> always >> Component.update cnn >> Util.update Velocity.spec)
+            ]
+    in
+    ll |> Common.Sync.decompose (List.length ll - 1)
 
 
 chatEncoder : Chat -> Chat -> Encoder
@@ -45,17 +60,23 @@ send info cnn =
                 |> Base64.fromBytes
                 |> Maybe.withDefault ""
     in
-    Port.send ( cnn, data )
+    if data == "/w==" then
+        let
+            _ =
+                Debug.log "Server.Sync::nothing" data
+        in
+        Cmd.none
 
-
-unpack =
-    [ D.map2 Tuple.pair D.id D.sizedString |> D.map (\chat w -> { w | chat = chat :: w.chat })
-    ]
-        |> Common.Sync.decompose 0
+    else
+        let
+            _ =
+                Debug.log "Server.Sync::sending" data
+        in
+        Port.send ( cnn, data )
 
 
 receive ( cnn, data ) was =
-    case data |> Base64.toBytes |> Maybe.andThen (D.decode unpack) of
+    case data |> Base64.toBytes |> Maybe.andThen (D.decode (unpack (Users.entityId cnn was))) of
         Just fn ->
             let
                 now =
@@ -66,7 +87,7 @@ receive ( cnn, data ) was =
                         |> Common.Sync.compose
                         |> send
             in
-            ( fn was, Dict.foldl (\k _ -> (::) (toAll k)) [] was.user |> Cmd.batch )
+            ( now, Dict.foldl (\k _ -> (::) (toAll k)) [] was.users |> Cmd.batch )
 
         Nothing ->
             ( was, Cmd.none )

@@ -12,8 +12,9 @@ import Client.System.Tick as Tick
 import Client.Util as Util
 import Client.View as View
 import Client.World as World exposing (Message(..), Model)
-import Contract exposing (contract)
 import Dict
+import Html exposing (div)
+import Html.Attributes exposing (class)
 import Json.Decode as Json
 import Set
 import Task
@@ -32,9 +33,6 @@ main =
 init : Json.Value -> ( Model, Cmd Message )
 init flags =
     let
-        _ =
-            contract
-
         cmd =
             Dom.getViewport
                 |> Task.map (\{ viewport } -> Util.toScreen viewport.width viewport.height)
@@ -46,7 +44,7 @@ init flags =
 view : Model -> Document Message
 view model =
     { title = "Client"
-    , body = [ View.view model ]
+    , body = [ View.view model, div [ class "debug" ] [] ]
     }
 
 

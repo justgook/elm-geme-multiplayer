@@ -1,10 +1,11 @@
 module Client.System.Render exposing (system)
 
-import Animator
 import Client.Asset.Text
+import Client.Component.UI as UI
 import Client.Debug
 import Client.System.Chat as Chat
 import Client.System.Render.Char
+import Client.System.Render.Stick as Stick
 import Client.World exposing (Model)
 import Playground exposing (Screen, blue, fade, group, move, rectangle, red, yellow)
 import Set exposing (Set)
@@ -13,7 +14,7 @@ import WebGL.Shape2d
 
 
 testTest1 =
-    "Before \u{001B}[31mConnecting\u{001B}[0mAfter"
+    "Before \u{001B}[31mConnecting \u{001B}[0m After"
 
 
 testTest2 =
@@ -31,8 +32,8 @@ system { screen, textures, time, world } =
                  else
                     testTest1
                 )
-           , Chat.view world.chat_
+           , Chat.view world.ui world.chat_
                 |> move screen.left screen.bottom
+           , Stick.system (UI.spec.get world).stick1
            ]
-        |> WebGL.Shape2d.toEntities textures.done
-            { width = screen.width, height = screen.height }
+        |> WebGL.Shape2d.toEntities textures.done { width = screen.width, height = screen.height }

@@ -1,13 +1,14 @@
 module Client.World exposing (Message(..), Model, World, empty)
 
+import Client.Component.Body as Body exposing (Body)
 import Client.Component.ChatCache as ChatCache exposing (ChatCache)
-import Client.Component.Pointer as Pointer exposing (Pointer)
 import Client.Component.Timeline as Timeline exposing (Timeline)
+import Client.Component.UI as UI exposing (UI)
 import Client.Util as Util
-import Common.Component.Body as Body exposing (Body)
 import Common.Component.Chat as Chat exposing (Chat)
 import Common.Component.Name as Name exposing (Name)
 import Common.Component.Position as Position exposing (Position)
+import Common.Component.Velocity as Velocity exposing (Velocity)
 import Dict exposing (Dict)
 import Logic.Component as Component
 import Logic.Entity exposing (EntityID)
@@ -19,12 +20,13 @@ import WebGL.Texture as Texture exposing (Texture)
 
 
 type alias World =
-    { pointer : Pointer
-    , connected : Bool
+    { connected : Bool
     , me : EntityID
     , chat_ : ChatCache
     , chat : Chat
+    , ui : UI
     , p : Component.Set Position
+    , v : Component.Set Velocity
     , timeline : Component.Set Timeline
     , name : Component.Set Name
     , body : Component.Set Body
@@ -37,12 +39,13 @@ world =
         chat =
             Chat.empty
     in
-    { pointer = Pointer.empty
-    , connected = False
+    { connected = False
     , me = 0
     , chat_ = ChatCache.empty chat
     , chat = chat
+    , ui = UI.empty
     , p = Position.empty
+    , v = Velocity.empty
     , timeline = Timeline.empty
     , name = Name.empty
     , body = Body.empty

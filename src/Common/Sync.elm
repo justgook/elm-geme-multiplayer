@@ -30,6 +30,7 @@ decompose index decoders =
         decomposeStep
 
 
+decomposeStep : { decoders : List (Decoder (world -> world)), index : Int, id : Maybe Int, fn : world -> world } -> Decoder (Step { decoders : List (Decoder (world -> world)), index : Int, id : Maybe Int, fn : world -> world } (world -> world))
 decomposeStep ({ decoders, index, id } as acc) =
     case decoders of
         decoder :: rest ->

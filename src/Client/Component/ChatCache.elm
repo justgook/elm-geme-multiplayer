@@ -1,6 +1,5 @@
 module Client.Component.ChatCache exposing (ChatCache, cache, empty, spec)
 
-import Animator exposing (Timeline)
 import Client.Asset.Text
 import Common.Component.Chat exposing (Chat)
 import Common.Util as Util
@@ -9,9 +8,7 @@ import Playground exposing (Shape, moveY)
 
 type alias ChatCache =
     { input : String
-    , active : Bool
     , messages : List Shape
-    , animator : Timeline Int
     }
 
 
@@ -22,10 +19,8 @@ spec =
 
 empty : Chat -> ChatCache
 empty chat =
-    { input = "Enter Your text"
-    , active = True
+    { input = ""
     , messages = []
-    , animator = Animator.init 0
     }
         |> cache chat
 

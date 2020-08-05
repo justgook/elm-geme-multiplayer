@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta
             name="viewport"
-            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0 t"
     >
     <meta
             http-equiv="X-UA-Compatible"
@@ -15,11 +15,31 @@
         html, body, canvas {
             padding: 0;
             margin: 0;
+            border: none;
+            overflow: hidden;
+        }
+
+        iframe {
+            border: none;
         }
 
         canvas {
             display: block
         }
+
+        .debug {
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-size: 16px 16px;
+            background-position: calc(50%) calc(50%);
+            background-image: linear-gradient(to right, grey 1px, transparent 1px), linear-gradient(to bottom, grey 1px, transparent 1px);
+        }
+
     </style>
     <script>
         var redirect = sessionStorage.redirect;
@@ -57,6 +77,7 @@
                 })
             })
     } else if (location.pathname.startsWith("/join/")) {
+        document.body.classList.add("debug")
         const id = location.pathname.replace("/join/", "");
         document.body.innerText = "I'm Client";
         Promise.all([
@@ -99,6 +120,8 @@
         document.body.appendChild(create);
         document.body.appendChild(join);
         document.body.appendChild(document.createElement("br"));
+        create.onclick()
+        join.onclick()
     </script>
     <!--FMOD testing-->
     <!--    <script type="text/javascript" src="/fmod/fmodstudio.js"></script>-->
