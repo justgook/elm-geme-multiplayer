@@ -9,6 +9,7 @@ import Dict
 import Logic.Component as Component
 import Logic.Entity as Entity
 import Random
+import Server.Component.Desire as Desire
 import Server.Component.IdSource as ID
 import Server.Component.Name as Name
 import Server.Component.Users as User exposing (Users)
@@ -54,11 +55,8 @@ spawn cnn world =
     world
         |> ID.create
         |> Entity.with ( Velocity.spec, Velocity.spawn { x = 0, y = 0 } )
-        |> (\( id, w ) ->
-                ( id
-                , { w | p = Component.spawn id { x = id * 16 |> toFloat, y = 0 } w.p }
-                )
-           )
+        |> Entity.with ( Desire.spec, Desire.spawn )
+        |> (\( id, w ) -> ( id, { w | p = Component.spawn id { x = id * 16 |> toFloat, y = 0 } w.p } ))
         |> Entity.with ( Body.spec, 1 )
         |> (\( id, w ) -> ( id, User.spawn id cnn w ))
         |> (\( id, w ) ->

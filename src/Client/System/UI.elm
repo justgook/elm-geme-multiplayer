@@ -7,7 +7,6 @@ import Client.System.Chat exposing (ChatCacheWorld)
 import Common.Util as Util
 import Json.Decode as D exposing (Decoder)
 import Logic.Entity exposing (EntityID)
-import Time exposing (Posix)
 
 
 system time =
@@ -18,6 +17,14 @@ system time =
                 , stick1 = { stick1 | active = Animator.updateTimeline time stick1.active }
             }
         )
+
+
+controlConfig =
+    [ ( "KeyW", "up" )
+    , ( "KeyD", "right" )
+    , ( "KeyS", "down" )
+    , ( "KeyA", "left" )
+    ]
 
 
 captureKey code ({ ui } as world) =

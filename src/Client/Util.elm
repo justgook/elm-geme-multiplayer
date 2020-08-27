@@ -24,8 +24,8 @@ onEvent e decoder =
             |> Json.Decode.map
                 (\a ->
                     { message = a
-                    , stopPropagation = True
-                    , preventDefault = True
+                    , stopPropagation = False
+                    , preventDefault = False
                     }
                 )
         )

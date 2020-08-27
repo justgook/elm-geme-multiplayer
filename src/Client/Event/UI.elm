@@ -17,15 +17,52 @@ pointer world =
     in
     case ui.pointerFocus of
         UI.None ->
-            [ Util.onEvent "pointerdown" (decoder startStick) ]
+            [ Util.onEvent "pointerdown" (decoder startStick)
+            , Util.onEvent "pointermove" moveMouse
+            ]
 
         UI.Stick1 ->
             [ Util.onEvent "pointerup" (decoder stopStick)
+            , Util.onEvent "pointerout" (decoder stopStick)
+            , Util.onEvent "pointercancel" (decoder stopStick)
             , Util.onEvent "pointermove" (decoder moveStick)
             ]
 
+        UI.Stick2 ->
+            []
 
-moveStick x y btn =
+
+moveMouse =
+    D.field "pointerType" D.string
+        |> D.andThen
+            (\pointerType ->
+                case pointerType of
+                    "mouse" ->
+                        D.map4
+                            (\x_ y_ w h world ->
+                                let
+                                    p =
+                                        coordinate x_ y_ w h
+                                in
+                                world
+                                    |> Util.update UI.spec
+                                        (\({ cursor } as ui) ->
+                                            { ui
+                                                | cursor = { cursor | p = p }
+                                            }
+                                        )
+                            )
+                            (D.field "pageX" D.float)
+                            (D.field "pageY" D.float)
+                            (D.at [ "target", "offsetWidth" ] D.float)
+                            (D.at [ "target", "offsetHeight" ] D.float)
+
+                    _ ->
+                        D.fail ""
+            )
+
+
+moveStick x y btn pointerType pointerId =
     Util.update UI.spec
         (\ui ->
             let
@@ -50,9 +87,13 @@ moveStick x y btn =
         )
 
 
-stopStick x y btn world =
+stopStick x y btn pointerType pointerId world =
     Util.update UI.spec
         (\({ stick1 } as ui) ->
+            let
+                _ =
+                    Debug.log "pointerType" pointerType
+            in
             { ui
                 | pointerFocus = UI.None
                 , stick1 =
@@ -65,9 +106,10 @@ stopStick x y btn world =
         world
 
 
-startStick x y btn world =
+startStick x y btn pointerType pointerId world =
     Util.update UI.spec
         (\ui ->
+            --TODO add possibility for multiple stick same time
             if x < 0 then
                 { ui
                     | stick1 =
@@ -80,25 +122,44 @@ startStick x y btn world =
                 }
 
             else
-                ui
+                { ui
+                    | stick2 =
+                        { center = Vec2 x y
+                        , cursor = Vec2 x y
+                        , active = Animator.go Animator.immediately True ui.stick2.active
+                        , dir = Neither
+                        }
+                    , pointerFocus = UI.Stick2
+                }
         )
         world
 
 
-decoder fn =
-    D.map5
-        (\x_ y_ w h btn world ->
-            let
-                x =
-                    -w * 0.5 + x_
+coordinate : Float -> Float -> Float -> Float -> { x : Float, y : Float }
+coordinate x_ y_ w h =
+    let
+        x =
+            -w * 0.5 + x_
 
-                y =
-                    h * 0.5 - y_
+        y =
+            h * 0.5 - y_
+    in
+    { x = x, y = y }
+
+
+decoder fn =
+    D.map7
+        (\x_ y_ w h btn pointerType pointerId world ->
+            let
+                { x, y } =
+                    coordinate x_ y_ w h
             in
-            fn x y btn world
+            fn x y btn pointerType pointerId world
         )
         (D.field "pageX" D.float)
         (D.field "pageY" D.float)
         (D.at [ "target", "offsetWidth" ] D.float)
         (D.at [ "target", "offsetHeight" ] D.float)
         (D.field "buttons" D.int)
+        (D.field "pointerType" D.string)
+        (D.field "pointerId" D.int)

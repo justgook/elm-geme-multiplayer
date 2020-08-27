@@ -5,10 +5,10 @@ import Server.Port as Port
 import Server.Sync
 import Server.System.Tick as Tick
 import Server.System.Users as Users
-import Server.World as World exposing (Message(..), World)
+import Server.World as World exposing (Message(..), Model, World)
 
 
-main : Program Json.Value World Message
+main : Program Json.Value Model Message
 main =
     Platform.worker
         { init = init
@@ -17,28 +17,31 @@ main =
         }
 
 
-init : Json.Value -> ( World, Cmd Message )
+init : Json.Value -> ( Model, Cmd Message )
 init flags =
-    ( World.empty, World.tick 0 30 )
+    ( World.init, World.tick 0 30 )
 
 
-update : Message -> World -> ( World, Cmd Message )
-update msg world =
+update : Message -> Model -> ( Model, Cmd Message )
+update msg ({ world } as model) =
     case msg of
         Tick t ->
-            Tick.system t world
+            Tick.system t model
 
         Receive income ->
             Server.Sync.receive income world
+                |> Tuple.mapFirst (\w -> { model | world = w })
 
         Join cnn ->
             Users.join cnn world
+                |> Tuple.mapFirst (\w -> { model | world = w })
 
         Leave cnn ->
             Users.leave cnn world
+                |> Tuple.mapFirst (\w -> { model | world = w })
 
         Error err ->
-            ( world, Cmd.none )
+            ( { model | error = err }, Cmd.none )
 
 
 subscriptions model =

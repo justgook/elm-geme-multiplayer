@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta
             name="viewport"
-            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0 t"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"
     >
     <meta
             http-equiv="X-UA-Compatible"
@@ -16,7 +16,7 @@
             padding: 0;
             margin: 0;
             border: none;
-            overflow: hidden;
+            overflow: hidden
         }
 
         iframe {
@@ -24,7 +24,8 @@
         }
 
         canvas {
-            display: block
+            display: block;
+            cursor: crosshair;
         }
 
         .debug {
@@ -50,6 +51,8 @@
     </script>
 </head>
 <body>
+<script src="/qrcode.js"></script>
+
 <script type="module">
     import { loadScript } from "/load.mjs"
 
@@ -75,6 +78,19 @@
                 app.ports.send.subscribe(function ([cnn, data]) {
                     peer.send(cnn, data);
                 })
+
+                ///  QR TESTING
+
+                var typeNumber = 0;
+                var errorCorrectionLevel = 'L';
+                var qr = qrcode(typeNumber, errorCorrectionLevel);
+                qr.addData(location.href.replace("create", "join"));
+                qr.make();
+                const aaa = document.createElement("div");
+                aaa.innerHTML = qr.createImgTag();
+                document.body.appendChild(aaa)
+                // document.getElementById('placeHolder')
+
             })
     } else if (location.pathname.startsWith("/join/")) {
         document.body.classList.add("debug")
@@ -127,6 +143,11 @@
     <!--    <script type="text/javascript" src="/fmod/fmodstudio.js"></script>-->
     <!--    <script type="text/javascript" src="/fmod.js"></script>-->
 
+<!--    <script src="https://rawgit.com/gss/engine/2.1.x/dist/gss.js"></script>-->
+<!--    <script type="text/javascript">-->
+<!--        window.engine = new GSS(document, null);-->
+<!--    </script>-->
 </posthtml-head-elements>
+
 </body>
 </html>

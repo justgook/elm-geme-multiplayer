@@ -3,14 +3,18 @@ module Client.System.Render exposing (system)
 import Client.Asset.Text
 import Client.Component.UI as UI
 import Client.Debug
+import Client.Menu.Start
 import Client.System.Chat as Chat
 import Client.System.Render.Char
+import Client.System.Render.Cursor as Cursor
 import Client.System.Render.Stick as Stick
 import Client.World exposing (Model)
 import Playground exposing (Screen, blue, fade, group, move, rectangle, red, yellow)
 import Set exposing (Set)
 import WebGL exposing (Entity)
 import WebGL.Shape2d
+import WebGL.Ui.AutoLayout.BVH as BVH
+import WebGL.Ui.AutoLayout.Solver
 
 
 testTest1 =
@@ -35,5 +39,9 @@ system { screen, textures, time, world } =
            , Chat.view world.ui world.chat_
                 |> move screen.left screen.bottom
            , Stick.system (UI.spec.get world).stick1
+           , Cursor.system (UI.spec.get world)
            ]
+        --|> group
+        --|> Playground.scale 2
+        --|> List.singleton
         |> WebGL.Shape2d.toEntities textures.done { width = screen.width, height = screen.height }

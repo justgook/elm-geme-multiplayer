@@ -1,13 +1,16 @@
-module Server.World exposing (Message(..), World, empty, tick, tickTime)
+module Server.World exposing (Message(..), Model, World, empty, init, tick, tickTime)
 
 import Common.Component.Body as Body exposing (Body)
 import Common.Component.Chat as Chat exposing (Chat)
 import Common.Component.Name as Name exposing (Name)
 import Common.Component.Position as Position exposing (Position)
+import Common.Component.Schedule as Schedule exposing (Schedule)
 import Common.Component.Velocity as Velocity exposing (Velocity)
+import Common.Component.Weapon as Weapon exposing (Weapon)
 import Logic.Component as Component
 import Process
 import Random exposing (Seed)
+import Server.Component.Desire as Desire exposing (Desire)
 import Server.Component.IdSource as IdSource exposing (IdSource)
 import Server.Component.Users as Users exposing (Users)
 import Task
@@ -19,6 +22,25 @@ tickTime =
     1000 / 30
 
 
+type alias Model =
+    { world : World
+    , schedule : Schedule (World -> World)
+    , frame : Int
+    , time : Int
+    , error : String
+    }
+
+
+init : Model
+init =
+    { world = empty
+    , schedule = Schedule.empty
+    , frame = 0
+    , time = 0
+    , error = ""
+    }
+
+
 type Message
     = Tick Posix
     | Receive ( String, String )
@@ -28,9 +50,7 @@ type Message
 
 
 type alias World =
-    { frame : Int
-    , time : Int
-    , seed : Seed
+    { seed : Seed
     , id : IdSource
     , users : Users
     , chat : Chat
@@ -40,14 +60,14 @@ type alias World =
     , v : Component.Set Velocity
     , name : Component.Set Name
     , body : Component.Set Body
+    , weapon : Component.Set Weapon
+    , desire : Component.Set Desire
     }
 
 
 empty : World
 empty =
-    { frame = 0
-    , time = 0
-    , seed = Random.initialSeed 42
+    { seed = Random.initialSeed 42
     , id = IdSource.empty 1
     , users = Users.empty
     , chat = Chat.empty
@@ -57,6 +77,8 @@ empty =
     , v = Velocity.empty
     , name = Name.empty
     , body = Body.empty
+    , weapon = Weapon.empty
+    , desire = Desire.empty
     }
 
 

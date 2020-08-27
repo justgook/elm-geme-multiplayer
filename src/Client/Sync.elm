@@ -20,21 +20,8 @@ import Common.Sync
 
 pack : Client.World -> Client.World -> List Encoder
 pack was now =
-    [ if was.chat /= now.chat then
-        case now.chat of
-            ( a, b ) :: _ ->
-                E.sequence [ E.id a, E.sizedString b ]
-
-            [] ->
-                E.sequence []
-
-      else
-        E.sequence []
-    , if was.ui.stick1.dir /= now.ui.stick1.dir then
-        E.int (Direction.toInt now.ui.stick1.dir)
-
-      else
-        E.sequence []
+    [ packChat was now
+    , packDesire was now
     ]
         |> List.reverse
 
@@ -53,6 +40,35 @@ unpack =
             ]
     in
     ll |> Common.Sync.decompose (List.length ll - 1)
+
+
+packChat was now =
+    if was.chat /= now.chat then
+        case now.chat of
+            ( a, b ) :: _ ->
+                E.sequence [ E.id a, E.sizedString b ]
+
+            [] ->
+                E.sequence []
+
+    else
+        E.sequence []
+
+
+packDesire was now =
+    --move : Vec2
+    --look : Vec2
+    --shoot : Bool
+    if was.ui.stick1.dir /= now.ui.stick1.dir then
+        --E.int (Direction.toInt now.ui.stick1.dir)
+        [ E.int (Direction.toInt now.ui.stick1.dir)
+        , E.int (Direction.toInt now.ui.stick1.dir)
+        , E.bool False
+        ]
+            |> E.sequence
+
+    else
+        E.sequence []
 
 
 receive data world =

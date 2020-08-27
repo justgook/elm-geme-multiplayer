@@ -1,0 +1,10 @@
+{
+  "name": "dmy/elm-doc-preview",
+  "summary": "Game libraries in progress",
+  "version": "1.0.0",
+  "exposed-modules": [
+    "WebGL.Ui.Element",
+    "WebGL.Ui.Element.Border",
+    "WebGL.Ui.Element.Background"
+  ]
+}

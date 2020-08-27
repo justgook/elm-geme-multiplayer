@@ -16,6 +16,7 @@ import Common.Sync
 import Common.Util as Util
 import Dict exposing (Dict)
 import Logic.Component as Component
+import Logic.Entity as Component
 import Server.Component.Users as Users
 import Server.Port as Port exposing (ConnectionId)
 
@@ -34,11 +35,31 @@ pack was now =
 unpack cnn =
     let
         ll =
-            [ D.map2 Tuple.pair D.id D.sizedString |> D.map (\chat w -> { w | chat = chat :: w.chat })
-            , D.int |> D.map (Direction.fromInt >> Direction.toRecord >> always >> Component.update cnn >> Util.update Velocity.spec)
+            [ unpackChat
+            , unpackDesire cnn
             ]
     in
     ll |> Common.Sync.decompose (List.length ll - 1)
+
+
+unpackChat =
+    D.map2 Tuple.pair D.id D.sizedString
+        |> D.map (\chat w -> { w | chat = chat :: w.chat })
+
+
+unpackDesire : Component.EntityID -> D.Decoder ({ world | v : Component.Set Velocity.Velocity } -> { world | v : Component.Set Velocity.Velocity })
+unpackDesire cnn =
+    D.map3
+        (\move look shoot wold ->
+            let
+                _ =
+                    Debug.log "unpackDesire" ( look, shoot )
+            in
+            (Direction.fromInt >> Direction.toRecord >> always >> Component.update cnn >> Util.update Velocity.spec) move wold
+        )
+        D.int
+        D.int
+        D.bool
 
 
 chatEncoder : Chat -> Chat -> Encoder

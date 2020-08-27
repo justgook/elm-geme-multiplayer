@@ -29,7 +29,7 @@ system time ({ textures } as model) =
         world =
             model.world
                 |> UISystem.system time
-                |> VelocityPosition.system delta Velocity.spec Position.spec
+                |> VelocityPosition.system Velocity.spec Position.spec
 
         ( entities, missing ) =
             Render.system { model | world = world }

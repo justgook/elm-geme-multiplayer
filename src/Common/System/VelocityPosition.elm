@@ -7,7 +7,7 @@ import Logic.Component
 import Logic.System exposing (System)
 
 
-system : Int -> Logic.Component.Spec Velocity world -> Logic.Component.Spec Position world -> System world
-system delta =
+system : Logic.Component.Spec Velocity world -> Logic.Component.Spec Position world -> System world
+system =
     Logic.System.step2
         (\( velocity, _ ) ( pos, setPos ) -> setPos (Vec2.add velocity pos))
