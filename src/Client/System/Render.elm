@@ -40,6 +40,7 @@ system { screen, textures, time, world } =
                 |> move screen.left screen.bottom
            , Stick.system (UI.spec.get world).stick1
            , Cursor.system (UI.spec.get world)
+           , Playground.image 100 100 "magic"
            ]
         --|> group
         --|> Playground.scale 2

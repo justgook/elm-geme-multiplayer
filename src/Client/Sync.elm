@@ -10,10 +10,10 @@ import Client.World as Client
 import Common.Bytes.Decode as D
 import Common.Bytes.Encode as E
 import Common.Component.Body as CommonBody
+import Common.Component.Desire as Desire
 import Common.Component.Name as Name
 import Common.Component.Position as Position
 import Common.Component.Velocity as Velocity
-import Common.Direction as Direction
 import Common.Patch as Patch
 import Common.Sync
 
@@ -21,7 +21,7 @@ import Common.Sync
 pack : Client.World -> Client.World -> List Encoder
 pack was now =
     [ packChat was now
-    , packDesire was now
+    , packIfNeed .desire Desire.encode was now
     ]
         |> List.reverse
 
@@ -33,7 +33,19 @@ unpack =
             , Patch.decode Position.decode |> D.map (Patch.apply Position.spec)
             , Patch.decode CommonBody.decode |> D.map (Patch.applyWith Body.unpack Body.spec)
             , Patch.decode Velocity.decode |> D.map (Patch.apply Velocity.spec)
-            , D.id |> D.map (\me w -> { w | me = me })
+            , D.id
+                |> D.map
+                    (\me w ->
+                        if me /= w.me then
+                            let
+                                _ =
+                                    Debug.log "change" "me"
+                            in
+                            { w | me = me }
+
+                        else
+                            w
+                    )
             , D.reverseList (D.map2 Tuple.pair D.id D.sizedString)
                 |> D.map List.reverse
                 |> D.map (\chat w -> { w | chat = chat, chat_ = ChatCache.cache chat w.chat_ })
@@ -55,17 +67,10 @@ packChat was now =
         E.sequence []
 
 
-packDesire was now =
-    --move : Vec2
-    --look : Vec2
-    --shoot : Bool
-    if was.ui.stick1.dir /= now.ui.stick1.dir then
-        --E.int (Direction.toInt now.ui.stick1.dir)
-        [ E.int (Direction.toInt now.ui.stick1.dir)
-        , E.int (Direction.toInt now.ui.stick1.dir)
-        , E.bool False
-        ]
-            |> E.sequence
+packIfNeed : (world -> comp) -> (comp -> Encoder) -> world -> world -> Encoder
+packIfNeed fn eee was now =
+    if fn was /= fn now then
+        fn now |> eee
 
     else
         E.sequence []

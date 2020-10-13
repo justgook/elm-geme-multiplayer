@@ -2,10 +2,12 @@ module Client.World exposing (Message(..), Model, World, empty)
 
 import Client.Component.Body as Body exposing (Body)
 import Client.Component.ChatCache as ChatCache exposing (ChatCache)
+import Client.Component.Keys as Keys exposing (Keys)
 import Client.Component.Timeline as Timeline exposing (Timeline)
 import Client.Component.UI as UI exposing (UI)
 import Client.Util as Util
 import Common.Component.Chat as Chat exposing (Chat)
+import Common.Component.Desire as Desire exposing (Desire)
 import Common.Component.Name as Name exposing (Name)
 import Common.Component.Position as Position exposing (Position)
 import Common.Component.Velocity as Velocity exposing (Velocity)
@@ -22,6 +24,8 @@ import WebGL.Texture as Texture exposing (Texture)
 type alias World =
     { connected : Bool
     , me : EntityID
+    , keys : Keys
+    , desire : Desire
     , chat_ : ChatCache
     , chat : Chat
     , ui : UI
@@ -41,6 +45,8 @@ world =
     in
     { connected = False
     , me = 0
+    , keys = Keys.empty
+    , desire = Desire.spawn
     , chat_ = ChatCache.empty chat
     , chat = chat
     , ui = UI.empty

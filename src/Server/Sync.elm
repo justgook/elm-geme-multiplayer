@@ -16,7 +16,6 @@ import Common.Sync
 import Common.Util as Util
 import Dict exposing (Dict)
 import Logic.Component as Component
-import Logic.Entity as Component
 import Server.Component.Users as Users
 import Server.Port as Port exposing (ConnectionId)
 
@@ -47,8 +46,12 @@ unpackChat =
         |> D.map (\chat w -> { w | chat = chat :: w.chat })
 
 
-unpackDesire : Component.EntityID -> D.Decoder ({ world | v : Component.Set Velocity.Velocity } -> { world | v : Component.Set Velocity.Velocity })
+
+--unpackDesire : Component.EntityID -> D.Decoder ({ world | v : Component.Set Velocity.Velocity } -> { world | v : Component.Set Velocity.Velocity })
+
+
 unpackDesire cnn =
+    --decode
     D.map3
         (\move look shoot wold ->
             let

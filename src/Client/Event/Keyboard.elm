@@ -6,4 +6,7 @@ import Json.Decode as D exposing (Decoder)
 
 
 subscription world =
-    Browser.onKeyDown (D.field "code" D.string |> D.andThen (\code -> UI.captureKey code world))
+    [ Browser.onKeyDown (D.field "code" D.string |> D.andThen (\code -> UI.captureKeyDown code world))
+    , Browser.onKeyUp (D.field "code" D.string |> D.andThen (\code -> UI.captureKeyUp code world))
+    ]
+        |> Sub.batch

@@ -1,6 +1,7 @@
 module Server.System.Users exposing (join, leave)
 
 import Common.Component.Body as Body
+import Common.Component.Desire as Desire
 import Common.Component.Name as Name
 import Common.Component.Position as Position
 import Common.Component.Velocity as Velocity
@@ -9,7 +10,6 @@ import Dict
 import Logic.Component as Component
 import Logic.Entity as Entity
 import Random
-import Server.Component.Desire as Desire
 import Server.Component.IdSource as ID
 import Server.Component.Name as Name
 import Server.Component.Users as User exposing (Users)
@@ -56,7 +56,7 @@ spawn cnn world =
         |> ID.create
         |> Entity.with ( Velocity.spec, Velocity.spawn { x = 0, y = 0 } )
         |> Entity.with ( Desire.spec, Desire.spawn )
-        |> (\( id, w ) -> ( id, { w | p = Component.spawn id { x = id * 16 |> toFloat, y = 0 } w.p } ))
+        |> (\( id, w ) -> ( id, { w | p = Component.spawn id { x = 0, y = 0 } w.p } ))
         |> Entity.with ( Body.spec, 1 )
         |> (\( id, w ) -> ( id, User.spawn id cnn w ))
         |> (\( id, w ) ->

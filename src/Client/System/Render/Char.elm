@@ -10,7 +10,7 @@ system w =
     System.foldl2
         (\body p acc ->
             CharDef.get body.id
-                |> Maybe.map (\fn -> (fn 0 |> move p.x p.y) :: acc)
+                |> Maybe.map (\fn -> (fn 0 |> move (p.x * 16) (p.y * 16)) :: acc)
                 |> Maybe.withDefault acc
         )
         w.body

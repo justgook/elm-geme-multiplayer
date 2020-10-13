@@ -6,6 +6,7 @@ import Common.Sync
 import Common.System.VelocityPosition as VelocityPosition
 import Dict
 import Logic.System as System
+import Server.Port exposing (ConnectionId)
 import Server.Sync
 import Server.World as World exposing (Model)
 import Time
@@ -29,13 +30,14 @@ system time model =
         --_ =
         --    Debug.log "vel" now.v
         --|> System.step (\p -> { p | y = p.y + 0.1 }) Position.spec
+        toAll : ConnectionId -> Cmd msg
         toAll =
             Server.Sync.pack model.world now.world
                 |> Common.Sync.compose
                 |> Server.Sync.send
     in
     ( now
-    , [ World.tick model.time newTime ]
-        --:: Dict.foldl (\k _ -> (::) (toAll k)) [] now.users
+      --, [ World.tick model.time newTime ]
+    , (World.tick model.time newTime :: Dict.foldl (\k _ -> (::) (toAll k)) [] now.world.users)
         |> Cmd.batch
     )

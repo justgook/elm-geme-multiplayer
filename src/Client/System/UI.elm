@@ -1,4 +1,4 @@
-module Client.System.UI exposing (captureKey, system)
+module Client.System.UI exposing (captureKeyDown, captureKeyUp, system)
 
 import Animator
 import Client.Component.ChatCache as ChatCache
@@ -19,15 +19,7 @@ system time =
         )
 
 
-controlConfig =
-    [ ( "KeyW", "up" )
-    , ( "KeyD", "right" )
-    , ( "KeyS", "down" )
-    , ( "KeyA", "left" )
-    ]
-
-
-captureKey code ({ ui } as world) =
+captureKeyDown code ({ ui } as world) =
     case ui.focus of
         "chat" ->
             D.field "key" D.string |> D.andThen (input world)
@@ -39,10 +31,55 @@ captureKey code ({ ui } as world) =
 
                 _ ->
                     let
-                        _ =
-                            Debug.log "got Key" code
+                        desire =
+                            world.desire
                     in
-                    D.succeed world
+                    case code of
+                        "KeyA" ->
+                            D.succeed { world | desire = { desire | move = { x = -1, y = desire.move.y } } }
+
+                        "KeyD" ->
+                            D.succeed { world | desire = { desire | move = { x = 1, y = desire.move.y } } }
+
+                        "KeyW" ->
+                            D.succeed { world | desire = { desire | move = { x = desire.move.x, y = 1 } } }
+
+                        "KeyS" ->
+                            D.succeed { world | desire = { desire | move = { x = desire.move.x, y = -1 } } }
+
+                        _ ->
+                            D.succeed world
+
+
+captureKeyUp code ({ ui } as world) =
+    case ui.focus of
+        "chat" ->
+            D.succeed world
+
+        _ ->
+            case code of
+                --"Enter" ->
+                --    D.succeed { world | ui = { ui | focus = "chat" } }
+                _ ->
+                    let
+                        desire =
+                            world.desire
+                    in
+                    case code of
+                        "KeyA" ->
+                            D.succeed { world | desire = { desire | move = { x = 0, y = desire.move.y } } }
+
+                        "KeyD" ->
+                            D.succeed { world | desire = { desire | move = { x = 0, y = desire.move.y } } }
+
+                        "KeyW" ->
+                            D.succeed { world | desire = { desire | move = { x = desire.move.x, y = 0 } } }
+
+                        "KeyS" ->
+                            D.succeed { world | desire = { desire | move = { x = desire.move.x, y = 0 } } }
+
+                        _ ->
+                            D.succeed world
 
 
 input : ChatCacheWorld world -> String -> Decoder (ChatCacheWorld world)

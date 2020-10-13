@@ -33,7 +33,7 @@ So, the common ways to do that would be `row` and `column`.
 
 # Padding and Spacing
 
-There's no concept of margin in `elm-ui`, instead we have padding and spacing.
+There's no concept of margin in, instead we have padding and spacing.
 
 Padding is the distance between the outer edge and the content, and spacing is the space between children.
 
@@ -174,20 +174,20 @@ If you want multiple children, you'll need to use something like `row` or `colum
 
 -}
 el : List (Attribute msg) -> Element msg -> Element msg
-el attrs child =
-    Internal.Empty
+el attrs children =
+    Internal.Parent (Internal.toProperties attrs) children
 
 
 {-| -}
 row : List (Attribute msg) -> List (Element msg) -> Element msg
 row attrs children =
-    Internal.Empty
+    Internal.HParent (Internal.toProperties attrs) children
 
 
 {-| -}
 column : List (Attribute msg) -> List (Element msg) -> Element msg
 column attrs children =
-    Internal.Empty
+    Internal.VParent (Internal.toProperties attrs) children
 
 
 {-| Same as `row`, but will wrap if it takes up too much horizontal space.
@@ -282,14 +282,14 @@ maximum i l =
 {-| -}
 padding : Int -> Attribute msg
 padding x =
-    Internal.NoAttribute
+    paddingXY x x
 
 
 {-| Set horizontal and vertical padding.
 -}
 paddingXY : Int -> Int -> Attribute msg
 paddingXY x y =
-    Internal.NoAttribute
+    paddingEach { top = y, right = x, bottom = y, left = x }
 
 
 {-| If you find yourself defining unique paddings all the time, you might consider defining
@@ -307,8 +307,8 @@ And then just do
 
 -}
 paddingEach : { top : Int, right : Int, bottom : Int, left : Int } -> Attribute msg
-paddingEach { top, right, bottom, left } =
-    Internal.NoAttribute
+paddingEach =
+    Internal.Padding
 
 
 {-| -}
@@ -350,13 +350,13 @@ alignRight =
 {-| -}
 spaceEvenly : Attribute msg
 spaceEvenly =
-    Internal.NoAttribute
+    Internal.Spacing Internal.SpacingEvenly
 
 
 {-| -}
 spacing : Int -> Attribute msg
 spacing x =
-    Internal.NoAttribute
+    spacingXY x x
 
 
 {-| In the majority of cases you'll just need to use `spacing`, which will work as intended.
@@ -366,20 +366,20 @@ However for some layouts, like `textColumn`, you may want to set a different spa
 -}
 spacingXY : Int -> Int -> Attribute msg
 spacingXY x y =
-    Internal.NoAttribute
+    Internal.Spacing (Internal.SpacingXY { x = x, y = y })
 
 
-{-| This is your top level node where you can turn `Element` into `Html`.
+{-| This is your top level node where you can turn `Element` into `Layout`.
 -}
 layout : List (Attribute msg) -> Element msg -> Layout msg
 layout =
-    layoutWith { options = [] }
+    Internal.layoutWith []
 
 
 {-| -}
-layoutWith : { options : List Option } -> List (Attribute msg) -> Element msg -> Layout msg
-layoutWith { options } attrs child =
-    Debug.log "layoutWith" []
+layoutWith : List Option -> List (Attribute msg) -> Element msg -> Layout msg
+layoutWith =
+    Internal.layoutWith
 
 
 {-| -}
@@ -396,7 +396,7 @@ type alias Layout msg =
 -}
 image : List (Attribute msg) -> msg -> Element msg
 image attrs src =
-    Internal.Custom src
+    Internal.Custom (Internal.toProperties attrs) src
 
 
 

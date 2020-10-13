@@ -4,6 +4,7 @@ import Browser exposing (Document)
 import Browser.Dom as Dom
 import Browser.Events as Browser
 import Client.Event.Keyboard
+import Client.Menu.HUD
 import Client.Port as Port
 import Client.Sync
 import Client.System.Event
@@ -33,18 +34,24 @@ main =
 init : Json.Value -> ( Model, Cmd Message )
 init flags =
     let
-        cmd =
+        _ =
+            Client.Menu.HUD.view
+
+        initTextures =
+            Util.getTexture Texture TextureFail "magic" "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+
+        cmdScreen =
             Dom.getViewport
                 |> Task.map (\{ viewport } -> Util.toScreen viewport.width viewport.height)
                 |> Task.perform Resize
     in
-    ( World.empty, cmd )
+    ( World.empty, Cmd.batch [ cmdScreen, initTextures ] )
 
 
 view : Model -> Document Message
 view model =
     { title = "Client"
-    , body = [ View.view model, div [ class "debug" ] [] ]
+    , body = [ View.view model ]
     }
 
 
@@ -100,4 +107,5 @@ subscriptions model =
         , Port.error Error
         , Client.Event.Keyboard.subscription model.world |> Sub.map Subscription
         , Browser.onAnimationFrame Tick
+        , Browser.onResize (\width height -> Util.toScreen (toFloat width) (toFloat height) |> Resize)
         ]

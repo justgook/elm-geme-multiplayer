@@ -1,4 +1,4 @@
-module WebGL.Ui.AutoLayout.BVH exposing (AABB, BVH, add, find, init)
+module WebGL.Ui.AutoLayout.BVH exposing (AABB, BVH, find, init, insert, union)
 
 {-|
 
@@ -55,8 +55,13 @@ isPointInsideAABB point box =
     (point.x >= box.minX && point.x <= box.maxX) && (point.y >= box.minY && point.y <= box.maxY)
 
 
-add : data -> AABB -> BVH data -> BVH data
-add itemData itemAABB tree =
+union : BVH data -> BVH data -> BVH data
+union bvh1 bvh2 =
+    Debug.todo "Implement me"
+
+
+insert : data -> AABB -> BVH data -> BVH data
+insert itemData itemAABB tree =
     case tree of
         Leaf _ a ->
             Branch 2 (sum a itemAABB) tree (Leaf itemData itemAABB)
@@ -75,10 +80,10 @@ add itemData itemAABB tree =
 
                 ( Branch count1 _ _ _, Branch count2 _ _ _ ) ->
                     if count1 < count2 then
-                        newBranch (add itemData itemAABB left) right
+                        newBranch (insert itemData itemAABB left) right
 
                     else
-                        newBranch left (add itemData itemAABB right)
+                        newBranch left (insert itemData itemAABB right)
 
 
 sum : AABB -> AABB -> AABB

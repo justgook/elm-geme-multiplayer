@@ -1,9 +1,11 @@
-module Client.Util exposing (onEvent, toScreen)
+module Client.Util exposing (getTexture, onEvent, toScreen)
 
 import Html exposing (Attribute)
 import Html.Events
 import Json.Decode exposing (Decoder)
 import Playground exposing (Screen)
+import Task
+import WebGL.Texture as Texture exposing (Texture)
 
 
 toScreen : Float -> Float -> Screen
@@ -29,3 +31,27 @@ onEvent e decoder =
                     }
                 )
         )
+
+
+getTexture : (String -> Texture -> msg) -> (Texture.Error -> msg) -> String -> String -> Cmd msg
+getTexture good bad name url =
+    Texture.loadWith textureOption url
+        |> Task.attempt
+            (\r ->
+                case r of
+                    Ok t ->
+                        good name t
+
+                    Err e ->
+                        bad e
+            )
+
+
+textureOption : Texture.Options
+textureOption =
+    { magnify = Texture.linear
+    , minify = Texture.linear
+    , horizontalWrap = Texture.clampToEdge
+    , verticalWrap = Texture.clampToEdge
+    , flipY = True
+    }
