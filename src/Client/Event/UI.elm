@@ -42,7 +42,7 @@ moveMouse =
                             (\x_ y_ w h world ->
                                 let
                                     p =
-                                        coordinate x_ y_ w h
+                                        Util.eventToWorld x_ y_ w h
                                 in
                                 world
                                     |> Util.update UI.spec
@@ -135,24 +135,12 @@ startStick x y btn pointerType pointerId world =
         world
 
 
-coordinate : Float -> Float -> Float -> Float -> { x : Float, y : Float }
-coordinate x_ y_ w h =
-    let
-        x =
-            -w * 0.5 + x_
-
-        y =
-            h * 0.5 - y_
-    in
-    { x = x, y = y }
-
-
 decoder fn =
     D.map7
         (\x_ y_ w h btn pointerType pointerId world ->
             let
                 { x, y } =
-                    coordinate x_ y_ w h
+                    Util.eventToWorld x_ y_ w h
             in
             fn x y btn pointerType pointerId world
         )

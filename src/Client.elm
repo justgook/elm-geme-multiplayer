@@ -1,6 +1,5 @@
-module Client exposing (main)
+module Client exposing (init, subscriptions, update, wrap)
 
-import Browser exposing (Document)
 import Browser.Dom as Dom
 import Browser.Events as Browser
 import Client.Event.Keyboard
@@ -11,24 +10,28 @@ import Client.System.Event
 import Client.System.Join as Join
 import Client.System.Tick as Tick
 import Client.Util as Util
-import Client.View as View
-import Client.World as World exposing (Message(..), Model)
+import Client.World as World exposing (Message(..), Model, World)
 import Dict
-import Html exposing (div)
-import Html.Attributes exposing (class)
+import Html exposing (Html)
 import Json.Decode as Json
 import Set
 import Task
+import WebGL exposing (Entity)
 
 
-main : Program Json.Value Model Message
-main =
-    Browser.document
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
+wrap : List (Html.Attribute msg) -> List Entity -> Html msg
+wrap attrs entities =
+    WebGL.toHtmlWith webGLOption
+        attrs
+        entities
+
+
+webGLOption : List WebGL.Option
+webGLOption =
+    [ WebGL.alpha True
+    , WebGL.depth 1
+    , WebGL.clearColor 1 1 1 1
+    ]
 
 
 init : Json.Value -> ( Model, Cmd Message )
@@ -46,13 +49,6 @@ init flags =
                 |> Task.perform Resize
     in
     ( World.empty, Cmd.batch [ cmdScreen, initTextures ] )
-
-
-view : Model -> Document Message
-view model =
-    { title = "Client"
-    , body = [ View.view model ]
-    }
 
 
 update : Message -> Model -> ( Model, Cmd Message )

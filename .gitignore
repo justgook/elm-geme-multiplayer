@@ -27,6 +27,8 @@ documentation.json
 
 #Deployment
 public/*
+
+#Production
 !public/assets
 !public/assets/*
 !public/404.html
@@ -36,3 +38,5 @@ public/*
 !public/screenshot.png
 !public/script.js
 !public/CNAME
+#App specific
+!public/server-worker.js

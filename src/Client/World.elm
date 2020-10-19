@@ -3,6 +3,7 @@ module Client.World exposing (Message(..), Model, World, empty)
 import Client.Component.Body as Body exposing (Body)
 import Client.Component.ChatCache as ChatCache exposing (ChatCache)
 import Client.Component.Keys as Keys exposing (Keys)
+import Client.Component.Target as Target exposing (Target)
 import Client.Component.Timeline as Timeline exposing (Timeline)
 import Client.Component.UI as UI exposing (UI)
 import Client.Util as Util
@@ -34,6 +35,7 @@ type alias World =
     , timeline : Component.Set Timeline
     , name : Component.Set Name
     , body : Component.Set Body
+    , target : Target
     }
 
 
@@ -55,6 +57,7 @@ world =
     , timeline = Timeline.empty
     , name = Name.empty
     , body = Body.empty
+    , target = Target.empty
     }
 
 

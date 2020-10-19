@@ -1,4 +1,4 @@
-module Client.Util exposing (getTexture, onEvent, toScreen)
+module Client.Util exposing (eventToWorld, getTexture, onEvent, snap, toScreen)
 
 import Html exposing (Attribute)
 import Html.Events
@@ -6,6 +6,23 @@ import Json.Decode exposing (Decoder)
 import Playground exposing (Screen)
 import Task
 import WebGL.Texture as Texture exposing (Texture)
+
+
+snap : Float -> Float
+snap =
+    round >> toFloat
+
+
+eventToWorld : Float -> Float -> Float -> Float -> { x : Float, y : Float }
+eventToWorld x_ y_ w h =
+    let
+        x =
+            -w * 0.5 + x_
+
+        y =
+            h * 0.5 - y_
+    in
+    { x = x, y = y }
 
 
 toScreen : Float -> Float -> Screen
