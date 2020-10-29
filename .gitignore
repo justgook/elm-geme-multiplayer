@@ -21,6 +21,7 @@ tests/VerifyExamples
 .vscode
 *.iml
 /.idea
+*.tiled-session
 
 #Other stuff
 documentation.json
@@ -38,5 +39,6 @@ public/*
 !public/screenshot.png
 !public/script.js
 !public/CNAME
+
 #App specific
 !public/server-worker.js

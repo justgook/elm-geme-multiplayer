@@ -1,0 +1,27 @@
+{
+    "maps": [
+        {
+            "fileName": "level/003/003-1.json",
+            "height": 1600,
+            "width": 1824,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "fileName": "level/002/002-1.json",
+            "height": 3200,
+            "width": 3200,
+            "x": -3201,
+            "y": 0
+        },
+        {
+            "fileName": "level/001/001-1.json",
+            "height": 640,
+            "width": 640,
+            "x": -3840,
+            "y": 0
+        }
+    ],
+    "onlyShowAdjacentMaps": false,
+    "type": "world"
+}

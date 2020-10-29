@@ -4,7 +4,7 @@ module Common.Component.Schedule exposing
     , apply
     , empty
     , fromList
-    , spec
+    , system
     , toList
     )
 
@@ -16,6 +16,11 @@ type Schedule e
         , next : e
         , rest : List ( Int, e )
         }
+
+
+system frame data =
+    data
+        |> Debug.log "Common.Component.Schedule"
 
 
 toList : Schedule e -> List ( Int, e )
@@ -57,24 +62,21 @@ add ( nextFireFrame_, next_ ) eventSequence =
                 |> setNext
 
 
-apply spec_ f world =
-    let
-        events =
-            spec_.get world
-    in
+apply : (e -> world -> world) -> Int -> ( Schedule e, world ) -> ( Schedule e, world )
+apply f frame ( events, world ) =
     case events of
         Empty ->
-            world
+            ( events, world )
 
         Sequence info ->
-            if world.frame >= info.nextTick then
-                spec_.set (setNext info.rest) world
-                    |> f info.next
+            if frame >= info.nextTick then
+                ( setNext info.rest, f info.next world )
 
             else
-                world
+                ( events, world )
 
 
+setNext : List ( Int, e ) -> Schedule e
 setNext l =
     case l of
         ( nextFireFrame, next ) :: rest ->
@@ -91,9 +93,3 @@ setNext l =
 empty : Schedule e
 empty =
     Empty
-
-
-spec =
-    { get = .events
-    , set = \comps world -> { world | events = comps }
-    }

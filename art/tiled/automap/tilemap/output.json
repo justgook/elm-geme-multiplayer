@@ -1,0 +1,14 @@
+{ "columns":4,
+ "image":"blob.png",
+ "imageheight":128,
+ "imagewidth":128,
+ "margin":0,
+ "name":"Output",
+ "spacing":0,
+ "tilecount":16,
+ "tiledversion":"2020.09.22",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":1.4
+}

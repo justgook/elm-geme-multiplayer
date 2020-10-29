@@ -1,11 +1,12 @@
 module Server.System.Tick exposing (system)
 
 import Common.Component.Position as Position
+import Common.Component.Schedule as Schedule
 import Common.Component.Velocity as Velocity
 import Common.Sync
 import Common.System.VelocityPosition as VelocityPosition
 import Dict
-import Logic.System as System
+import Logic.System exposing (applyIf)
 import Server.Port exposing (ConnectionId)
 import Server.Sync
 import Server.World as World exposing (Model)
@@ -18,18 +19,30 @@ system time model =
         newTime =
             Time.posixToMillis time
 
+        frame =
+            model.frame + 1
+
+        ( cleanSchedule, scheduledWorld ) =
+            Schedule.apply (\fn w -> fn w) frame ( model.schedule, model.world )
+
+        delmeLockTime =
+            2
+
         now =
             { model
                 | time = newTime
-                , frame = model.frame + 1
+                , schedule =
+                    cleanSchedule
+                        |> applyIf (not scheduledWorld.delmeLock) (Schedule.add ( frame + delmeLockTime, \w -> { w | delmeLock = False } ))
+                , frame = frame
                 , world =
-                    model.world
-                        |> VelocityPosition.system Velocity.spec Position.spec
+                    scheduledWorld
+                        |> applyIf (not scheduledWorld.delmeLock)
+                            (VelocityPosition.system Velocity.spec Position.spec
+                                >> (\w -> { w | delmeLock = True })
+                            )
             }
 
-        --_ =
-        --    Debug.log "vel" now.v
-        --|> System.step (\p -> { p | y = p.y + 0.1 }) Position.spec
         toAll : ConnectionId -> Cmd msg
         toAll =
             Server.Sync.pack model.world now.world

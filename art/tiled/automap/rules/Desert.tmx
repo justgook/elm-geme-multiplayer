@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="2020.09.22" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="1">
+ <tileset firstgid="1" source="../tilemap/output.json"/>
+ <tileset firstgid="17" source="../tilemap/input.json"/>
+ <tileset firstgid="81" source="../tilemap/Desert.json"/>
+ <layer id="2" name="regions" width="32" height="32">
+  <data encoding="base64" compression="zstd">
+   KLUv/WAAD7UAABgAABEFAGEEHyoMrAq6gIKV5v4UYAE=
+  </data>
+ </layer>
+ <layer id="1" name="input_result-Ground" width="32" height="32">
+  <data encoding="base64" compression="zstd">
+   KLUv/WAAD70BALAAAAECAwQABQYHCAAJCgsMAA0ODxAAEagQyA8wg3sQBuf//585B19kzH1MmfkYYZ4x5ZQfvR8=
+  </data>
+ </layer>
+ <layer id="3" name="output_result-Ground2" width="32" height="32">
+  <data encoding="base64" compression="zstd">
+   KLUv/WAAD7UBAKgAAFdaWVIAVVZeUQBUX1hTAFxbXQAQoBDIDzCDe2fE5+wuY1BZeWSPSeXnkT0GnZ0346fCBg==
+  </data>
+ </layer>
+</map>

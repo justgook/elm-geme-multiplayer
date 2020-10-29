@@ -1,0 +1,14 @@
+{ "columns":30,
+ "image":"..\/..\/..\/public\/assets\/hyptosis\/1.png",
+ "imageheight":960,
+ "imagewidth":960,
+ "margin":0,
+ "name":"hyptosis_tile-art-batch-1",
+ "spacing":0,
+ "tilecount":900,
+ "tiledversion":"2020.09.22",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":1.4
+}

@@ -1,42 +1,11 @@
-module Playground.Extra2 exposing (circleInvert, color, greyscale, invert, none, spriteWith, tileWith, tint)
+module Playground.Extra2 exposing (color, greyscale, invert, none, spriteWith, tileWith, tint)
 
 import Math.Vector2 exposing (Vec2, vec2)
-import Math.Vector3 exposing (Vec3)
-import Math.Vector4 exposing (Vec4)
+import Playground.Settings exposing (defaultEntitySettings, size)
 import Playground.ShaderNew as Shader
 import Playground.ShaderOld as Shader
 import WebGL exposing (Entity, Shader)
-import WebGL.Settings as WebGL exposing (Setting)
-import WebGL.Settings.Blend as Blend
-import WebGL.Settings.DepthTest as DepthTest
 import WebGL.Shape2d exposing (Form(..), Render, Shape2d(..))
-import WebGL.Texture exposing (Texture)
-
-
-circleInvert : Float -> Vec3 -> Shape2d
-circleInvert d bgColor =
-    Shape2d
-        { x = 0
-        , y = 0
-        , z = 0
-        , a = 0
-        , sx = 1
-        , sy = 1
-        , o = 1
-        , form =
-            Form d d <|
-                \uP uT z opacity ->
-                    WebGL.entityWith
-                        defaultEntitySettings
-                        Shader.vertFullscreenInvert
-                        Shader.fragFxCircle
-                        Shader.mesh
-                        { uC = setAlpha bgColor opacity
-                        , uP = uP
-                        , uT = uT
-                        , z = z
-                        }
-        }
 
 
 {-| Show tile with effect from a tileset.
@@ -44,7 +13,7 @@ circleInvert d bgColor =
     tileWith none 16 24 "sprites.png" 3
 
 -}
-tileWith effect tileW tileH tileset index =
+tileWith effect tileW tileH tileset uI =
     Shape2d
         { x = 0
         , y = 0
@@ -65,7 +34,7 @@ tileWith effect tileW tileH tileset index =
                         , sy = 1
                         , o = 1
                         , form =
-                            Form tileW tileH <| effect Shader.vertTile t (vec2 tileW tileH) (size t) (toFloat index)
+                            Form tileW tileH <| effect Shader.vertTile t (vec2 tileW tileH) (size t) (toFloat uI)
                         }
         }
 
@@ -75,7 +44,7 @@ tileWith effect tileW tileH tileset index =
     spriteWith none 16 24 "sprites.png" 3
 
 -}
-spriteWith effect tileW tileH tileset index =
+spriteWith effect tileW tileH tileset uI =
     Shape2d
         { x = 0
         , y = 0
@@ -96,7 +65,7 @@ spriteWith effect tileW tileH tileset index =
                         , sy = 1
                         , o = 1
                         , form =
-                            Form tileW tileH <| effect Shader.vertSprite t (vec2 tileW tileH) (size t) (toFloat index)
+                            Form tileW tileH <| effect Shader.vertSprite t (vec2 tileW tileH) (size t) (toFloat uI)
                         }
         }
 
@@ -105,12 +74,12 @@ spriteWith effect tileW tileH tileset index =
 {- Effects -}
 
 
-invert vert spriteSheet spriteSize imageSize index translate scaleRotateSkew z opacity =
+invert vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z opacity =
     effectWrap Shader.fragInvert
         vert
         { uP = translate
         , uT = scaleRotateSkew
-        , index = index
+        , uI = uI
         , spriteSize = spriteSize
         , uImg = spriteSheet
         , uImgSize = imageSize
@@ -119,12 +88,12 @@ invert vert spriteSheet spriteSize imageSize index translate scaleRotateSkew z o
         }
 
 
-none vert spriteSheet spriteSize imageSize index translate scaleRotateSkew z opacity =
+none vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z opacity =
     effectWrap Shader.fragImage
         vert
         { uP = translate
         , uT = scaleRotateSkew
-        , index = index
+        , uI = uI
         , spriteSize = spriteSize
         , uImg = spriteSheet
         , uImgSize = imageSize
@@ -133,12 +102,12 @@ none vert spriteSheet spriteSize imageSize index translate scaleRotateSkew z opa
         }
 
 
-color cColor vert spriteSheet spriteSize imageSize index translate scaleRotateSkew z opacity =
+color cColor vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z opacity =
     effectWrap Shader.fragColor
         vert
         { uP = translate
         , uT = scaleRotateSkew
-        , index = index
+        , uI = uI
         , spriteSize = spriteSize
         , uImg = spriteSheet
         , uImgSize = imageSize
@@ -150,12 +119,12 @@ color cColor vert spriteSheet spriteSize imageSize index translate scaleRotateSk
         }
 
 
-tint cColor vert spriteSheet spriteSize imageSize index translate scaleRotateSkew z opacity =
+tint cColor vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z opacity =
     effectWrap Shader.fragTint
         vert
         { uP = translate
         , uT = scaleRotateSkew
-        , index = index
+        , uI = uI
         , spriteSize = spriteSize
         , uImg = spriteSheet
         , uImgSize = imageSize
@@ -167,12 +136,12 @@ tint cColor vert spriteSheet spriteSize imageSize index translate scaleRotateSke
         }
 
 
-greyscale vert spriteSheet spriteSize imageSize index translate scaleRotateSkew z opacity =
+greyscale vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z opacity =
     effectWrap Shader.fragGreyscale
         vert
         { uP = translate
         , uT = scaleRotateSkew
-        , index = index
+        , uI = uI
         , spriteSize = spriteSize
         , uImg = spriteSheet
         , uImgSize = imageSize
@@ -190,26 +159,3 @@ effectWrap frag vert uniforms =
         frag
         Shader.mesh
         uniforms
-
-
-
----JUST COPY
-
-
-size : WebGL.Texture.Texture -> Math.Vector2.Vec2
-size t =
-    WebGL.Texture.size t |> (\( w, h ) -> vec2 (toFloat w) (toFloat h))
-
-
-{-| -}
-defaultEntitySettings : List Setting
-defaultEntitySettings =
-    [ Blend.add Blend.srcAlpha Blend.oneMinusSrcAlpha
-    , WebGL.colorMask True True True False
-    , DepthTest.lessOrEqual { write = True, near = 0, far = 1 }
-    ]
-
-
-setAlpha : Vec3 -> Float -> Vec4
-setAlpha =
-    Math.Vector3.toRecord >> (\a -> Math.Vector4.vec4 a.x a.y a.z)

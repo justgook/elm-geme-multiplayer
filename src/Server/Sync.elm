@@ -92,10 +92,10 @@ send info cnn =
         Cmd.none
 
     else
-        let
-            _ =
-                Debug.log "Server.Sync::sending" data
-        in
+        --let
+        --    _ =
+        --        Debug.log "Server.Sync::sending" data
+        --in
         Port.send ( cnn, data )
 
 

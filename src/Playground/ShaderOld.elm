@@ -35,7 +35,7 @@ vertTriangle =
     --http://in2gpu.com/2014/11/24/creating-a-triangle-in-opengl-shader/
     -- 1 / (2 ^ 23 - 1)  = 0.000000119209304
     [glsl|
-    precision mediump float;
+    precision highp float;
     attribute float i;
     uniform vec2 vert0;
     uniform vec2 vert1;
@@ -65,7 +65,7 @@ vertTriangle =
 vertSprite : Shader { a | aP : Vec2 } { b | uP : Vec2, uT : Vec4, uUV : Vec4, z : Float } { uv : Vec2 }
 vertSprite =
     [glsl|
-            precision mediump float;
+            precision highp float;
             attribute vec2 aP;
             uniform vec4 uT;
             uniform vec2 uP;
@@ -85,7 +85,7 @@ vertSprite =
 vertImage : Shader { a | aP : Vec2 } { b | uP : Vec2, uT : Vec4, z : Float } { uv : Vec2 }
 vertImage =
     [glsl|
-            precision mediump float;
+            precision highp float;
             attribute vec2 aP;
             uniform vec4 uT;
             uniform vec2 uP;
@@ -103,7 +103,7 @@ vertImage =
 vertNone : Shader { a | aP : Vec2 } { b | uP : Vec2, uT : Vec4, z : Float } {}
 vertNone =
     [glsl|
-        precision mediump float;
+        precision highp float;
         attribute vec2 aP;
         uniform vec4 uT;
         uniform vec2 uP;
@@ -118,7 +118,7 @@ vertNone =
 vertRect : Shader { a | aP : Vec2 } { b | uP : Vec2, uT : Vec4, z : Float } { uv : Vec2 }
 vertRect =
     [glsl|
-            precision mediump float;
+            precision highp float;
             attribute vec2 aP;
             uniform vec4 uT;
             uniform vec2 uP;
@@ -137,7 +137,7 @@ vertTile :
     Shader { a | aP : Vec2 }
         { b
             | uImgSize : Vec2
-            , index : Float
+            , uI : Float
             , spriteSize : Vec2
             , uP : Vec2
             , uT : Vec4
@@ -146,20 +146,20 @@ vertTile :
         { uv : Vec2 }
 vertTile =
     [glsl|
-            precision mediump float;
+            precision highp float;
             attribute vec2 aP;
             uniform vec4 uT;
             uniform vec2 uP;
             uniform float z;
-            uniform float index;
+            uniform float uI;
             uniform vec2 spriteSize;
             uniform vec2 uImgSize;
             varying vec2 uv;
             vec2 edgeFix = vec2(0.0000001, -0.0000001);
             void main () {
                 vec2 ratio = spriteSize / uImgSize;
-                float row = (uImgSize.y / spriteSize.y - 1.0) - floor((index + 0.5) * ratio.x);
-                float column = floor(mod((index + 0.5), uImgSize.x / spriteSize.x));
+                float row = (uImgSize.y / spriteSize.y - 1.0) - floor((uI + 0.5) * ratio.x);
+                float column = floor(mod((uI + 0.5), uImgSize.x / spriteSize.x));
                 vec2 offset = vec2(column, row) * ratio;
                 uv = (aP * 0.5 + 0.5) * ratio + offset + edgeFix;
                 gl_Position = vec4(aP * mat2(uT) + uP, z  * -1.19209304e-7, 1.0);
@@ -176,7 +176,7 @@ fragImage : Shader a { b | uImg : Texture, uImgSize : Vec2, uA : Float } { uv : 
 fragImage =
     --(2i + 1)/(2N) Pixel perfect center
     [glsl|
-        precision mediump float;
+        precision highp float;
         varying vec2 uv;
         uniform vec2 uImgSize;
         uniform sampler2D uImg;
@@ -194,7 +194,7 @@ fragImage =
 fragImageColor : Shader a { b | color : Vec4, uImg : Texture, uImgSize : Vec2 } { uv : Vec2 }
 fragImageColor =
     [glsl|
-        precision mediump float;
+        precision highp float;
         varying vec2 uv;
         uniform vec2 uImgSize;
         uniform sampler2D uImg;
@@ -211,7 +211,7 @@ fragImageColor =
 fragFill : Shader a { b | color : Vec4 } {}
 fragFill =
     [glsl|
-        precision mediump float;
+        precision highp float;
         uniform vec4 color;
         void main () {
             gl_FragColor = color;
@@ -224,7 +224,7 @@ fragFill =
 fragCircle : Shader a { b | color : Vec4 } { uv : Vec2 }
 fragCircle =
     [glsl|
-        precision mediump float;
+        precision highp float;
         uniform vec4 color;
         varying vec2 uv;
         void main () {
@@ -241,7 +241,7 @@ fragNgon =
     --https://thebookofshaders.com/07/
     --https://thndl.com/square-shaped-shaders.html
     [glsl|
-        precision mediump float;
+        precision highp float;
         uniform vec4 color;
         uniform float n;
         varying vec2 uv;
@@ -292,7 +292,7 @@ fragImageSaturation =
     -- * vec3 doubleSaturation = saturation(color, 2.0);
     -- */
     [glsl|
-        precision mediump float;
+        precision highp float;
         varying vec2 uv;
         uniform sampler2D uImg;
         uniform float adjustment;
@@ -315,7 +315,7 @@ rotSprite =
     --https://en.wikipedia.org/wiki/Pixel-art_scaling_algorithms#RotSprite
     --https://github.com/libretro/glsl-shaders/blob/master/scalenx/shaders/scale2x.glsl
     [glsl|
-        precision mediump float;
+        precision highp float;
         varying vec2 uv;
         uniform vec2 uImgSize;
         uniform sampler2D uImg;

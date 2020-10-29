@@ -62,6 +62,9 @@ type alias World =
     , body : Component.Set Body
     , weapon : Component.Set Weapon
     , desire : Component.Set Desire
+
+    ----
+    , delmeLock : Bool
     }
 
 
@@ -79,6 +82,9 @@ empty =
     , body = Body.empty
     , weapon = Weapon.empty
     , desire = Desire.empty
+
+    ----
+    , delmeLock = False
     }
 
 

@@ -1,4 +1,4 @@
-module Playground.ShaderNew exposing (fragColor, fragFxCircle, fragGreyscale, fragInvert, fragTint, vertFullscreenInvert)
+module Playground.ShaderNew exposing (fragColor, fragFxCircle, fragFxTile, fragGreyscale, fragInvert, fragTint, vertFullscreenInvert)
 
 {- VERTEX SHADER -}
 
@@ -10,18 +10,19 @@ import WebGL.Texture exposing (Texture)
 
 vertFullscreenInvert =
     [glsl|
-precision mediump float;
+precision highp float;
 attribute vec2 aP;
 uniform vec4 uT;
 uniform vec2 uP;
 varying vec2 uv;
 uniform float z;
 vec2 edgeFix = vec2(0.0000001, -0.0000001);
-mat2 inverse(mat2 m) {
+mat2 inv(mat2 m) {
   return mat2(m[1][1],-m[0][1], -m[1][0], m[0][0]) / (m[0][0]*m[1][1] - m[0][1]*m[1][0]);
 }
 void main () {
-    uv = vec2(aP * inverse(mat2(uT)) + uP);
+    mat2 uTinv = inv(mat2(uT));
+    uv = vec2(aP * uTinv) - uP * uTinv;
     gl_Position = vec4(aP, z  * -1.19209304e-7, 1.0);
 }
         |]
@@ -32,10 +33,34 @@ void main () {
 
 
 {-| -}
+fragFxTile =
+    [glsl|
+precision highp float;
+varying vec2 uv;
+uniform vec4 uT;
+uniform float z;
+uniform float uI;
+uniform vec2 spriteSize;
+uniform vec2 uImgSize;
+uniform sampler2D uImg;
+void main () {
+    vec2 ratio = spriteSize / uImgSize;
+    float row = (uImgSize.y / spriteSize.y - 1.0) - floor((uI + 0.5) * ratio.x);
+    float column = floor(mod((uI + 0.5), uImgSize.x / spriteSize.x));
+    vec2 offset = vec2(column, row) * ratio;
+    vec2 uv2 = fract(uv * 0.5 + 0.5) * ratio + offset;
+    vec2 pixel = (floor(uv2 * uImgSize) + 0.5) / uImgSize;
+    gl_FragColor = texture2D(uImg, pixel);
+    if(gl_FragColor.a <= 0.025) discard;
+}
+    |]
+
+
+{-| -}
 fragFxCircle : Shader a { b | uC : Vec4 } { uv : Vec2 }
 fragFxCircle =
     [glsl|
-precision mediump float;
+precision highp float;
 uniform vec4 uC;
 varying vec2 uv;
 void main () {
@@ -54,7 +79,7 @@ fragInvert : Shader a { b | uImg : Texture, uImgSize : Vec2, uA : Float } { uv :
 fragInvert =
     --(2i + 1)/(2N) Pixel perfect center
     [glsl|
-precision mediump float;
+precision highp float;
 varying vec2 uv;
 uniform vec2 uImgSize;
 uniform sampler2D uImg;
@@ -71,7 +96,7 @@ void main () {
 
 fragColor =
     [glsl|
-precision mediump float;
+precision highp float;
 varying vec2 uv;
 uniform vec2 uImgSize;
 uniform sampler2D uImg;
@@ -88,7 +113,7 @@ void main () {
 
 fragGreyscale =
     [glsl|
-precision mediump float;
+precision highp float;
 varying vec2 uv;
 uniform vec2 uImgSize;
 uniform sampler2D uImg;
@@ -105,7 +130,7 @@ void main () {
 
 fragTint =
     [glsl|
-precision mediump float;
+precision highp float;
 varying vec2 uv;
 uniform vec2 uImgSize;
 uniform sampler2D uImg;
