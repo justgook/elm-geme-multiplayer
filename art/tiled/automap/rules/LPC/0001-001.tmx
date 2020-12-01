@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="2020.10.30" orientation="orthogonal" renderorder="right-down" width="7" height="7" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="1">
+ <properties>
+  <property name="AutomappingRadius" type="int" value="1"/>
+  <property name="DeleteTiles" type="bool" value="true"/>
+  <property name="NoOverlappingRules" type="bool" value="true"/>
+  <property name="OverflowBorder" type="bool" value="true"/>
+ </properties>
+ <tileset firstgid="1" source="../../tilemap/output.json"/>
+ <tileset firstgid="17" source="../../tilemap/result/LPC/LPC-0001.json"/>
+ <layer id="1" name="regions" width="7" height="7">
+  <data encoding="csv">
+638,0,638,0,638,0,638,
+0,0,0,0,0,0,0,
+638,0,638,0,638,0,638,
+0,0,0,0,0,0,0,
+638,0,638,0,638,0,638,
+0,0,0,0,0,0,0,
+638,0,638,0,638,0,638
+</data>
+ </layer>
+ <layer id="2" name="input_blob_grass" width="7" height="7">
+  <data encoding="csv">
+16,0,15,0,14,0,13,
+0,0,0,0,0,0,0,
+12,0,11,0,10,0,9,
+0,0,0,0,0,0,0,
+8,0,7,0,6,0,5,
+0,0,0,0,0,0,0,
+4,0,3,0,2,0,1
+</data>
+ </layer>
+ <layer id="3" name="output1_Grass" width="7" height="7">
+  <data encoding="csv">
+209,0,339,0,337,0,338,
+0,0,0,0,0,0,0,
+275,0,307,0,0,0,210,
+0,0,0,0,0,0,0,
+273,0,0,0,305,0,211,
+0,0,0,0,0,0,0,
+274,0,242,0,243,0,306
+</data>
+ </layer>
+ <layer id="7" name="output2_Grass" width="7" height="7">
+  <data encoding="csv">
+241,0,339,0,337,0,338,
+0,0,0,0,0,0,0,
+275,0,307,0,0,0,210,
+0,0,0,0,0,0,0,
+273,0,0,0,305,0,211,
+0,0,0,0,0,0,0,
+274,0,242,0,243,0,369
+</data>
+ </layer>
+ <layer id="8" name="output3_Grass" width="7" height="7">
+  <data encoding="csv">
+209,0,339,0,337,0,338,
+0,0,0,0,0,0,0,
+275,0,307,0,0,0,210,
+0,0,0,0,0,0,0,
+273,0,0,0,305,0,211,
+0,0,0,0,0,0,0,
+274,0,242,0,243,0,370
+</data>
+ </layer>
+ <layer id="9" name="output4_Grass" width="7" height="7">
+  <data encoding="csv">
+209,0,339,0,337,0,338,
+0,0,0,0,0,0,0,
+275,0,307,0,0,0,210,
+0,0,0,0,0,0,0,
+273,0,0,0,305,0,211,
+0,0,0,0,0,0,0,
+274,0,242,0,243,0,371
+</data>
+ </layer>
+ <layer id="10" name="output5_Grass" width="7" height="7">
+  <data encoding="csv">
+209,0,342,0,340,0,341,
+0,0,0,0,0,0,0,
+278,0,310,0,0,0,210,
+0,0,0,0,0,0,0,
+276,0,0,0,308,0,211,
+0,0,0,0,0,0,0,
+277,0,242,0,243,0,306
+</data>
+ </layer>
+</map>

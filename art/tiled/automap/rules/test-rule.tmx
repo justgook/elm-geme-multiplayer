@@ -4,6 +4,7 @@
   <property name="AutomappingRadius" type="int" value="1"/>
   <property name="DeleteTiles" type="bool" value="true"/>
   <property name="NoOverlappingRules" type="bool" value="true"/>
+  <property name="OverflowBorder" type="bool" value="true"/>
  </properties>
  <tileset firstgid="1" source="../tilemap/input.json"/>
  <tileset firstgid="65" source="../tilemap/output.json"/>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="2020.10.30" orientation="orthogonal" renderorder="right-down" compressionlevel="9" width="64" height="64" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="1">
+ <properties>
+  <property name="AutomappingRadius" type="int" value="1"/>
+  <property name="DeleteTiles" type="bool" value="true"/>
+  <property name="NoOverlappingRules" type="bool" value="true"/>
+  <property name="OverflowBorder" type="bool" value="true"/>
+ </properties>
+ <tileset firstgid="1" source="../tilemap/output.json"/>
+ <tileset firstgid="17" source="../tilemap/journey.json"/>
+ <layer id="7" name="regions_input" width="64" height="64">
+  <data encoding="base64" compression="zlib">
+   eNrt2EEKgDAMBMB8cf//GY9CoUpvmszcIl5CWFtTVZW6ZanXZ9m881d56S/N+6/NvE9q+sw/m1r+e/c/df48z9v5P+P8z9D5c/a9l3/9yz9T/n/cf+w/7D/sP+Tf/sP9x/5D/u0/5N/+Q/71DwAAAAAAAADwBRcu+0vx
+  </data>
+ </layer>
+ <layer id="8" name="regions_output" width="64" height="64">
+  <data encoding="base64" compression="zlib">
+   eNrt1DEBAAAAAUEV9S8jhPVuE+Al9NyA/gH9A/oH8H+A/gH9A/oHAAAAAAAAAOA1UTYKIQ==
+  </data>
+ </layer>
+ <layer id="2" name="input_type" width="64" height="64" opacity="0.7">
+  <data encoding="base64" compression="zlib">
+   eNrt1bEJADEIBdAbwxHcf8Jr0lwRhDRH9D1IEUnzQc3zfMU6u1ps3twshueHqf0fxfyH/OV+xPx3yRxFz3fPbweY/4n/fxze5Yc+cp1dLTdvbs88OT9M7f8s5j/lL/cj5r9L5ix6vnt+O8D8T/z/8/AuPwAAAAAAAADAv15/ohgB
+  </data>
+ </layer>
+ <layer id="3" name="inputnot_type" width="64" height="64" opacity="0.7" tintcolor="#640000">
+  <data encoding="base64" compression="zlib">
+   eNrt1rENgDAQA0CPkRF+/wnpoUAKFfFdg0IX/1tKkqz0Wrfv2/+TM9g9c9b8G2dtx+Vjtnqf8j2Xh/63vX+BXuPujwymKJv5eObc/k9pBnZcPs39n+K7N++5PPS/7f0LAAAAAAAAAMB/XQzRBgE=
+  </data>
+ </layer>
+ <layer id="4" name="output_blob_sand" width="64" height="64">
+  <data encoding="base64" compression="zlib">
+   eNrt0LcRwEAQxLCX96b/apVvAQpugIwpW+ONfqLv6MsyKOOMPqL36M0yKGONXqLn6MkyKGOMHqL76M4yAAAAAAAAAAAAAAAAfvIBvDEAiQ==
+  </data>
+ </layer>
+ <layer id="5" name="output_blob_grass" width="64" height="64">
+  <data encoding="base64" compression="zlib">
+   eNrt0LcRwEAQxLCX96b/apVvBZobIGPK1gAAAACo7o1+ou/oyzIo44w+ovfozTIoY41eoufoyTIoY4weovvozjIAAAAAAAAAgN/4ALOqAIk=
+  </data>
+ </layer>
+ <layer id="6" name="output_blob_road" width="64" height="64">
+  <data encoding="base64" compression="zlib">
+   eNrtwTEBAAAAwqD1T20MH6AAAAAAAAAAAAAAAAAAAACAtwFAAAAB
+  </data>
+ </layer>
+</map>

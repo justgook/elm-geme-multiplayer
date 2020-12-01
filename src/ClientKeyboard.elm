@@ -1,4 +1,4 @@
-module ClientDesktop exposing (main)
+module ClientKeyboard exposing (main)
 
 import Browser exposing (Document)
 import Client
@@ -27,7 +27,7 @@ main =
 
 view2 : Model -> Document Message
 view2 model =
-    { title = "ClientPhone"
+    { title = "ClientKeyboard"
     , body = [ view model ]
     }
 

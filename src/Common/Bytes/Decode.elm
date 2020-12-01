@@ -153,3 +153,10 @@ components : Decoder a -> Decoder (Component.Set a)
 components d =
     reverseList (D.map2 (\id_ shapes -> ( id_, shapes )) id d)
         |> D.map Component.fromList
+
+
+type A
+    = A
+    | B
+type alias A =
+    {}

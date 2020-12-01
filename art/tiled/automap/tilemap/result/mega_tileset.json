@@ -1,0 +1,14 @@
+{ "columns":120,
+ "image":"mega_tileset.png",
+ "imageheight":3360,
+ "imagewidth":1920,
+ "margin":0,
+ "name":"mega_tileset",
+ "spacing":0,
+ "tilecount":25200,
+ "tiledversion":"2020.10.30",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":1.4
+}

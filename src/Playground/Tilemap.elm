@@ -1,4 +1,4 @@
-module Playground.Tilemap exposing (tilemap)
+module Playground.Tilemap exposing (crop, tilemap)
 
 import Math.Vector2 exposing (Vec2, vec2)
 import Playground.Settings exposing (defaultEntitySettings)
@@ -8,6 +8,33 @@ import WebGL.Shape2d exposing (Form(..), Render, Shape2d(..))
 import WebGL.Texture exposing (Texture)
 
 
+type alias Crop =
+    { xmin : Float
+    , xmax : Float
+    , ymin : Float
+    , ymax : Float
+    }
+
+
+crop : Float -> Float -> Float -> Float -> Crop -> Shape2d
+crop tileW tileH tileset lut cropParams =
+    Shape2d
+        { x = 0
+        , y = 0
+        , z = 0
+        , a = 0
+        , sx = 1
+        , sy = 1
+        , o = 1
+        , form = Group []
+        }
+
+
+{-| tilemap tileWidth tileHeight tileset lookupTable
+
+    tilemap 16 24 "sprites.png" "lookuptable.png"
+
+-}
 tilemap : Float -> Float -> String -> String -> Shape2d
 tilemap tileW tileH tileset lut =
     Shape2d

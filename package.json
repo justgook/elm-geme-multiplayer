@@ -4,11 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "client-desktop": "elm-live src/ClientDesktop.elm -uo --host=$(ipconfig getifaddr en0) --dir=public -- --output=./public/client-desktop.js",
-    "client-phone": "elm-live src/ClientPhone.elm --no-server -- --output=./public/client-phone.js",
+    "client-keyboard": "elm-live src/ClientKeyboard.elm -uo --host=$(ipconfig getifaddr en0) --dir=public -- --output=./public/client-keyboard.js",
+    "client-touch": "elm-live src/ClientTouch.elm --no-server -- --output=./public/client-touch.js",
     "server": "elm-live src/Server.elm --no-server -- --output=./public/server.js",
     "peer": "node ./development/peerServer.js",
-    "start": "tmux new-session 'yarn peer; read'\\; split-window  'yarn client-desktop; read'\\; split-window  'yarn client-phone; read'\\; split-window 'yarn server; read'\\; select-layout even-horizontal"
+    "start": "tmux new-session 'yarn peer; read'\\; split-window  'yarn client-keyboard; read'\\; split-window  'yarn client-touch; read'\\; split-window 'yarn server; read'\\; select-layout even-horizontal"
   },
   "devDependencies": {
     "concurrently": "5.3.0",

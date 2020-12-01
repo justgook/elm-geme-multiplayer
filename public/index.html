@@ -221,6 +221,9 @@
 <script type="module">
     import { loadScript } from "/load.mjs"
 
+    // alert(`requestFullscreen ${document.body.requestFullscreen}`,);
+    // document.getElementById("root").requestFullscreen({ navigationUI: "hide" });
+
     const options = { host: location.hostname, port: 9000, debug: 2 }
 
     if (location.pathname.startsWith("/create/")) {
@@ -265,11 +268,11 @@
         Promise.all([
             import("/Connect.mjs"),
             "ontouchend" in document
-                ? loadScript("/client-phone.js").then(() => {
-                    Elm.Client = Elm.ClientPhone
+                ? loadScript("/client-touch.js").then(() => {
+                    Elm.Client = Elm.ClientTouch
                 })
-                : loadScript("/client-desktop.js").then(() => {
-                    Elm.Client = Elm.ClientDesktop
+                : loadScript("/client-keyboard.js").then(() => {
+                    Elm.Client = Elm.ClientKeyboard
                 }),
             loadScript("/peerjs.min.js"),
         ])

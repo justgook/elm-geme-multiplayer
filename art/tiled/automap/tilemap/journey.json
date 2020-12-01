@@ -1,0 +1,15 @@
+{
+  "columns": 64,
+  "image": "journey-32x.png",
+  "imageheight": 64,
+  "imagewidth": 2048,
+  "margin": 0,
+  "name": "Journey",
+  "spacing": 0,
+  "tilecount": 128,
+  "tiledversion": "2020.10.30",
+  "tileheight": 32,
+  "tilewidth": 32,
+  "type": "tileset",
+  "version": 1.4
+}
