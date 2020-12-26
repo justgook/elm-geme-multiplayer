@@ -1,4 +1,4 @@
-port module Client.Port exposing (error, join, leave, receive, send)
+port module Client.Port exposing (error, input, join, leave, receive, send)
 
 import Json.Decode exposing (Value)
 
@@ -16,3 +16,10 @@ port error : (String -> msg) -> Sub msg
 
 
 port send : String -> Cmd msg
+
+
+
+-- New Way
+
+
+port input : (Value -> msg) -> Sub msg

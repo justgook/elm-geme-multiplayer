@@ -1,9 +1,9 @@
 module Common.Direction exposing
     ( Direction(..)
+    , DirectionRecord
     , east
     , fromInt
     , fromRecord
-    , fromString
     , neither
     , north
     , northEast
@@ -15,7 +15,6 @@ module Common.Direction exposing
     , southWest
     , toInt
     , toRecord
-    , toString
     , west
     )
 
@@ -61,37 +60,6 @@ opposite dir =
 
         Neither ->
             Neither
-
-
-oppositeMirror : Direction -> DirectionRecord
-oppositeMirror dir =
-    case dir of
-        North ->
-            { x = 0, y = 1 }
-
-        NorthEast ->
-            { x = 1, y = 1 }
-
-        East ->
-            { x = 1, y = 0 }
-
-        SouthEast ->
-            { x = 1, y = 1 }
-
-        South ->
-            { x = 0, y = 1 }
-
-        SouthWest ->
-            { x = 1, y = 1 }
-
-        West ->
-            { x = 1, y = 0 }
-
-        NorthWest ->
-            { x = 1, y = 1 }
-
-        Neither ->
-            { x = 0, y = 0 }
 
 
 toRecord : Direction -> DirectionRecord
@@ -157,90 +125,35 @@ fromRecord { x, y } =
         Neither
 
 
-fromString : String -> Direction
-fromString dir =
-    case dir of
-        "north" ->
-            North
-
-        "N" ->
-            North
-
-        "north-east" ->
-            NorthEast
-
-        "NE" ->
-            NorthEast
-
-        "east" ->
-            East
-
-        "E" ->
-            East
-
-        "south-east" ->
-            SouthEast
-
-        "SE" ->
-            SouthEast
-
-        "south" ->
-            South
-
-        "S" ->
-            South
-
-        "south-west" ->
-            SouthWest
-
-        "SW" ->
-            SouthWest
-
-        "west" ->
-            West
-
-        "W" ->
-            West
-
-        "north-west" ->
-            NorthWest
-
-        "NW" ->
-            NorthWest
-
-        _ ->
-            Neither
-
-
-toString : Direction -> List String
-toString dir =
+oppositeMirror : Direction -> DirectionRecord
+oppositeMirror dir =
     case dir of
         North ->
-            [ "north", "N" ]
+            { x = 0, y = 1 }
 
         NorthEast ->
-            [ "north-east", "NE" ]
+            { x = 1, y = 1 }
 
         East ->
-            [ "east", "E" ]
+            { x = 1, y = 0 }
 
         SouthEast ->
-            [ "south-east", "SE" ]
+            { x = 1, y = 1 }
 
         South ->
-            [ "south", "S" ]
+            { x = 0, y = 1 }
 
         SouthWest ->
-            [ "south-west", "SW" ]
+            { x = 1, y = 1 }
 
         West ->
-            [ "west", "W" ]
+            { x = 1, y = 0 }
 
         NorthWest ->
-            [ "north-west", "NW" ]
+            { x = 1, y = 1 }
 
         Neither ->
-            []
+            { x = 0, y = 0 }
 
 
 toInt : Direction -> Int

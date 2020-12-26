@@ -1,0 +1,38 @@
+html,
+body,
+canvas {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+}
+
+img,
+canvas {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+/* Weird chrome selector for fullscreen bbackground */
+body:fullscreen::backdrop {
+    display: none;
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+}

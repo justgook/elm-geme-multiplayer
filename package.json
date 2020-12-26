@@ -1,17 +1,39 @@
 {
-  "name": "horror",
-  "version": "1.0.0",
+  "name": "pandemic",
+  "version": "1.0.0-snap",
   "main": "index.js",
   "license": "MIT",
+  "private": true,
   "scripts": {
-    "client-keyboard": "elm-live src/ClientKeyboard.elm -uo --host=$(ipconfig getifaddr en0) --dir=public -- --output=./public/client-keyboard.js",
-    "client-touch": "elm-live src/ClientTouch.elm --no-server -- --output=./public/client-touch.js",
-    "server": "elm-live src/Server.elm --no-server -- --output=./public/server.js",
-    "peer": "node ./development/peerServer.js",
-    "start": "tmux new-session 'yarn peer; read'\\; split-window  'yarn client-keyboard; read'\\; split-window  'yarn client-touch; read'\\; split-window 'yarn server; read'\\; select-layout even-horizontal"
+    "start": "snowpack dev",
+    "build": "snowpack build",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
+    "lint": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
+    "favicon": "pwa-asset-generator src/asset/favicon/base.svg src/asset/generated --favicon --manifest src/manifest.webmanifest --index src/index.html -b \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1)\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
-    "concurrently": "5.3.0",
-    "peer": "0.5.3"
+    "@types/snowpack-env": "2.3.3",
+    "elm": "0.19.1-3",
+    "mustache": "4.1.0",
+    "patch-package": "6.2.2",
+    "prettier": "2.2.1",
+    "pwa-asset-generator": "4.0.2",
+    "snowpack": "3.0.0-rc.2",
+    "snowpack-plugin-elm": "marc136/snowpack-plugin-elm#7/head",
+    "typescript": "4.1.3"
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "semi": false
+  },
+  "optionalDependencies": {
+    "glfw-raub": "4.5.0",
+    "image-raub": "3.1.4",
+    "pkg": "4.4.9",
+    "webgl-raub": "2.1.0"
+  },
+  "dependencies": {
+    "uWebSockets.js": "uNetworking/uWebSockets.js#v18.12.0"
   }
 }

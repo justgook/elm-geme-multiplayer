@@ -2,8 +2,7 @@ module ClientTouch exposing (main)
 
 import Browser exposing (Document)
 import Client
-import Client.Event.UI as UI
-import Client.World exposing (Message(..), Model)
+import Client.Model exposing (Message(..), Model)
 import Html exposing (Html)
 import Html.Attributes as H
 import Json.Decode exposing (Value)
@@ -28,10 +27,4 @@ view2 model =
 
 view : Model -> Html Message
 view { screen, entities, world } =
-    Client.wrap
-        (H.width (round screen.width)
-            :: H.height (round screen.height)
-            :: UI.pointer world
-        )
-        entities
-        |> Html.map Event
+    Client.wrap [ H.width (round screen.width), H.height (round screen.height) ] entities

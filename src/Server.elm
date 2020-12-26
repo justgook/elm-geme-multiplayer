@@ -1,14 +1,15 @@
 module Server exposing (main)
 
-import Json.Decode as Json
+import Json.Decode exposing (Value)
 import Server.Port as Port
-import Server.Sync
+import Server.System.Packet as Packet
 import Server.System.Tick as Tick
 import Server.System.Users as Users
-import Server.World as World exposing (Message(..), Model, World)
+import Server.World as World exposing (Message(..), Model)
+import Time exposing (Posix)
 
 
-main : Program Json.Value Model Message
+main : Program Value Model Message
 main =
     Platform.worker
         { init = init
@@ -17,9 +18,9 @@ main =
         }
 
 
-init : Json.Value -> ( Model, Cmd Message )
+init : Value -> ( Model, Cmd msg )
 init flags =
-    ( World.init, World.tick 0 30 )
+    ( World.init, Cmd.none )
 
 
 update : Message -> Model -> ( Model, Cmd Message )
@@ -29,7 +30,7 @@ update msg ({ world } as model) =
             Tick.system t model
 
         Receive income ->
-            Server.Sync.receive income world
+            Packet.receive income world
                 |> Tuple.mapFirst (\w -> { model | world = w })
 
         Join cnn ->

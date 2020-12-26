@@ -16,29 +16,19 @@ examples/bundle.js
 #Generated tests
 tests/VerifyExamples
 
+#Generated asset
+/src/asset/generated
+/snowpack.cert
+/snowpack.key
+
 #OS stuff
 .DS_Store
 .vscode
 *.iml
 /.idea
-*.tiled-session
 
 #Other stuff
 documentation.json
 
 #Deployment
-public/*
-
-#Production
-!public/assets
-!public/assets/*
-!public/404.html
-!public/index.html
-!public/app.css
-!public/favicon.png
-!public/screenshot.png
-!public/script.js
-!public/CNAME
-
-#App specific
-!public/server-worker.js
+target/

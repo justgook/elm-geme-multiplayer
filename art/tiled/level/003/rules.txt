@@ -1,2 +1,0 @@
-../../automap/rules/test-rule.tmx
-../../automap/rules/Desert.tmx
