@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node.js for use with actions
         uses: actions/setup-node@v2.1.4
         with:
-          node-version: 15.x
+          node-version: '15.x'
 
       - name: Set yarn
         id: yarn
@@ -62,7 +62,7 @@ jobs:
       - name: Install Dependencies
         #if: steps.yarn-cache-exists.outputs.cache-hit != 'true'
         run: |
-          yarn
+          yarn --frozen-lockfile
 
   build:
     name: Build
@@ -73,7 +73,7 @@ jobs:
         run: |
           echo "YARN: $(yarn --version)"
           echo "NODE: $(node --version)"
-          ls
+          echo "Working Directory: $(ls)"
           yarn build
       #          node build-assets.js
       #        elm make src/Main.elm --optimize --output=./gh-pages/bundle.js
