@@ -19,6 +19,8 @@ jobs:
           persist-credentials: false
 
       - name: Setup Elm
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
         uses: justgook/setup-elm@1.2.0
 
       - name: Setup Node.js for use with actions
