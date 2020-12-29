@@ -31,6 +31,7 @@
     "webgl-raub": "2.1.0"
   },
   "dependencies": {
+    "elm-format": "^0.8.4",
     "elm-test": "^0.19.1-revision4",
     "uWebSockets.js": "uNetworking/uWebSockets.js#v18.12.0"
   },
