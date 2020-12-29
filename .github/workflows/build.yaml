@@ -70,7 +70,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build
-        run: yarn build
+        run: |
+          echo "YARN: $(yarn --version)"
+          echo "NODE: $(node --version)"
+          ls
+          yarn build
       #          node build-assets.js
       #        elm make src/Main.elm --optimize --output=./gh-pages/bundle.js
       #
