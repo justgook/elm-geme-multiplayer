@@ -28,6 +28,8 @@ jobs:
 
       - name: Set yarn
         id: yarn
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
         run: |
           echo "::set-output name=dir::$(yarn cache dir)"
           echo "::add-path::$(yarn bin)"
@@ -55,7 +57,6 @@ jobs:
         #if: steps.yarn-cache-exists.outputs.cache-hit != 'true'
         run: |
           yarn
-          echo "::add-path::$(yarn bin)"
 
   build:
     name: Build
