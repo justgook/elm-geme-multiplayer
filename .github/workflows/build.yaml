@@ -64,11 +64,11 @@ jobs:
         run: |
           yarn --frozen-lockfile
 
-  build:
-    name: Build
-    needs: dependencies
-    runs-on: ubuntu-latest
-    steps:
+#  build:
+#    name: Build
+#    needs: [dependencies]
+#    runs-on: ubuntu-latest
+#    steps:
       - name: Build
         run: |
           echo "YARN: $(yarn --version)"
@@ -93,27 +93,26 @@ jobs:
 #        run: posthtml ./gh-pages/index_template.html -o ./gh-pages/index.html -c posthtml.config.js
 #
 
-  test:
-    name: Test
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    steps:
+#  test:
+#    name: Test
+#    needs: [ build ]
+#    runs-on: ubuntu-latest
+#    steps:
       - name: Elm Test
         run: yarn test
 
-  release:
-#    if: github.event_name == 'pull_request'
-#    - name: Move files
-#      run: |
-#        mkdir ./public
-#        mv ./index.html ./public/
-    name: Release
-    needs: [build, test]
-    runs-on: ubuntu-latest
-    steps:
+#  release:
+##    if: github.event_name == 'pull_request'
+##    - name: Move files
+##      run: |
+##        mkdir ./public
+##        mv ./index.html ./public/
+#    name: Release
+#    needs: [build, test]
+#    runs-on: ubuntu-latest
+#    steps:
 
       - name: GitHub Pages action
-
         uses: peaceiris/actions-gh-pages@v3.7.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
