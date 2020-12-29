@@ -7,7 +7,7 @@ on:
 
 jobs:
   dependencies:
-    name: Install Dependencies
+    name: Game Build
     runs-on: ubuntu-latest
     steps:
 #      - name: TEMPORARY act workaround
@@ -112,15 +112,18 @@ jobs:
 #    runs-on: ubuntu-latest
 #    steps:
 
-      - name: GitHub Pages action
-        uses: peaceiris/actions-gh-pages@v3.7.3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target
-          keep_files: true
-          destination_dir: subdir
-          exclude_assets: "/**.elm"
-          cname: pandemic.z0.lv
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-#          commit_message: ${{ github.event.head_commit.message }}
+      - name: GitHub Pages Deployment
+        run: ./bin/update-gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        uses: peaceiris/actions-gh-pages@v3.7.3
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: ./target
+#          keep_files: true
+#          destination_dir: subdir
+#          exclude_assets: "*/**.elm"
+#          cname: "pandemic.z0.lv"
+#          user_name: 'github-actions[bot]'
+#          user_email: 'github-actions[bot]@users.noreply.github.com'
+##          commit_message: ${{ github.event.head_commit.message }}
