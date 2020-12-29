@@ -52,7 +52,7 @@ jobs:
 
       - name: Get elm-stuff
         uses: actions/cache@v2.1.3
-        id: node_modules-cache-exists
+        id: elm-stuff-cache-exists
         with:
           path: ./elm-stuff
           key: ${{ runner.os }}-elm-stuff-${{ hashFiles('**/elm-json') }}
