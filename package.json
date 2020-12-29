@@ -8,6 +8,7 @@
     "start": "snowpack dev",
     "build": "snowpack build",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
+    "test": "elm-test",
     "lint": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
     "favicon": "pwa-asset-generator src/asset/favicon/base.svg src/asset/generated --favicon --manifest src/manifest.webmanifest --index src/index.html -b \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1)\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"",
     "postinstall": "patch-package"
@@ -23,10 +24,6 @@
     "snowpack-plugin-elm": "marc136/snowpack-plugin-elm#7/head",
     "typescript": "4.1.3"
   },
-  "prettier": {
-    "tabWidth": 4,
-    "semi": false
-  },
   "optionalDependencies": {
     "glfw-raub": "4.5.0",
     "image-raub": "3.1.4",
@@ -34,6 +31,11 @@
     "webgl-raub": "2.1.0"
   },
   "dependencies": {
+    "elm-test": "^0.19.1-revision4",
     "uWebSockets.js": "uNetworking/uWebSockets.js#v18.12.0"
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "semi": false
   }
 }
