@@ -10,7 +10,7 @@ build_dir="target"
 temp_dir="$GITHUB_WORKSPACE/temp"
 
 #Get last tag
-git fetch --prune --unshallow
+#git fetch --prune --unshallow
 current_tag="$(git describe --abbrev=0)"
 commit_msg="$(git log --oneline --format=%B -n 1 HEAD | head -n 1)"
 echo "Starting build"
