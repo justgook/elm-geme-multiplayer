@@ -54,6 +54,8 @@ export interface StartProps {
     keyBind: (callback: (isDown: boolean, key: Key) => void) => void
 }
 
+type KeyOf<T extends object> = Extract<keyof T, string>
+
 const defaultProps: StartProps = {
     screen: { width: window.innerWidth, height: window.innerHeight },
     rAF: window.requestAnimationFrame,
@@ -65,20 +67,24 @@ const defaultProps: StartProps = {
     keyBind: (callback) => {
         window.addEventListener("keydown", (e) => {
             e.preventDefault()
-            const key = keyboardMap[e.code]
-            if (!e.repeat && key) {
-                callback(true, key)
+            if (!e.repeat && e.code in keyboardMap) {
+                // TODO Find way avoid casting
+                callback(true, keyboardMap[e.code as KeyOf<typeof keyboardMap>])
             }
         })
         window.addEventListener("keyup", (e) => {
             e.preventDefault()
-            const key = keyboardMap[e.code]
-            if (key) {
-                callback(false, key)
+            if (e.code in keyboardMap) {
+                callback(
+                    false,
+                    // TODO Find way avoid casting
+                    keyboardMap[e.code as KeyOf<typeof keyboardMap>]
+                )
             }
         })
     },
 }
+
 const keyboardMap = {
     KeyD: Key.East,
     KeyS: Key.South,

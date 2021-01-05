@@ -5,12 +5,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "snowpack dev",
-    "build": "snowpack build",
+    "start": "SNOWPACK_PUBLIC_URL=\"\" snowpack dev",
+    "build": "SNOWPACK_PUBLIC_URL=\"/$(git describe --abbrev=0)\" snowpack build",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "test": "elm-test",
     "lint": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
-    "favicon": "pwa-asset-generator src/asset/favicon/base.svg src/asset/generated --favicon --manifest src/manifest.webmanifest --index src/index.html -b \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1)\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"",
     "postinstall": "patch-package"
   },
   "devDependencies": {

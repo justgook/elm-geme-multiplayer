@@ -13,11 +13,14 @@ if (iOS()) {
 
 const app = initClient()
 
-const serverWorker = new Worker("worker/server.js", {
-    name: "server-web-worker",
-    // type: import.meta.env.MODE === "development" ? "module" : "classic",
-    type: "module",
-})
+const serverWorker = new Worker(
+    `${import.meta.env.SNOWPACK_PUBLIC_URL}/worker/server.js`,
+    {
+        name: "server-web-worker",
+        // type: import.meta.env.MODE === "development" ? "module" : "classic",
+        type: "module",
+    }
+)
 
 // console.log("serverWorker", serverWorker)
 // serverWorker.terminate()

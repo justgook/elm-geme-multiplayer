@@ -1,4 +1,6 @@
 const isDev = process.env.NODE_ENV === "development"
+const prefix = process.env.SNOWPACK_PUBLIC_URL || ""
+
 module.exports = {
     plugins: [
         [
@@ -23,7 +25,8 @@ module.exports = {
                     source: "src/asset/favicon/base.svg",
                     outputFolderPath: "./src/asset/generated",
                     options: {
-                        pathOverride: "/asset/generated",
+                        pathOverride: `${isDev ? "" : prefix}/asset/generated`,
+                        // pathOverride: `/asset/generated`,
                         // scrape: false,
                         favicon: true,
                         background:
@@ -45,7 +48,7 @@ module.exports = {
     },
     devOptions: {
         port: 8888,
-        fallback: "404.html",
+        fallback: `404.html`,
         hmr: true,
         hmrErrorOverlay: true,
         // secure: true,
@@ -55,12 +58,13 @@ module.exports = {
         clean: true,
         sourceMaps: false,
         out: "target",
+        baseUrl: `${prefix}/`,
     },
     proxy: {
         /* ... */
     },
     mount: {
-        src: "/",
+        src: `/`,
     },
     alias: {
         "@app": "./src",
@@ -73,7 +77,8 @@ module.exports = {
             bundle: true,
             manifest: true,
             minify: true,
-            target: "es2017",
+            // target: "es2017",
+            target: "es2020", //import.meta.env
         },
         // source: "skypack",
         // routes: [
