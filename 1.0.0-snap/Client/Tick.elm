@@ -14,7 +14,7 @@ system time ({ textures, screen } as model) =
             model.world
 
         ( entities, missing ) =
-            [ Playground.circle Playground.blue 20 ]
+            [ Playground.circle Playground.red 20 ]
                 |> WebGL.Shape2d.toEntities textures.done screen
     in
     ( { model
