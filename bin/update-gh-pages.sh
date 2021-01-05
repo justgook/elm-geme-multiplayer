@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -eu
-
+echo "Define props"
 repo_uri="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 remote_name="origin"
 #main_branch="release"
@@ -9,8 +9,10 @@ target_branch="gh-pages"
 build_dir="target"
 temp_dir="$GITHUB_WORKSPACE/temp"
 
+echo "remote_name: $remote_name, target_branch:$target_branch, build_dir: $build_dir"
 #Get last tag
 current_tag="$(git describe --abbrev=0)"
+echo "Starting build"
 
 mkdir -p "$temp_dir"
 cd "$temp_dir"
