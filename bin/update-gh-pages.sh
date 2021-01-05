@@ -9,7 +9,8 @@ target_branch="gh-pages"
 build_dir="target"
 temp_dir="$GITHUB_WORKSPACE/temp"
 
-echo "remote_name: $remote_name, target_branch:$target_branch, build_dir: $build_dir"
+echo "pwd:$(pwd), GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+cd "$GITHUB_WORKSPACE"
 #Get last tag
 current_tag="$(git describe --abbrev=0)"
 echo "Starting build"
