@@ -113,7 +113,7 @@ jobs:
 #    steps:
 
       - name: GitHub Pages Deployment
-        run: ./bin/update-gh-pages
+        run: ./bin/update-gh-pages.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #        uses: peaceiris/actions-gh-pages@v3.7.3
