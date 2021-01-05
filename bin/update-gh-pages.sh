@@ -12,6 +12,7 @@ temp_dir="$GITHUB_WORKSPACE/temp"
 #Get last tag
 git fetch --prune --unshallow
 current_tag="$(git describe --abbrev=0)"
+commit_msg="$(git log --oneline --format=%B -n 1 HEAD | head -n 1)"
 echo "Starting build"
 
 mkdir -p "$temp_dir"
@@ -36,7 +37,7 @@ sed -i'' -e "s/\/[^\/]*\/browser.html/\/$current_tag\/browser.html/g" 404.html
 git config user.name "$GITHUB_ACTOR"
 git config user.email "${GITHUB_ACTOR}@bots.github.com"
 
-if ! git commit -am "Deploy: $(git log --oneline --format=%B -n 1 HEAD | head -n 1)"; then
+if ! git commit -am "Deploy: $commit_msg"; then
   echo "nothing to commit"
   exit 0
 fi
