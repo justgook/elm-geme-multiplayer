@@ -1,4 +1,4 @@
-function autoEnterFullScreen(targetNode) {
+export function autoEnterFullScreen(targetNode) {
   if (document.fullscreenEnabled && !document.fullscreenElement) {
     const target = targetNode || document.body;
     function setUserInteraction() {

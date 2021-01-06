@@ -25,17 +25,13 @@ self.addEventListener("activate", function(event) {
   self.clients.claim();
 });
 self.addEventListener("fetch", (event) => {
-  console.log("[ServiceWorker]::fetch", event);
   if (event.request.mode === "navigate") {
     return event.respondWith(fetch(event.request).catch(() => caches.match(OFFLINE_URL)).then());
   }
 });
 self.addEventListener("sync", function(event) {
-  console.log("[ServiceWorker]::sync");
+  console.log("[ServiceWorker]::sync", event);
 });
 self.addEventListener("push", function(event) {
-  console.log("[ServiceWorker]::push");
-});
-self.addEventListener("periodicsync", function(event) {
-  console.log("[ServiceWorker]::periodicsync");
+  console.log("[ServiceWorker]::push", event);
 });

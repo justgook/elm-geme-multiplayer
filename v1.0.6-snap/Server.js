@@ -2444,8 +2444,8 @@ var $elm$core$Set$toList = function (_v0) {
 	return $elm$core$Dict$keys(dict);
 };
 var $elm$core$Basics$GT = 2;
-var $author$project$Server$World$empty = {};
-var $author$project$Server$World$init = {ci: '', a7: 0, bV: 0, aD: $author$project$Server$World$empty};
+var $author$project$Server$Model$empty = {};
+var $author$project$Server$Model$init = {ci: '', a7: 0, bV: 0, aD: $author$project$Server$Model$empty};
 var $elm$core$Result$Err = function (a) {
 	return {$: 1, a: a};
 };
@@ -2844,18 +2844,18 @@ var $elm$core$Result$isOk = function (result) {
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Server$init = function (flags) {
-	return _Utils_Tuple2($author$project$Server$World$init, $elm$core$Platform$Cmd$none);
+	return _Utils_Tuple2($author$project$Server$Model$init, $elm$core$Platform$Cmd$none);
 };
-var $author$project$Server$World$Error = function (a) {
+var $author$project$Server$Model$Error = function (a) {
 	return {$: 4, a: a};
 };
-var $author$project$Server$World$Join = function (a) {
+var $author$project$Server$Model$Join = function (a) {
 	return {$: 2, a: a};
 };
-var $author$project$Server$World$Leave = function (a) {
+var $author$project$Server$Model$Leave = function (a) {
 	return {$: 3, a: a};
 };
-var $author$project$Server$World$Receive = function (a) {
+var $author$project$Server$Model$Receive = function (a) {
 	return {$: 1, a: a};
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -2884,10 +2884,10 @@ var $author$project$Server$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$batch(
 		_List_fromArray(
 			[
-				$author$project$Server$Port$receive($author$project$Server$World$Receive),
-				$author$project$Server$Port$join($author$project$Server$World$Join),
-				$author$project$Server$Port$leave($author$project$Server$World$Leave),
-				$author$project$Server$Port$error($author$project$Server$World$Error)
+				$author$project$Server$Port$receive($author$project$Server$Model$Receive),
+				$author$project$Server$Port$join($author$project$Server$Model$Join),
+				$author$project$Server$Port$leave($author$project$Server$Model$Leave),
+				$author$project$Server$Port$error($author$project$Server$Model$Error)
 			]));
 };
 var $elm$core$Basics$identity = function (x) {

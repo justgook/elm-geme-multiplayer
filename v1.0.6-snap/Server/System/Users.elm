@@ -1,8 +1,8 @@
-module Server.System.Users exposing (leave, join)
+module Server.System.Users exposing (join, leave)
 
-import Server.World as World exposing (Message, World)
-import Server.Port exposing (ConnectionId)
-import Server.Port as Port
+import Server.Model exposing (Message, World)
+import Server.Port as Port exposing (ConnectionId)
+
 
 leave : ConnectionId -> World -> ( World, Cmd Message )
 leave cnn was =
@@ -11,4 +11,4 @@ leave cnn was =
 
 join : ConnectionId -> World -> ( World, Cmd Message )
 join cnn was =
-    ( was, Port.send ("ConnectionId", "Data")  )
+    ( was, Port.send ( "ConnectionId", "Data" ) )
