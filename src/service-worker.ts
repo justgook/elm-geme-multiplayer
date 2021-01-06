@@ -1,5 +1,5 @@
 export {}
-declare var self: ServiceWorkerGlobalScope
+declare const self: ServiceWorkerGlobalScope
 
 // https://serviceworke.rs/immediate-claim_service-worker_doc.html
 // https://googlechrome.github.io/samples/service-worker/custom-offline-page/
@@ -18,20 +18,18 @@ self.addEventListener("install", (event) => {
             // Setting {cache: 'reload'} in the new request will ensure that the response
             // isn't fulfilled from the HTTP cache; i.e., it will be from the network.
             await cache.add(new Request(OFFLINE_URL, { cache: "reload" }))
-        })()
+        })(),
     )
     return self.skipWaiting()
 })
 
 self.addEventListener("activate", function (event) {
-    self.clients
-        .matchAll({ includeUncontrolled: true })
-        .then(function (clientList) {
-            const urls = clientList.map(function (client) {
-                return client.url
-            })
-            console.log("[ServiceWorker] Matching clients:", urls.join(", "))
+    self.clients.matchAll({ includeUncontrolled: true }).then(function (clientList) {
+        const urls = clientList.map(function (client) {
+            return client.url
         })
+        console.log("[ServiceWorker] Matching clients:", urls.join(", "))
+    })
     event.waitUntil(
         (async () => {
             // Enable navigation preload if it's supported.
@@ -39,19 +37,19 @@ self.addEventListener("activate", function (event) {
             if ("navigationPreload" in self.registration) {
                 await self.registration.navigationPreload.enable()
             }
-        })()
+        })(),
     )
     // Tell the active service worker to take control of the page immediately.
     self.clients.claim()
 })
 
 self.addEventListener("fetch", (event) => {
-    console.log("[ServiceWorker]::fetch", event)
+    // console.log("[ServiceWorker]::fetch", event)
     if (event.request.mode === "navigate") {
         return event.respondWith(
             fetch(event.request)
                 .catch(() => caches.match(OFFLINE_URL))
-                .then()
+                .then(),
         )
     }
     // event.respondWith(
@@ -85,13 +83,13 @@ self.addEventListener("fetch", (event) => {
 })
 
 self.addEventListener("sync", function (event) {
-    console.log("[ServiceWorker]::sync")
+    console.log("[ServiceWorker]::sync", event)
 })
 
 self.addEventListener("push", function (event) {
-    console.log("[ServiceWorker]::push")
+    console.log("[ServiceWorker]::push", event)
 })
-//@ts-ignore
-self.addEventListener("periodicsync", function (event) {
-    console.log("[ServiceWorker]::periodicsync")
-})
+
+// self.addEventListener("periodicsync", function (event: SyncEvent) {
+//     console.log("[ServiceWorker]::periodicsync", event)
+// })

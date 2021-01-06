@@ -1,4 +1,4 @@
-module Client.Util exposing (eventToWorld, getTexture, onEvent, snap, toScreen)
+module Client.Util exposing (eventToWorld, getTexture, snap, toScreen)
 
 import Html exposing (Attribute)
 import Html.Events
@@ -34,20 +34,6 @@ toScreen width height =
     , right = width * 0.5
     , bottom = -height * 0.5
     }
-
-
-onEvent : String -> Decoder a -> Attribute a
-onEvent e decoder =
-    Html.Events.custom e
-        (decoder
-            |> Json.Decode.map
-                (\a ->
-                    { message = a
-                    , stopPropagation = False
-                    , preventDefault = False
-                    }
-                )
-        )
 
 
 getTexture : (String -> Texture -> msg) -> (Texture.Error -> msg) -> String -> String -> Cmd msg

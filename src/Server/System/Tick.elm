@@ -1,6 +1,6 @@
 module Server.System.Tick exposing (system)
 
-import Server.World exposing (Message, Model)
+import Server.Model exposing (Message, Model)
 import Time exposing (Posix)
 
 

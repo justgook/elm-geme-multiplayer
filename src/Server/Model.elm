@@ -1,4 +1,4 @@
-module Server.World exposing (Message(..), Model, World, empty, init, tick, tickTime)
+module Server.Model exposing (Message(..), Model, World, empty, init, tick, tickTime)
 
 import Process
 import Task

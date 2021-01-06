@@ -1,5 +1,5 @@
 // FullScreen API
-function autoEnterFullScreen(targetNode: HTMLElement) {
+export function autoEnterFullScreen(targetNode: HTMLElement): void {
     if (document.fullscreenEnabled && !document.fullscreenElement) {
         const target = targetNode || document.body
 

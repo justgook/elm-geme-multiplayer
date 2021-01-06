@@ -1,13 +1,6 @@
-export function iOS() {
+export function iOS(): boolean {
     return (
-        [
-            "iPad Simulator",
-            "iPhone Simulator",
-            "iPod Simulator",
-            "iPad",
-            "iPhone",
-            "iPod",
-        ].includes(navigator.platform) ||
+        ["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod"].includes(navigator.platform) ||
         // iPad on iOS 13 detection
         (navigator.userAgent.includes("Mac") && "ontouchend" in document)
     )
@@ -29,15 +22,10 @@ function swipeEndOnce(callback: () => void) {
     window.addEventListener("scroll", handler, false)
 }
 
-export function initOverlay() {
+export function initOverlay(): void {
     function checkSwipe() {
         console.log("checkSwipe")
-        if (
-            window.innerHeight ===
-            (window.innerHeight > window.innerWidth
-                ? window.screen.height
-                : window.screen.width)
-        ) {
+        if (window.innerHeight === (window.innerHeight > window.innerWidth ? window.screen.height : window.screen.width)) {
             console.log("checkSwipe::disableSwipe")
             disableSwipe()
         } else {
@@ -56,12 +44,7 @@ export function initOverlay() {
     function disableSwipe() {
         window.scrollTo(0, 0)
         console.log("disableSwipe")
-        if (
-            window.innerHeight ===
-            (window.innerHeight > window.innerWidth
-                ? window.screen.height
-                : window.screen.width)
-        ) {
+        if (window.innerHeight === (window.innerHeight > window.innerWidth ? window.screen.height : window.screen.width)) {
             document.documentElement.classList.remove("swipe")
             document.body.classList.remove("swipe")
         } else {
@@ -74,8 +57,4 @@ export function initOverlay() {
 }
 
 //mobile fixes and ios
-document.addEventListener(
-    "gesturestart",
-    (e: Event) => e.preventDefault(),
-    false
-)
+document.addEventListener("gesturestart", (e: Event) => e.preventDefault(), false)

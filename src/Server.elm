@@ -1,12 +1,11 @@
 module Server exposing (main)
 
 import Json.Decode exposing (Value)
+import Server.Model as World exposing (Message(..), Model)
 import Server.Port as Port
 import Server.System.Packet as Packet
 import Server.System.Tick as Tick
 import Server.System.Users as Users
-import Server.World as World exposing (Message(..), Model)
-import Time exposing (Posix)
 
 
 main : Program Value Model Message

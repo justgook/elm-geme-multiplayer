@@ -13,6 +13,14 @@ module.exports = {
             },
         ],
         [
+            "@snowpack/plugin-run-script",
+            {
+                cmd: "eslint src --ext .js,.ts",
+                // Optional: Use npm package "eslint-watch" to run on every file change
+                watch: "esw -w --clear src --ext .js,.ts",
+            },
+        ],
+        [
             "./snowpack-plugin/manifest-snowpack-plugin.js",
             {
                 /* pluginOptions */
@@ -29,8 +37,7 @@ module.exports = {
                         // pathOverride: `/asset/generated`,
                         // scrape: false,
                         favicon: true,
-                        background:
-                            "linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1)",
+                        background: "linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1)",
                         // splashOnly: true,
                         // portraitOnly: true,
                         log: false,
@@ -80,7 +87,6 @@ module.exports = {
             // target: "es2017",
             target: "es2020", //import.meta.env
         },
-        // source: "skypack",
         // routes: [
         //     {
         //         src: "/",

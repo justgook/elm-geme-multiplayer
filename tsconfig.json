@@ -19,7 +19,7 @@
     // so we have to set 'baseUrl' & 'paths' here.
     // Don't change these unless you know what you're doing.
     // See: https://github.com/microsoft/TypeScript/issues/25430
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "paths": {
       "*": ["web_modules/.types/*"]
     },

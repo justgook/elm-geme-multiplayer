@@ -1,7 +1,5 @@
 module Client.Model exposing (Message(..), Model, World, empty, world)
 
---import Client.Util as Util
-
 import Client.Util as Util
 import Dict exposing (Dict)
 import Json.Decode exposing (Value)
@@ -34,11 +32,6 @@ world =
 type Message
     = Texture String Texture
     | TextureFail Texture.Error
-      ---Network
-    | Receive String
-    | Join
-    | Leave
-    | Error String
       -- New Way
     | Input Value
 

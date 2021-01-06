@@ -1,4 +1,4 @@
-export function initServiceWorker() {
+export function initServiceWorker(): void {
     if ("serviceWorker" in navigator) {
         // navigator.serviceWorker.ready.then(function (swRegistration) {
         //     return swRegistration.sync.register("myFirstSync")
@@ -14,14 +14,9 @@ export function initServiceWorker() {
 
         window.addEventListener("load", async () => {
             try {
-                const registration = await navigator.serviceWorker.register(
-                    "/service-worker.js"
-                )
+                const registration = await navigator.serviceWorker.register("/service-worker.js")
                 // Registration was successful
-                console.log(
-                    "ServiceWorker registration successful with scope: ",
-                    registration.scope
-                )
+                console.log("ServiceWorker registration successful with scope: ", registration.scope)
             } catch (err) {
                 console.log("ServiceWorker registration failed: ", err)
             }

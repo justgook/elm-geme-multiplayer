@@ -1,7 +1,8 @@
 import "./desktop.css"
 import { iOS, initOverlay } from "./capabilities/ios"
-import { initClient } from "./initClient"
-import { initServiceWorker } from "./initServiceWorker"
+import { initServiceWorker } from "./init/initServiceWorker"
+import { initClient } from "./init/initClient"
+import { initServer } from "./init/initServer"
 
 initServiceWorker()
 if (iOS()) {
@@ -12,15 +13,8 @@ if (iOS()) {
 }
 
 const app = initClient()
-
-const serverWorker = new Worker(
-    `${import.meta.env.SNOWPACK_PUBLIC_URL}/worker/server.js`,
-    {
-        name: "server-web-worker",
-        // type: import.meta.env.MODE === "development" ? "module" : "classic",
-        type: "module",
-    }
-)
-
+console.log(app)
+const serverWorker = initServer()
+console.log(serverWorker)
 // console.log("serverWorker", serverWorker)
 // serverWorker.terminate()

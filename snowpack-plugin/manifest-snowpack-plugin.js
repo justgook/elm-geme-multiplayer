@@ -1,12 +1,12 @@
 const fs = require("fs").promises
 // const path = require("path")
 const packageJson = require("../package.json")
-module.exports = function (snowpackConfig, pluginOptions) {
+module.exports = function (/*snowpackConfig, pluginOptions*/) {
     return {
         name: "manifest-snowpack-plugin",
-        config() {
-            console.log("Success! -- manifest-snowpack-plugin")
-        },
+        // config() {
+        //     console.log("Success! -- manifest-snowpack-plugin")
+        // },
         resolve: {
             input: [".webmanifest"],
             output: [".webmanifest"],
