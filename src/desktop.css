@@ -22,8 +22,8 @@ canvas {
 
 img,
 canvas {
-    width: 100%;
-    height: 100%;
+    /*width: 100%;*/
+    /*height: 100%;*/
     image-rendering: pixelated;
 }
 
@@ -35,4 +35,29 @@ body:fullscreen::backdrop {
     right: auto;
     bottom: auto;
     left: auto;
+}
+
+/*Debug*/
+
+body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+    height: calc(100vh - 20px);
+    padding: 10px;
+    background: antiquewhite;
+}
+
+#game1, #game2, #game3, #game4 {
+    background: darkgoldenrod;
+    position: relative;
+}
+
+body > div {
+    height: unset !important;
+}
+
+#game1:focus, #game2:focus, #game3:focus, #game4:focus, body > div:focus {
+    outline: 3px solid #F00;
 }

@@ -2,7 +2,7 @@ import Elm from "../Server.elm"
 //TODO convert to https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker
 const app = Elm.Server.init()
 // chrome://inspect/#workers
-app.ports.send.subscribe(([cnn, data]: [string, string]) => {
+app.ports.output.subscribe(([cnn, data]) => {
     postMessage([cnn, data], "*")
 })
 

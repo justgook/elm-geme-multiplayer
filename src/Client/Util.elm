@@ -1,8 +1,5 @@
 module Client.Util exposing (eventToWorld, getTexture, snap, toScreen)
 
-import Html exposing (Attribute)
-import Html.Events
-import Json.Decode exposing (Decoder)
 import Playground exposing (Screen)
 import Task
 import WebGL.Texture as Texture exposing (Texture)

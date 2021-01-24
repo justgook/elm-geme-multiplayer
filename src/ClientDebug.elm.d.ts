@@ -1,4 +1,4 @@
-export namespace ClientTouch {
+export namespace ClientDebug {
     export interface App {
         ports: {
             input: { send: (msg: Message[]) => void }
@@ -13,6 +13,8 @@ export namespace ClientTouch {
         flags: {
             screen: { width: number; height: number }
             dataUrl: string
+            login?: string
+            password?: string
         }
-    }): ClientTouch.App
+    }): ClientDebug.App
 }

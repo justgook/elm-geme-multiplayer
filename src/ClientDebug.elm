@@ -1,4 +1,4 @@
-module ClientTouch exposing (main)
+module ClientDebug exposing (main)
 
 import Browser exposing (Document)
 import Client
@@ -10,7 +10,7 @@ import Json.Decode exposing (Value)
 
 main : Program Value Model Message
 main =
-    Browser.document
+    Browser.element
         { init = Client.init
         , view = view2
         , update = Client.update
@@ -18,11 +18,8 @@ main =
         }
 
 
-view2 : Model -> Document Message
 view2 model =
-    { title = "ClientTouch"
-    , body = [ view model ]
-    }
+    view model
 
 
 view : Model -> Html Message

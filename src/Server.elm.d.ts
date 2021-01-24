@@ -1,10 +1,10 @@
 export namespace Server {
     export interface App {
         ports: {
-            // input: { send: (msg: Message[]) => void }
-            send: {
-                subscribe(handler: ([cnn, data]: [string, string]) => void): void
-                unsubscribe(handler: ([cnn, data]: [string, string]) => void): void
+            input: { send: (msg: Message[]) => void }
+            output: {
+                subscribe(handler: (args: [cnn: string, data: string]) => void): void
+                unsubscribe(handler: (data: string) => void): void
             }
         }
     }

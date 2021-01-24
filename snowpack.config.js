@@ -16,8 +16,6 @@ module.exports = {
             "@snowpack/plugin-run-script",
             {
                 cmd: "eslint src --ext .js,.ts",
-                // Optional: Use npm package "eslint-watch" to run on every file change
-                watch: "esw -w --clear src --ext .js,.ts",
             },
         ],
         [
@@ -46,7 +44,7 @@ module.exports = {
             },
         ],
     ],
-    installOptions: {
+    packageOptions: {
         sourceMap: false,
         installTypes: true,
         // rollup: {
@@ -67,26 +65,21 @@ module.exports = {
         out: "target",
         baseUrl: `${prefix}/`,
     },
-    proxy: {
-        /* ... */
-    },
+
     mount: {
         src: `/`,
     },
-    alias: {
-        "@app": "./src",
-    },
     exclude: isDev ? ["**/generated/**/*"] : [],
-    experiments: {
-        optimize: {
-            // entrypoints: 'auto' | string[] | (({files: string[]}) => string[]);
-            // preload: true,
-            bundle: true,
-            manifest: true,
-            minify: true,
-            // target: "es2017",
-            target: "es2020", //import.meta.env
-        },
+
+    optimize: {
+        // entrypoints: 'auto' | string[] | (({files: string[]}) => string[]);
+        // preload: true,
+        bundle: true,
+        manifest: true,
+        minify: true,
+        // target: "es2017",
+        target: "es2020", //import.meta.env
+
         // routes: [
         //     {
         //         src: "/",

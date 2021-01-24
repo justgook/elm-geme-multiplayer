@@ -10,7 +10,7 @@ module.exports = function (snowpackConfig, { favicon }) {
         name: "pwa-snowpack-plugin",
         partials: { default: "template" },
         async config() {
-            await this.onChange({ filePath: "src/default.mustache" })
+            await this.onChange({ filePath: "src/index.mustache" })
         },
         data: {
             htmlMeta: {},
@@ -18,8 +18,8 @@ module.exports = function (snowpackConfig, { favicon }) {
         lastUpdate: null,
         async onChange({ filePath }) {
             // console.log("onChange", filePath)
-            if (path.basename(filePath) === "default.mustache") {
-                this.partials.default = await fs.readFile("src/default.mustache", "utf-8")
+            if (path.basename(filePath) === "index.mustache") {
+                this.partials.default = await fs.readFile("src/index.mustache", "utf-8")
                 this.updateFiles.forEach((path) => this.markChanged(path))
             }
         },

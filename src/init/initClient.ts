@@ -1,97 +1,95 @@
-import { DummyClient } from "../connection/dummy"
-import Elm from "../ClientTouch.elm"
-import type { ClientConnection } from "../connection/connectionInterface"
+import type Elm from "../ClientDebug.elm"
+import type { ClientConnection } from "../connection/ConnectionInterface"
+import { ConnectionEvent } from "../connection/ConnectionInterface"
 
-export function initClient(props: ClientProps = defaultProps): Elm.ClientTouch.App {
-    const { rAF, screen, gameDataUrl: dataUrl } = props
-    const app = Elm.ClientTouch.init({
-        flags: { screen, dataUrl },
-    })
-    rAF(gameLoop(app, props))
-    return app
-}
+export type Options = Partial<Omit<ClientProps, "connection">> & Pick<ClientProps, "connection">
 
-const gameLoop = (app: Elm.ClientTouch.App, { rAF, resize, keyBind, connection, gameChannel }: ClientProps) => {
+export function initClient(app: Elm.ClientDebug.App, options: Options): void {
+    const opt = { ...defaultProps, ...options }
+    const { tick, resize, keyboard, mouse, connection, gameChannel } = opt
     const msgBuffer: Message[] = []
     resize((w, h) => msgBuffer.push([MessageId.resize, w, h]))
-    keyBind((isDown, key) => msgBuffer.push([MessageId.inputKey, isDown, key]))
+    keyboard((isDown, key) => msgBuffer.push([MessageId.inputKeyboard, isDown, key]))
+    mouse((...args) => msgBuffer.push([MessageId.inputMouse, ...args]))
 
-    // const cnn = new connection(gameChannel, {
-    //     // onSend: () => true,
-    //     onJoin: () => msgBuffer.push([MessageId.networkJoin]),
-    //     onReceive: (data: string) =>
-    //         msgBuffer.push([MessageId.networkData, data]),
-    //     onError: (error: string) =>
-    //         msgBuffer.push([MessageId.networkError, error]),
-    //     onLeave: () => msgBuffer.push([MessageId.networkLeave]),
-    // })
-    connection.connect(gameChannel)
+    connection.on(ConnectionEvent.join, () => msgBuffer.push([MessageId.networkJoin]))
+    connection.on(ConnectionEvent.receive, (data) => msgBuffer.push([MessageId.networkReceive, data]))
+    connection.on(ConnectionEvent.error, (error) => msgBuffer.push([MessageId.networkError, error]))
+    connection.on(ConnectionEvent.leave, () => msgBuffer.push([MessageId.networkLeave]))
     app.ports.output.subscribe(connection.send)
-
-    const loop = () => {
-        msgBuffer.push([MessageId.rAF, performance.now()])
+    connection.connect(gameChannel)
+    const gameLoop = () => {
+        msgBuffer.push([MessageId.tick, performance.now()])
         app.ports.input.send(msgBuffer)
         msgBuffer.length = 0
-        rAF(loop)
+        tick(gameLoop)
     }
-    return loop
+    gameLoop()
 }
 
 const enum MessageId {
-    rAF = 0,
-    resize = 1,
-    inputKey = 2,
-    networkJoin = 3,
-    networkLeave = 4,
-    networkData = 5,
-    networkError = 6,
+    tick = 100,
+    resize = 101,
+    inputKeyboard = 102,
+    inputMouse = 103,
+    inputTouch = 104,
+    networkJoin = 201,
+    networkLeave = 202,
+    networkReceive = 203,
+    networkError = 204,
 }
 
 type Message =
+    | [cmd: MessageId.tick, timestamp: number]
     | [cmd: MessageId.resize, width: number, height: number]
-    | [cmd: MessageId.inputKey, isDown: boolean, key: Key]
-    | [cmd: MessageId.rAF, timestamp: number]
+    | [cmd: MessageId.inputKeyboard, isDown: boolean, key: number]
+    | [cmd: MessageId.inputMouse, x: number, y: number, key1: boolean, key2: boolean]
+    | [cmd: MessageId.inputTouch, x: number, y: number, isDown: boolean]
     // Network stuff
     | [cmd: MessageId.networkJoin]
     | [cmd: MessageId.networkLeave]
-    | [cmd: MessageId.networkData, data: string]
+    | [cmd: MessageId.networkReceive, data: string]
     | [cmd: MessageId.networkError, data: string]
 
-export enum Key {
-    North = 1,
-    // NorthEast = 2,
-    East = 3,
-    // SouthEast = 4,
-    South = 5,
-    // SouthWest = 6,
-    West = 7,
-    // NorthWest = 8,
-}
+// const ClientProps = Partial<Omit<ClientProps, "connection">> & Pick<ClientProps, "connection">
 
 export interface ClientProps {
     gameChannel: string
-    gameDataUrl: string // Data to load game it self
     connection: ClientConnection
-    rAF: (callback: FrameRequestCallback) => number
-    screen: { width: number; height: number }
+    tick: (callback: (time: number) => void) => void
     resize: (callback: (w: number, h: number) => void) => void
-    keyBind: (callback: (isDown: boolean, key: Key) => void) => void
+    keyboard: (callback: (isDown: boolean, key: number) => void) => void
+    mouse: (callback: (x: number, y: number, key1: boolean, key2: boolean) => void) => void
+    // touch: (callback: (isDown: boolean, key: Key) => void) => void
 }
 
-type KeyOf<T> = Extract<keyof T, string>
+export type KeyOf<T> = Extract<keyof T, string>
 
-export const defaultProps: ClientProps = {
-    gameChannel: "",
-    gameDataUrl: "",
-    connection: new DummyClient(),
-    screen: { width: window.innerWidth, height: window.innerHeight },
-    rAF: window.requestAnimationFrame,
+export const defaultProps: Omit<ClientProps, "connection"> = {
+    gameChannel: "gameChannel-client",
+    tick: window.requestAnimationFrame,
     resize: (callback) => {
         window.addEventListener("resize", () => {
             callback(window.innerWidth, window.innerHeight)
         })
     },
-    keyBind: (callback) => {
+    mouse: (callback) => {
+        document.addEventListener("mousemove", (e) => {
+            callback(e.offsetX, e.offsetY, e.buttons === 1, e.buttons === 2)
+        })
+        document.addEventListener("mousedown", (e) => {
+            e.preventDefault()
+            callback(e.offsetX, e.offsetY, e.buttons === 1, e.buttons === 2)
+        })
+        document.addEventListener("mouseup", (e) => {
+            e.preventDefault()
+            callback(e.offsetX, e.offsetY, e.buttons === 1, e.buttons === 2)
+        })
+        document.addEventListener("contextmenu", (e) => {
+            e.preventDefault()
+        })
+    },
+    keyboard: (callback) => {
         window.addEventListener("keydown", (e) => {
             e.preventDefault()
             if (!e.repeat && e.code in keyboardMap) {
@@ -107,9 +105,60 @@ export const defaultProps: ClientProps = {
     },
 }
 
-const keyboardMap = {
-    KeyD: Key.East,
-    KeyS: Key.South,
-    KeyA: Key.West,
-    KeyW: Key.North,
+export const keyboardMap = {
+    ArrowDown: 0,
+    ArrowLeft: 1,
+    ArrowRight: 2,
+    ArrowUp: 3,
+    Backslash: 4,
+    Backspace: 5,
+    BracketLeft: 6,
+    BracketRight: 7,
+    Comma: 8,
+    Digit0: 9,
+    Digit1: 10,
+    Digit2: 11,
+    Digit3: 12,
+    Digit4: 13,
+    Digit5: 14,
+    Digit6: 15,
+    Digit7: 16,
+    Digit8: 17,
+    Digit9: 18,
+    Enter: 19,
+    Equal: 20,
+    IntlBackslash: 21,
+    KeyA: 22,
+    KeyB: 23,
+    KeyC: 24,
+    KeyD: 25,
+    KeyE: 26,
+    KeyF: 27,
+    KeyG: 28,
+    KeyH: 29,
+    KeyI: 30,
+    KeyJ: 31,
+    KeyK: 32,
+    KeyL: 33,
+    KeyM: 34,
+    KeyN: 35,
+    KeyO: 36,
+    KeyP: 37,
+    KeyQ: 38,
+    KeyR: 39,
+    KeyS: 40,
+    KeyT: 41,
+    KeyU: 42,
+    KeyV: 43,
+    KeyW: 44,
+    KeyX: 45,
+    KeyY: 46,
+    KeyZ: 47,
+    Minus: 48,
+    Period: 49,
+    Quote: 50,
+    Semicolon: 51,
+    Slash: 52,
+    Space: 53,
+    Tab: 54,
 }

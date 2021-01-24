@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <link rel="manifest" href="%PUBLIC_URL%/manifest.webmanifest">
-    <title>Multiplayer game</title>
+    <title>Multiplayer</title>
     <script>
         const {redirect} = sessionStorage
         delete sessionStorage.redirect
@@ -20,6 +20,10 @@
 
 </head>
 <body>
+<div tabindex="-1" id="game1"><div style="height: inherit">1</div></div>
+<div tabindex="-1" id="game2"><div style="height: inherit">2</div></div>
+<div tabindex="-1" id="game3"><div style="height: inherit">3</div></div>
+<div tabindex="-1" id="game4"><div style="height: inherit">4</div></div>
 <script type="module" src="%PUBLIC_URL%/{{fileName}}.js"></script>
 </body>
 </html>

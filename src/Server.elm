@@ -1,19 +1,22 @@
 module Server exposing (main)
 
-import Json.Decode exposing (Value)
-import Server.Model as World exposing (Message(..), Model)
-import Server.Port as Port
-import Server.System.Packet as Packet
+import Common.Protocol.Message exposing (ToClient)
+import Common.Protocol.Server
+import Common.Protocol.Util
+import Json.Decode as D exposing (Value)
+import Server.Model as World exposing (Model)
+import Server.Port as Port exposing (Input(..))
+import Server.System.Data as Data
 import Server.System.Tick as Tick
-import Server.System.Users as Users
+import Server.System.User as User
 
 
-main : Program Value Model Message
+main : Program Value Model Value
 main =
     Platform.worker
         { init = init
         , update = update
-        , subscriptions = subscriptions
+        , subscriptions = Port.subscriptions
         }
 
 
@@ -22,32 +25,60 @@ init flags =
     ( World.init, Cmd.none )
 
 
-update : Message -> Model -> ( Model, Cmd Message )
-update msg ({ world } as model) =
-    case msg of
-        Tick t ->
-            Tick.system t model
+update : Value -> Model -> ( Model, Cmd Value )
+update v model =
+    case Port.parse v of
+        Ok messages ->
+            messages
+                |> List.foldl
+                    (\msg m ->
+                        case msg of
+                            Tick time ->
+                                Tick.system time m
 
-        Receive income ->
-            Packet.receive income world
-                |> Tuple.mapFirst (\w -> { model | world = w })
+                            NetworkJoin cnn ->
+                                let
+                                    _ =
+                                        Debug.log "Server::NetworkJoin" cnn
+                                in
+                                { m | world = User.join cnn m.world }
 
-        Join cnn ->
-            Users.join cnn world
-                |> Tuple.mapFirst (\w -> { model | world = w })
+                            NetworkLeave cnn ->
+                                { m | world = User.leave cnn m.world }
 
-        Leave cnn ->
-            Users.leave cnn world
-                |> Tuple.mapFirst (\w -> { model | world = w })
+                            NetworkData cnn data ->
+                                let
+                                    _ =
+                                        Debug.log "Server.NetworkData" data
+                                in
+                                fromPacket data
+                                    |> List.foldl (\a acc -> { acc | world = Data.system cnn a m.world }) m
 
-        Error err ->
-            ( { model | error = err }, Cmd.none )
+                            NetworkError error ->
+                                { m | error = error }
+                    )
+                    model
+                |> (\m ->
+                        let
+                            _ =
+                                output
+                        in
+                        ( m, Cmd.none )
+                   )
+
+        Err err ->
+            ( { model | error = D.errorToString err }, Cmd.none )
 
 
-subscriptions model =
-    Sub.batch
-        [ Port.receive Receive
-        , Port.join Join
-        , Port.leave Leave
-        , Port.error Error
-        ]
+output : List ToClient -> Cmd msg
+output a =
+    if a == [] then
+        Cmd.none
+
+    else
+        Common.Protocol.Util.toPacket Common.Protocol.Server.encode a |> Tuple.pair "" |> Port.output
+
+
+fromPacket : String -> List Common.Protocol.Message.ToServer
+fromPacket =
+    Common.Protocol.Util.fromPacket Common.Protocol.Server.decode
