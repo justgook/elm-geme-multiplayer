@@ -31,7 +31,7 @@ mv "$GITHUB_WORKSPACE/$build_dir" "$temp_dir/$current_tag"
 
 git add .
 #Update redirect url from root folder to fresh version
-sed -i'' -e "s/\/[^\/]*\/browser.html/\/$current_tag\/browser.html/g" 404.html
+sed -i'' -e "s/<meta http-equiv=\"refresh\" content=\"0;URL=[^\"]*/<meta http-equiv=\"refresh\" content=\"0;URL='$current_tag'/g" 404.html
 
 #Commit and deploy
 git config user.name "$GITHUB_ACTOR"
