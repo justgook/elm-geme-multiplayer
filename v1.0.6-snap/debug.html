@@ -2,7 +2,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <link rel="manifest" href="/v1.0.6-snap/manifest.webmanifest">
-    <title>Multiplayer game</title>
+    <title>Multiplayer</title>
     <script>
         const {redirect} = sessionStorage
         delete sessionStorage.redirect
@@ -44,8 +44,12 @@
         var parcelRequire;
     </script>
 
-<link rel="stylesheet" href="/v1.0.6-snap/browser.css"></head>
+<link rel="stylesheet" href="/v1.0.6-snap/debug.css"></head>
 <body>
-<script type="module" src="/v1.0.6-snap/browser.js"></script>
+<div tabindex="-1" id="game1"><div style="height: inherit">1</div></div>
+<div tabindex="-1" id="game2"><div style="height: inherit">2</div></div>
+<div tabindex="-1" id="game3"><div style="height: inherit">3</div></div>
+<div tabindex="-1" id="game4"><div style="height: inherit">4</div></div>
+<script type="module" src="/v1.0.6-snap/debug.js"></script>
 
 </body></html>

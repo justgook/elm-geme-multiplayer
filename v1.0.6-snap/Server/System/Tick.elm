@@ -1,9 +1,9 @@
 module Server.System.Tick exposing (system)
 
-import Server.Model exposing (Message, Model)
-import Time exposing (Posix)
+import Server.Model exposing (Model)
+import Server.Port as Port
 
 
-system : Posix -> Model -> ( Model, Cmd Message )
-system t model =
-    ( model, Cmd.none )
+system : Float -> Model -> Model
+system time model =
+    { model | time = time }

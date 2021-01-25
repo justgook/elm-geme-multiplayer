@@ -1,1 +1,1 @@
-console.log("just placeholder for template");
+console.log("just placeholder for template")
