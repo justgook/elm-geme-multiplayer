@@ -1,34 +1,10 @@
 #Logs
 logs
 *.log
-
-#Dependencies
-node_modules/
-elm-stuff/
-
-# Develop
-examples/index.html
-examples/bundle.js
-
 # Yarn Integrity file
 .yarn-integrity
-
-#Generated tests
-tests/VerifyExamples
-
-#Generated asset
-/src/asset/generated
-/snowpack.cert
-/snowpack.key
-
 #OS stuff
 .DS_Store
 .vscode
 *.iml
 /.idea
-
-#Other stuff
-documentation.json
-
-#Deployment
-target/
