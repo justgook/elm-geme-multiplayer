@@ -13,7 +13,8 @@ system cnn data world =
         user =
             User.entityId cnn world
 
-        _ =
-            Debug.log "ToServer::system" ( user, data )
+        --
+        --_ =
+        --    Debug.log "ToServer::system" ( user, data )
     in
     world

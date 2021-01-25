@@ -18,10 +18,10 @@ decode =
                         D.map3 RequestMovement (D.map Direction.formInt D.byte) D.byte D.uint
 
                     0x80 ->
-                        let
-                            _ =
-                                Debug.log "Server Got" "LoginRequest"
-                        in
+                        --let
+                        --    _ =
+                        --        Debug.log "Server Got" "LoginRequest"
+                        --in
                         D.fail
 
                     _ ->

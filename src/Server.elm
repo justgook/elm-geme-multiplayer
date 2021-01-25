@@ -37,20 +37,20 @@ update v model =
                                 Tick.system time m
 
                             NetworkJoin cnn ->
-                                let
-                                    _ =
-                                        Debug.log "Server::NetworkJoin" cnn
-                                in
+                                --let
+                                --    _ =
+                                --        Debug.log "Server::NetworkJoin" cnn
+                                --in
                                 { m | world = User.join cnn m.world }
 
                             NetworkLeave cnn ->
                                 { m | world = User.leave cnn m.world }
 
                             NetworkData cnn data ->
-                                let
-                                    _ =
-                                        Debug.log "Server.NetworkData" data
-                                in
+                                --let
+                                --    _ =
+                                --        Debug.log "Server.NetworkData" data
+                                --in
                                 fromPacket data
                                     |> List.foldl (\a acc -> { acc | world = Data.system cnn a m.world }) m
 

@@ -9,10 +9,10 @@ import Logic.System exposing (System)
 
 system : ToClient -> System World
 system data world =
-    let
-        _ =
-            Debug.log "Client::NetworkData" data
-    in
+    --let
+    --    _ =
+    --        Debug.log "Client::NetworkData" data
+    --in
     world
 
 

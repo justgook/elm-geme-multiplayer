@@ -102,10 +102,6 @@ update msg ({ textures } as model) =
                                         ( { m | world = Data.keyboard down button m.world }, cmds )
 
                                     Port.InputMouse mouseData ->
-                                        --let
-                                        --    _ =
-                                        --        Debug.log "Mouse" mouseData
-                                        --in
                                         ( m, cmds )
 
                                     Port.InputTouch ->
