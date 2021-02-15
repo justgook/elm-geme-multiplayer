@@ -1,12 +1,24 @@
 import type { ServerConnection } from "../connection/ConnectionInterface"
 import { ConnectionEvent } from "../connection/ConnectionInterface"
-import type Elm from "../Server.elm"
+
+import type { Game } from "../Game"
+
+export const tick = (fps: number): ServerProps["tick"] => {
+    let lastTime = 0
+    const frameDuration = 1000 / fps
+    return (callback: (time: number) => void) => {
+        const currTime = Date.now()
+        const timeToCall = Math.max(0, frameDuration - (currTime - lastTime))
+        setTimeout(() => callback(currTime + timeToCall), timeToCall)
+        lastTime = currTime + timeToCall
+    }
+}
 
 export type Options = Partial<Omit<ServerProps, "connection">> & Pick<ServerProps, "connection">
-export const initServer = (app: Elm.Server.App, options: Options): void => {
+export const initServer = (app: Game.Server.App, options: Options): void => {
     const msgBuffer: Message[] = []
     const opt = { ...defaultProps, ...options }
-    const { connection, tick } = opt
+    const { connection, tick, gameChannel } = opt
 
     connection.on(ConnectionEvent.join, (cnn: string) => msgBuffer.push([MessageId.networkJoin, cnn]))
     connection.on(ConnectionEvent.receive, (cnn, data) => msgBuffer.push([MessageId.networkReceive, cnn, data]))
@@ -14,7 +26,7 @@ export const initServer = (app: Elm.Server.App, options: Options): void => {
     connection.on(ConnectionEvent.leave, (cnn: string) => msgBuffer.push([MessageId.networkLeave, cnn]))
 
     app.ports.output.subscribe(connection.send)
-
+    connection.connect(gameChannel)
     const gameLoop = () => {
         msgBuffer.push([MessageId.tick, performance.now()])
         app.ports.input.send(msgBuffer)

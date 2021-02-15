@@ -18,7 +18,7 @@ export interface ClientConnection {
 
     connect(channel: string): void
 
-    dispose(): void
+    dispose?(): void
 
     on(...args: ClientOnParams): void
 }
@@ -35,7 +35,7 @@ export interface ServerConnection {
 
     connect(channel: string): void
 
-    dispose(): void
+    dispose?(): void
 
     on(...args: ServerOnParams): void
 }

@@ -1,10 +1,10 @@
-import type Elm from "../ClientDebug.elm"
 import type { ClientConnection } from "../connection/ConnectionInterface"
 import { ConnectionEvent } from "../connection/ConnectionInterface"
+import type { Game } from "../Game"
 
 export type Options = Partial<Omit<ClientProps, "connection">> & Pick<ClientProps, "connection">
 
-export function initClient(app: Elm.ClientDebug.App, options: Options): void {
+export function initClient(app: Game.Client.App, options: Options): void {
     const opt = { ...defaultProps, ...options }
     const { tick, resize, keyboard, mouse, connection, gameChannel } = opt
     const msgBuffer: Message[] = []
@@ -74,20 +74,14 @@ export const defaultProps: Omit<ClientProps, "connection"> = {
         })
     },
     mouse: (callback) => {
-        document.addEventListener("mousemove", (e) => {
-            callback(e.offsetX, e.offsetY, e.buttons === 1, e.buttons === 2)
-        })
-        document.addEventListener("mousedown", (e) => {
+        const mouseTracker = (e: MouseEvent) => {
             e.preventDefault()
             callback(e.offsetX, e.offsetY, e.buttons === 1, e.buttons === 2)
-        })
-        document.addEventListener("mouseup", (e) => {
-            e.preventDefault()
-            callback(e.offsetX, e.offsetY, e.buttons === 1, e.buttons === 2)
-        })
-        document.addEventListener("contextmenu", (e) => {
-            e.preventDefault()
-        })
+        }
+        document.addEventListener("mousemove", mouseTracker)
+        document.addEventListener("mousedown", mouseTracker)
+        document.addEventListener("mouseup", mouseTracker)
+        document.addEventListener("contextmenu", mouseTracker)
     },
     keyboard: (callback) => {
         window.addEventListener("keydown", (e) => {

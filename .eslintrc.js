@@ -28,6 +28,13 @@ module.exports = {
                 "@typescript-eslint/no-var-requires": "off",
             },
         },
+        {
+            files: ["*.js"],
+            rules: {
+                "@typescript-eslint/explicit-module-boundary-types": "off",
+                "@typescript-eslint/no-var-requires": "off",
+            },
+        },
     ],
 }
 

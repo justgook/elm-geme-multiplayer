@@ -1,6 +1,10 @@
 const isDev = process.env.NODE_ENV === "development"
 const prefix = process.env.SNOWPACK_PUBLIC_URL || ""
 
+if (isDev) {
+    require("./server-host/peer").start()
+}
+
 module.exports = {
     plugins: [
         [
@@ -8,7 +12,7 @@ module.exports = {
             {
                 verbose: false,
                 // When to enable Elm's time-traveling debugger
-                debugger: "dev", // One of "never", "dev" (only on `snowpack dev`) or "always"
+                debugger: "never", // One of "never", "dev" (only on `snowpack dev`) or "always"
                 optimize: "build", // One of "never", "build" (only on `snowpack build`) or "always"
             },
         ],
@@ -18,12 +22,7 @@ module.exports = {
                 cmd: "eslint src --ext .js,.ts",
             },
         ],
-        [
-            "./snowpack-plugin/manifest-snowpack-plugin.js",
-            {
-                /* pluginOptions */
-            },
-        ],
+        ["./snowpack-plugin/manifest-snowpack-plugin.js", { prefix }],
         [
             "./snowpack-plugin/pwa-snowpack-plugin.js",
             {
@@ -52,6 +51,7 @@ module.exports = {
         // },
     },
     devOptions: {
+        // hostname:
         port: 8888,
         fallback: `404.html`,
         hmr: true,
@@ -70,30 +70,23 @@ module.exports = {
         src: `/`,
     },
     exclude: isDev ? ["**/generated/**/*"] : [],
-
+    routes: [
+        {
+            match: "routes",
+            src: "/api/.*",
+            dest: (req, res) => {
+                console.log(req)
+                res.statusCode = 200
+                res.end("hello World")
+            },
+        },
+    ],
     optimize: {
         // entrypoints: 'auto' | string[] | (({files: string[]}) => string[]);
         // preload: true,
         bundle: true,
         manifest: true,
         minify: true,
-        // target: "es2017",
         target: "es2020", //import.meta.env
-
-        // routes: [
-        //     {
-        //         src: "/",
-        //         dest: async (req, res) => {
-        //             // console.log("mustache", mustache)
-        //             // res.setHeader("Content-Type", "application/manifest+json")
-        //             const template = await fs.readFile(
-        //                 "./src/index.html",
-        //                 "utf-8"
-        //             )
-        //             res.statusCode = 200
-        //             res.end(Mustache.render(template, { name: "Luke" }))
-        //         },
-        //     },
-        // ],
     },
 }

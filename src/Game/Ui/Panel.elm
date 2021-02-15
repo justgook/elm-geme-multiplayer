@@ -58,7 +58,7 @@ slice9Render img imageSize uSize uBounds uSlice uP uT z opacity =
 
 vertSlice9 =
     [glsl|
-precision mediump float;
+precision highp float;
 attribute vec2 aP;
 uniform vec4 uT;
 uniform vec2 uP;
@@ -72,7 +72,7 @@ varying vec2 uv2;
 varying vec4 center;
 varying vec2 doRepeat;
 varying vec2 repeat;
-vec2 edgeFix = vec2(0.0000001, -0.0000001);
+vec2 edgeFix = vec2(-0.25000001, -0.2500001);
 void main () {
     doRepeat = vec2(0.0,0.0);
     center = vec4(
@@ -141,7 +141,7 @@ void main () {
 
 fragSlice9 =
     [glsl|
-        precision mediump float;
+        precision highp float;
         varying vec2 uv;
         varying vec4 center;
         varying vec2 uv2;
@@ -151,7 +151,6 @@ fragSlice9 =
         uniform sampler2D uImg;
         uniform vec2 uImgSize;
         void main () {
-        gl_FragColor = vec4(0.,0.,0.,1.);
         vec2 pixel2 = fract(fract(uv) * repeat);
 
         if (doRepeat.x < 1.0) {

@@ -25,6 +25,8 @@ canvas {
     /*width: 100%;*/
     /*height: 100%;*/
     image-rendering: pixelated;
+    /*width: 1px;*/
+    /*height: 1px;*/
 }
 
 /* Weird chrome selector for fullscreen bbackground */
@@ -42,22 +44,24 @@ body:fullscreen::backdrop {
 body {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    /*grid-template-rows: 1fr 1fr;*/
+    grid-template-rows: repeat(auto-fit, 1fr);
+    /*grid-auto-flow: row dense;*/
     gap: 10px;
     height: calc(100vh - 20px);
     padding: 10px;
     background: antiquewhite;
 }
 
-#game1, #game2, #game3, #game4 {
+[id^="game"] {
     background: darkgoldenrod;
     position: relative;
 }
-
-body > div {
-    height: unset !important;
+[id^="game"] div{
+    position: absolute;
+    inset: 0;
 }
 
-#game1:focus, #game2:focus, #game3:focus, #game4:focus, body > div:focus {
+[tabindex]:focus {
     outline: 3px solid #F00;
 }

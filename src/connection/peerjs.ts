@@ -1,161 +1,155 @@
-// // @ts-ignore
-// import Peer from "https://cdn.skypack.dev/simple-peer"
-// // const peer = new Peer()
-// console.log(Peer)
-//
-// export interface ClientOptions {}
-// export const PeerClient: ClientConstructor<ClientOptions> = class Client
-//     implements ClientConnection {
-//     constructor(channel: string, options: ClientOptions) {}
-//     onSend(fn: ClientSendEventHandler) {}
-//     onError(fn: ClientErrorEventHandler) {}
-//
-//     onJoin(fn: ClientJoinEventHandler) {}
-//
-//     onLeave(fn: ClientJoinEventHandler) {}
-//
-//     onReceive(fn: ClientReceiveEventHandler) {}
-//
-//     send(data: string) {}
-// }
-//
-// export interface ServerOptions {}
-// export const PeerServer: ServerConstructor<ServerOptions> = class Server
-//     implements ServerConnection {
-//     constructor(channel: string, options: ServerOptions) {}
-//     onError(fn: ServerErrorEventHandler) {}
-//
-//     onJoin(fn: ServerJoinEventHandler) {}
-//
-//     onLeave(fn: ServerLeaveEventHandler) {}
-//
-//     onReceive(fn: ServerReceiveEventHandler) {}
-//
-//     send(cnn: string, data: string) {}
-//
-//     onSend(fn: ServerSendEventHandler) {}
-// }
-//
-// export class Client implements ClientConstructor<ClientOptions> {
-//     constructor(cnn: string, opt: ClientOptions) {}
-//     new(hour: number, minute: number) {}
-//     send(data: string) {}
-//
-//     onJoin(fn: SimpleEventCallback) {}
-//
-//     onReceive(fn: ReceiveEventCallback) {}
-//
-//     onError(fn: ErrorEventCallback) {}
-//
-//     onLeave(fn: SimpleEventCallback) {}
-// }
+import Peer from "peerjs"
+import { ClientConnection, ClientOnParams, ConnectionEvent, ServerConnection, ServerOnParams } from "./ConnectionInterface"
 
-// class Base {
-//     constructor(callbacks, peer) {
-//         this.join = this.join.bind(this, callbacks)
-//         this.receive = this.receive.bind(this, callbacks)
-//         this.error = this.error.bind(this, callbacks)
-//         this.leave = this.leave.bind(this, callbacks)
-//         peer.on("error", function (err) {
-//             callbacks.error(err.type)
-//         })
-//     }
-//
-//     join(cn, fn) {
-//         cn.join = fn
-//     }
-//
-//     receive(cn, fn) {
-//         cn.receive = fn
-//     }
-//
-//     error(cn, fn) {
-//         cn.error = fn
-//     }
-//
-//     leave(cn, fn) {
-//         cn.leave = fn
-//     }
-// }
-//
-// export class Client extends Base {
-//     constructor(id, options = {}) {
-//         const callbacks = {
-//             join: Function.prototype,
-//             error: Function.prototype,
-//             receive: Function.prototype,
-//             leave: Function.prototype,
-//             ////
-//             send: Function.prototype,
-//         }
-//         const peer = new Peer(null, options)
-//         super(callbacks, peer)
-//
-//         peer.on("open", function () {
-//             console.log("Client:peer::open")
-//             start(peer, callbacks, id)
-//         })
-//         this.send = function (data) {
-//             callbacks.send(data)
-//         }
-//     }
-// }
-//
-// function start(peer, callbacks, id) {
-//     const cnn = peer.connect(id, { serialization: "none", reliable: true })
-//     const reconnect = setTimeout(() => {
-//         console.log("Client::reconnecting")
-//         cnn.close()
-//         start(peer, callbacks, id)
-//     }, 1000)
-//     connect(cnn, callbacks, reconnect)
-// }
-//
-// function connect(cnn, callbacks, reconnect) {
-//     callbacks.send = cnn.send.bind(cnn)
-//     cnn.on("open", function () {
-//         clearTimeout(reconnect)
-//         console.log("Client:connected")
-//         callbacks.join()
-//     })
-//
-//     cnn.on("data", function (data) {
-//         callbacks.receive(data)
-//     })
-//
-//     cnn.on("close", function () {
-//         console.log("Client::close")
-//     })
-// }
-//
-// export class Server extends Base {
-//     constructor(id, options = {}) {
-//         const callbacks = {
-//             join: Function.prototype,
-//             error: Function.prototype,
-//             receive: Function.prototype,
-//             leave: Function.prototype,
-//         }
-//         const peer = new Peer(id, options)
-//         super(callbacks, peer)
-//
-//         const connections = new Map()
-//
-//         this.send = function (cnn, data) {
-//             connections.get(cnn).send(data)
-//         }
-//         peer.on("connection", function (cnn) {
-//             cnn.on("open", function () {
-//                 connections.set(cnn.label, cnn)
-//                 callbacks.join(cnn.label)
-//             })
-//             cnn.on("close", function () {
-//                 connections.delete(cnn.label)
-//                 callbacks.leave(cnn.label)
-//             })
-//             cnn.on("data", function (data) {
-//                 callbacks.receive(cnn.label, data)
-//             })
-//         })
-//     }
-// }
+class PeerjsCommon {
+    protected callbacks = {
+        join: Function.prototype,
+        error: Function.prototype,
+        receive: Function.prototype,
+        leave: Function.prototype,
+        send: Function.prototype,
+    }
+    options: Peer.PeerJSOption
+
+    constructor(url = location.href) {
+        this.options = urlToOptions(url)
+    }
+
+    on = (...args: ClientOnParams | ServerOnParams): void => {
+        switch (args[0]) {
+            case ConnectionEvent.send:
+                break
+            case ConnectionEvent.join:
+                this.callbacks.join = args[1]
+                break
+            case ConnectionEvent.receive:
+                this.callbacks.receive = args[1]
+                break
+            case ConnectionEvent.error:
+                this.callbacks.error = args[1]
+                break
+            case ConnectionEvent.leave:
+                this.callbacks.leave = args[1]
+                break
+        }
+    }
+}
+
+export class PeerJsServer extends PeerjsCommon implements ServerConnection {
+    connect = (channel: string): void => {
+        const peer = new Peer(channel, this.options)
+        const connections = new Map()
+
+        this.callbacks.send = ([cnn, data]: [cnn: string, data: string]) => connections.get(cnn).send(data)
+        peer.on("error", (err) => {
+            this.callbacks.error(err)
+        })
+
+        peer.on("connection", (cnn) => {
+            cnn.on("open", () => {
+                connections.set(cnn.label, cnn)
+                this.callbacks.join(cnn.label)
+            })
+            cnn.on("close", () => {
+                connections.delete(cnn.label)
+                this.callbacks.leave(cnn.label)
+            })
+            cnn.on("data", (data) => {
+                this.callbacks.receive(cnn.label, data)
+            })
+        })
+    }
+
+    send = (args: [cnn: string, data: string]): void => {
+        this.callbacks.send(args)
+    }
+}
+
+export class PeerJsClient extends PeerjsCommon implements ClientConnection {
+    private initialReconnectTime = 100
+    private connectTimeOut = 3000
+    private retryDelay = this.initialReconnectTime
+    private maxRetryTimeOut = 15000
+
+    private msgBuffer: string[] = []
+    private buffering = (data: string) => {
+        this.msgBuffer.push(data)
+    }
+    protected callbacks = {
+        join: Function.prototype,
+        error: Function.prototype,
+        receive: Function.prototype,
+        leave: Function.prototype,
+        send: this.buffering,
+    }
+
+    connect = (channel: string, label: string = sessionStorage.peerJSlabel): void => {
+        const peer = new Peer("", this.options)
+        peer.on("error", (err) => {
+            this.reconnect(channel, peer, peer.connections[0], err)
+        })
+        peer.on("open", () => {
+            const cnn = peer.connect(channel, { serialization: "none", reliable: true, label })
+            sessionStorage.peerJSlabel = cnn.label
+            const reconnect = setTimeout(() => this.reconnect(channel, peer, cnn), this.connectTimeOut)
+
+            cnn.on("open", () => {
+                clearTimeout(reconnect)
+                this.retryDelay = this.initialReconnectTime
+                this.msgBuffer.forEach((a) => cnn.send(a))
+                this.msgBuffer = []
+                this.callbacks.send = (data: string) => cnn.send(data)
+                this.callbacks.join()
+            })
+
+            cnn.on("data", (data) => {
+                this.callbacks.receive(data)
+            })
+
+            cnn.on("close", () => {
+                this.reconnect(channel, peer, cnn)
+                this.callbacks.leave()
+            })
+
+            cnn.on("error", (err) => {
+                this.callbacks.error(err)
+            })
+        })
+    }
+
+    private reconnect = (channel: string, peer: Peer, cnn: Peer.DataConnection, error?: string) => {
+        this.callbacks.send = this.buffering
+        if (error) {
+            this.callbacks.error(error)
+        }
+        cnn?.close?.()
+        peer.disconnect()
+        peer.destroy()
+        setTimeout(() => this.connect(channel), this.retryDelay)
+        this.retryDelay = Math.min(this.retryDelay * 1.5, this.maxRetryTimeOut)
+    }
+
+    send = (data: string): void => {
+        this.callbacks.send(data)
+    }
+}
+
+const urlToOptions = (aa: string) => {
+    try {
+        const url = new URL(aa)
+        console.log("url", url)
+
+        const options: Peer.PeerJSOption = {
+            host: url.hostname,
+            path: url.pathname,
+            secure: url.protocol === "https:",
+        }
+        if (url.port !== "") {
+            options.port = +url.port
+        }
+
+        return options
+    } catch (_) {
+        return {}
+    }
+}

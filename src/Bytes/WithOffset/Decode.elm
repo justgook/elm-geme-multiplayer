@@ -1,14 +1,14 @@
 module Bytes.WithOffset.Decode exposing
     ( loopWith, andThenWith
     , Decoder, decode
-    , signedInt8, signedInt16, signedInt32
-    , unsignedInt8, unsignedInt16, unsignedInt32
+    , signedInt8, signedInt16, signedInt24, signedInt32
+    , unsignedInt8, unsignedInt16, unsignedInt24, unsignedInt32
     , float32, float64
     , bytes
     , string
     , map, map2, map3, map4, map5
     , andThen, succeed, fail
-    , loop
+    , loop, repeat
     )
 
 {-|
@@ -26,8 +26,8 @@ module Bytes.WithOffset.Decode exposing
 
 # Integers
 
-@docs signedInt8, signedInt16, signedInt32
-@docs unsignedInt8, unsignedInt16, unsignedInt32
+@docs signedInt8, signedInt16, signedInt24, signedInt32
+@docs unsignedInt8, unsignedInt16, unsignedInt24, unsignedInt32
 
 
 # Floats
@@ -57,11 +57,12 @@ module Bytes.WithOffset.Decode exposing
 
 # Loop
 
-@docs loop
+@docs loop, repeat
 
 -}
 
-import Bytes exposing (Bytes, Endianness)
+import Bitwise
+import Bytes exposing (Bytes, Endianness(..))
 import Bytes.Decode as D exposing (Step(..))
 
 
@@ -108,6 +109,18 @@ signedInt16 endianness =
     Decoder (D.signedInt16 endianness |> D.map (Tuple.pair 2))
 
 
+{-| Decode three bytes into an integer from `-8388608` to `8388607`.
+-}
+signedInt24 : Endianness -> Decoder Int
+signedInt24 endianness =
+    case endianness of
+        BE ->
+            map3 pack24 signedInt8 unsignedInt8 unsignedInt8
+
+        LE ->
+            map3 (\b1 b2 b3 -> pack24 b3 b2 b1) unsignedInt8 unsignedInt8 signedInt8
+
+
 {-| Decode four bytes into an integer from `-2147483648` to `2147483647`.
 -}
 signedInt32 : Endianness -> Decoder Int
@@ -131,6 +144,18 @@ unsignedInt8 =
 unsignedInt16 : Endianness -> Decoder Int
 unsignedInt16 endianness =
     Decoder (D.unsignedInt16 endianness |> D.map (Tuple.pair 2))
+
+
+{-| Decode three bytes into an integer from `0` to `16777215`.
+-}
+unsignedInt24 : Endianness -> Decoder Int
+unsignedInt24 endianness =
+    case endianness of
+        BE ->
+            map3 pack24 unsignedInt8 unsignedInt8 unsignedInt8
+
+        LE ->
+            map3 (\b1 b2 b3 -> pack24 b3 b2 b1) unsignedInt8 unsignedInt8 unsignedInt8
 
 
 {-| Decode four bytes into an integer from `0` to `4294967295`.
@@ -477,3 +502,26 @@ andThenWith callback (Decoder decode1) =
                 decoder2 |> D.map (\( n2, v2 ) -> ( n1 + n2, v2 ))
             )
         |> Decoder
+
+
+{-| Repeat decoder bytes amount
+-}
+repeat : Int -> Decoder a -> Decoder (List a)
+repeat total decoder =
+    loopWith []
+        (\offset acc ->
+            if total <= offset then
+                succeed (Done acc)
+
+            else
+                map (\x -> Loop (x :: acc)) decoder
+        )
+
+
+
+--- UTIL
+
+
+pack24 : Int -> Int -> Int -> Int
+pack24 a b c =
+    Bitwise.or (Bitwise.shiftLeftBy 16 a) (Bitwise.or (Bitwise.shiftLeftBy 8 b) c)

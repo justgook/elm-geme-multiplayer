@@ -1,4 +1,4 @@
-import Elm from "../Server.elm"
+import Elm from "../Rpg/Server.elm"
 //TODO convert to https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker
 const app = Elm.Server.init()
 // chrome://inspect/#workers
