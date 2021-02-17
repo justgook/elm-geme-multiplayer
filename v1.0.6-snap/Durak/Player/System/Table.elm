@@ -20,10 +20,6 @@ system { screen, world } =
         width =
             spacing + Card.size.width
 
-        --_ =
-        --    world.table
-        --        |> Table.toList
-        --        |> Debug.log "table:system"
         shapes =
             world.table
                 |> Table.toList

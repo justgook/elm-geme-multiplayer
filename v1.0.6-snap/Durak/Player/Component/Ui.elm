@@ -47,7 +47,11 @@ role rr ui =
                     noneButton
             in
             Defence
-                { state | shape = Playground.words red "Defence" }
+                { state
+                    | shape =
+                        Playground.words red "Defence"
+                            |> moveY (Card.size.height * 2)
+                }
 
         Role.Support ->
             Support
@@ -115,10 +119,12 @@ render ui =
             Playground.words Playground.blue "Wait For Next Game"
 
         Waiting { shape } ->
-            shape
+            [ shape ]
+                |> Playground.group
 
         Ready ->
             Playground.words Playground.blue "Ready"
+                |> moveY (Card.size.height * 2)
 
         Attack ->
             Playground.words Playground.blue "Attack"

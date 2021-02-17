@@ -9,15 +9,6 @@ import Rpg.Server.World exposing (World)
 
 system : Port.ConnectionId -> ToServer -> System World
 system cnn msg world =
-    let
-        user =
-            User.entityId cnn world
-
-        --_ =
-        --    Debug.log "ToServer::system" ( user, msg )
-        _ =
-            LoginConfirm
-    in
     case msg of
         MovementRequest direction byte uint ->
             world

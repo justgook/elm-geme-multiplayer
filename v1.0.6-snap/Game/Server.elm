@@ -41,8 +41,4 @@ update update2 v model =
                 |> Tuple.mapSecond Cmd.batch
 
         Err err ->
-            --let
-            --    _ =
-            --        Debug.log "server error" err
-            --in
             ( { model | error = D.errorToString err }, Cmd.none )

@@ -1,11 +1,11 @@
-module Durak.Spectator.System.Qr exposing (draw)
+module Durak.Common.Qr exposing (render)
 
 import Playground
 import QRCode
 
 
-draw : String -> Playground.Shape
-draw =
+render : String -> Playground.Shape
+render =
     QRCode.fromString
         >> Result.map
             (QRCode.toMatrix
@@ -24,3 +24,4 @@ draw =
             )
         >> Result.withDefault ""
         >> Playground.words Playground.black
+        >> Playground.scale 0.125

@@ -511,7 +511,7 @@ repeat total decoder =
     loopWith []
         (\offset acc ->
             if total <= offset then
-                succeed (Done acc)
+                succeed (Done (List.reverse acc))
 
             else
                 map (\x -> Loop (x :: acc)) decoder

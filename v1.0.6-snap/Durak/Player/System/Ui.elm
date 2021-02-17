@@ -1,11 +1,26 @@
-module Durak.Player.System.Ui exposing (click)
+module Durak.Player.System.Ui exposing (click, system)
 
 import Durak.Common.Bounding.Tree as BoundingTree
-import Durak.Player.Component.Ui exposing (Ui(..))
+import Durak.Player.Component.Card as Card
+import Durak.Player.Component.Ui as Ui exposing (Ui(..))
 import Durak.Player.Util as Util
 import Durak.Player.World exposing (World)
 import Durak.Protocol.Message as Protocol
+import Game.Client.Model exposing (Model)
 import Logic.System exposing (System)
+import Playground exposing (Shape)
+
+
+system : Model World -> ( World, Shape )
+system { screen, world } =
+    (case world.ui of
+        _ ->
+            [ world.qr |> Playground.fade 0.5 |> Playground.moveY (Card.size.height * -2)
+            , Ui.render world.ui
+            ]
+                |> Playground.group
+    )
+        |> Tuple.pair world
 
 
 click : System World

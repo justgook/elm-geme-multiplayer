@@ -5,6 +5,7 @@ import Durak.Common.Bounding as Bounding exposing (Bounding, Point)
 
 
 --https://github.com/ianmackenzie/elm-geometry/blob/master/src/Set2d.elm
+--https://github.com/yujota/elm-collision-detection/tree/1.0.1/src
 
 
 type alias Tree a =

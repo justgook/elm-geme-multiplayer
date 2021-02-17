@@ -519,11 +519,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.bw.az === region.bR.az)
+	if (region.bw.az === region.bT.az)
 	{
 		return 'on line ' + region.bw.az;
 	}
-	return 'on lines ' + region.bw.az + ' through ' + region.bR.az;
+	return 'on lines ' + region.bw.az + ' through ' + region.bT.az;
 }
 
 
@@ -1857,9 +1857,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.dN,
-		impl.eF,
-		impl.er,
+		impl.dQ,
+		impl.eI,
+		impl.eu,
 		function() { return function() {} }
 	);
 });
@@ -3936,11 +3936,11 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.dN,
-		impl.eF,
-		impl.er,
+		impl.dQ,
+		impl.eI,
+		impl.eu,
 		function(sendToApp, initialModel) {
-			var view = impl.eK;
+			var view = impl.eN;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -3972,12 +3972,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.dN,
-		impl.eF,
-		impl.er,
+		impl.dQ,
+		impl.eI,
+		impl.eu,
 		function(sendToApp, initialModel) {
 			var divertHrefToApp = impl.bv && impl.bv(sendToApp)
-			var view = impl.eK;
+			var view = impl.eN;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3985,12 +3985,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.c7);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.da);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.ev) && (_VirtualDom_doc.title = title = doc.ev);
+				(title !== doc.ey) && (_VirtualDom_doc.title = title = doc.ey);
 			});
 		}
 	);
@@ -4046,8 +4046,8 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.ea;
-	var onUrlRequest = impl.eb;
+	var onUrlChange = impl.ed;
+	var onUrlRequest = impl.ee;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
@@ -4067,9 +4067,9 @@ function _Browser_application(impl)
 					var next = $elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.cF === next.cF
-							&& curr.b_ === next.b_
-							&& curr.cC.a === next.cC.a
+							&& curr.cI === next.cI
+							&& curr.b0 === next.b0
+							&& curr.cF.a === next.cF.a
 						)
 							? $elm$browser$Browser$Internal(next)
 							: $elm$browser$Browser$External(href)
@@ -4077,13 +4077,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		dN: function(flags)
+		dQ: function(flags)
 		{
-			return A3(impl.dN, flags, _Browser_getUrl(), key);
+			return A3(impl.dQ, flags, _Browser_getUrl(), key);
 		},
-		eK: impl.eK,
-		eF: impl.eF,
-		er: impl.er
+		eN: impl.eN,
+		eI: impl.eI,
+		eu: impl.eu
 	});
 }
 
@@ -4149,17 +4149,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { dJ: 'hidden', db: 'visibilitychange' }
+		? { dM: 'hidden', de: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { dJ: 'mozHidden', db: 'mozvisibilitychange' }
+		? { dM: 'mozHidden', de: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { dJ: 'msHidden', db: 'msvisibilitychange' }
+		? { dM: 'msHidden', de: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { dJ: 'webkitHidden', db: 'webkitvisibilitychange' }
-		: { dJ: 'hidden', db: 'visibilitychange' };
+		? { dM: 'webkitHidden', de: 'webkitvisibilitychange' }
+		: { dM: 'hidden', de: 'visibilitychange' };
 }
 
 
@@ -4240,12 +4240,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		cN: _Browser_getScene(),
-		cY: {
-			eN: _Browser_window.pageXOffset,
-			eQ: _Browser_window.pageYOffset,
-			c_: _Browser_doc.documentElement.clientWidth,
-			bZ: _Browser_doc.documentElement.clientHeight
+		cQ: _Browser_getScene(),
+		c$: {
+			bE: _Browser_window.pageXOffset,
+			bF: _Browser_window.pageYOffset,
+			c1: _Browser_doc.documentElement.clientWidth,
+			b$: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4255,8 +4255,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		c_: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		bZ: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		c1: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		b$: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4279,15 +4279,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			cN: {
-				c_: node.scrollWidth,
-				bZ: node.scrollHeight
+			cQ: {
+				c1: node.scrollWidth,
+				b$: node.scrollHeight
 			},
-			cY: {
-				eN: node.scrollLeft,
-				eQ: node.scrollTop,
-				c_: node.clientWidth,
-				bZ: node.clientHeight
+			c$: {
+				bE: node.scrollLeft,
+				bF: node.scrollTop,
+				c1: node.clientWidth,
+				b$: node.clientHeight
 			}
 		};
 	});
@@ -4317,18 +4317,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			cN: _Browser_getScene(),
-			cY: {
-				eN: x,
-				eQ: y,
-				c_: _Browser_doc.documentElement.clientWidth,
-				bZ: _Browser_doc.documentElement.clientHeight
+			cQ: _Browser_getScene(),
+			c$: {
+				bE: x,
+				bF: y,
+				c1: _Browser_doc.documentElement.clientWidth,
+				b$: _Browser_doc.documentElement.clientHeight
 			},
-			ds: {
-				eN: x + rect.left,
-				eQ: y + rect.top,
-				c_: rect.width,
-				bZ: rect.height
+			dv: {
+				bE: x + rect.left,
+				bF: y + rect.top,
+				c1: rect.width,
+				b$: rect.height
 			}
 		};
 	});
@@ -4706,7 +4706,7 @@ function _WebGL_doBindAttribute(gl, attribute, mesh, attributes) {
   // The length of the number of vertices that
   // complete one 'thing' based on the drawing mode.
   // ie, 2 for Lines, 3 for Triangles, etc.
-  var elemSize = mesh.a.bQ;
+  var elemSize = mesh.a.bS;
 
   var idxKeys = [];
   for (var i = 0; i < elemSize; i++) {
@@ -4767,9 +4767,9 @@ function _WebGL_doBindAttribute(gl, attribute, mesh, attributes) {
  *  @return {Object} buffer.buffers - will be used to buffer attributes
  */
 function _WebGL_doBindSetup(gl, mesh) {
-  if (mesh.a.b2 > 0) {
+  if (mesh.a.b5 > 0) {
     var indexBuffer = gl.createBuffer();
-    var indices = _WebGL_makeIndexedBuffer(mesh.c, mesh.a.b2);
+    var indices = _WebGL_makeIndexedBuffer(mesh.c, mesh.a.b5);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
     return {
@@ -4779,7 +4779,7 @@ function _WebGL_doBindSetup(gl, mesh) {
     };
   } else {
     return {
-      numIndices: mesh.a.bQ * _WebGL_listLength(mesh.b),
+      numIndices: mesh.a.bS * _WebGL_listLength(mesh.b),
       indexBuffer: null,
       buffers: {}
     };
@@ -4958,9 +4958,9 @@ var _WebGL_drawGL = F2(function (model, domNode) {
 
     if (buffer.indexBuffer) {
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer.indexBuffer);
-      gl.drawElements(entity.d.a.cr, buffer.numIndices, gl.UNSIGNED_SHORT, 0);
+      gl.drawElements(entity.d.a.cu, buffer.numIndices, gl.UNSIGNED_SHORT, 0);
     } else {
-      gl.drawArrays(entity.d.a.cr, 0, buffer.numIndices);
+      gl.drawArrays(entity.d.a.cu, 0, buffer.numIndices);
     }
   }
 
@@ -5025,7 +5025,7 @@ function _WebGL_createUniformSetters(gl, model, program, uniformsMap) {
           gl.activeTexture(gl.TEXTURE0 + currentTexture);
           var tex = cache.textures.get(texture);
           if (!tex) {
-            tex = texture.di(gl);
+            tex = texture.dl(gl);
             cache.textures.set(texture, tex);
           }
           gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -5205,6 +5205,282 @@ function _WebGL_diff(oldModel, newModel) {
 }
 
 
+// eslint-disable-next-line no-unused-vars
+var _Texture_load = F6(function (magnify, mininify, horizontalWrap, verticalWrap, flipY, url) {
+  var isMipmap = mininify !== 9728 && mininify !== 9729;
+  return _Scheduler_binding(function (callback) {
+    var img = new Image();
+    function createTexture(gl) {
+      var texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magnify);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mininify);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, horizontalWrap);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, verticalWrap);
+      if (isMipmap) {
+        gl.generateMipmap(gl.TEXTURE_2D);
+      }
+      gl.bindTexture(gl.TEXTURE_2D, null);
+      return texture;
+    }
+    img.onload = function () {
+      var width = img.width;
+      var height = img.height;
+      var widthPowerOfTwo = (width & (width - 1)) === 0;
+      var heightPowerOfTwo = (height & (height - 1)) === 0;
+      var isSizeValid = (widthPowerOfTwo && heightPowerOfTwo) || (
+        !isMipmap
+        && horizontalWrap === 33071 // clamp to edge
+        && verticalWrap === 33071
+      );
+      if (isSizeValid) {
+        callback(_Scheduler_succeed({
+          $: 0,
+          dl: createTexture,
+          a: width,
+          b: height
+        }));
+      } else {
+        callback(_Scheduler_fail(A2(
+          $elm_explorations$webgl$WebGL$Texture$SizeError,
+          width,
+          height
+        )));
+      }
+    };
+    img.onerror = function () {
+      callback(_Scheduler_fail($elm_explorations$webgl$WebGL$Texture$LoadError));
+    };
+    if (url.slice(0, 5) !== 'data:') {
+      img.crossOrigin = 'Anonymous';
+    }
+    img.src = url;
+  });
+});
+
+// eslint-disable-next-line no-unused-vars
+var _Texture_size = function (texture) {
+  return _Utils_Tuple2(texture.a, texture.b);
+};
+
+
+// BYTES
+
+function _Bytes_width(bytes)
+{
+	return bytes.byteLength;
+}
+
+var _Bytes_getHostEndianness = F2(function(le, be)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		callback(_Scheduler_succeed(new Uint8Array(new Uint32Array([1]))[0] === 1 ? le : be));
+	});
+});
+
+
+// ENCODERS
+
+function _Bytes_encode(encoder)
+{
+	var mutableBytes = new DataView(new ArrayBuffer($elm$bytes$Bytes$Encode$getWidth(encoder)));
+	$elm$bytes$Bytes$Encode$write(encoder)(mutableBytes)(0);
+	return mutableBytes;
+}
+
+
+// SIGNED INTEGERS
+
+var _Bytes_write_i8  = F3(function(mb, i, n) { mb.setInt8(i, n); return i + 1; });
+var _Bytes_write_i16 = F4(function(mb, i, n, isLE) { mb.setInt16(i, n, isLE); return i + 2; });
+var _Bytes_write_i32 = F4(function(mb, i, n, isLE) { mb.setInt32(i, n, isLE); return i + 4; });
+
+
+// UNSIGNED INTEGERS
+
+var _Bytes_write_u8  = F3(function(mb, i, n) { mb.setUint8(i, n); return i + 1 ;});
+var _Bytes_write_u16 = F4(function(mb, i, n, isLE) { mb.setUint16(i, n, isLE); return i + 2; });
+var _Bytes_write_u32 = F4(function(mb, i, n, isLE) { mb.setUint32(i, n, isLE); return i + 4; });
+
+
+// FLOATS
+
+var _Bytes_write_f32 = F4(function(mb, i, n, isLE) { mb.setFloat32(i, n, isLE); return i + 4; });
+var _Bytes_write_f64 = F4(function(mb, i, n, isLE) { mb.setFloat64(i, n, isLE); return i + 8; });
+
+
+// BYTES
+
+var _Bytes_write_bytes = F3(function(mb, offset, bytes)
+{
+	for (var i = 0, len = bytes.byteLength, limit = len - 4; i <= limit; i += 4)
+	{
+		mb.setUint32(offset + i, bytes.getUint32(i));
+	}
+	for (; i < len; i++)
+	{
+		mb.setUint8(offset + i, bytes.getUint8(i));
+	}
+	return offset + len;
+});
+
+
+// STRINGS
+
+function _Bytes_getStringWidth(string)
+{
+	for (var width = 0, i = 0; i < string.length; i++)
+	{
+		var code = string.charCodeAt(i);
+		width +=
+			(code < 0x80) ? 1 :
+			(code < 0x800) ? 2 :
+			(code < 0xD800 || 0xDBFF < code) ? 3 : (i++, 4);
+	}
+	return width;
+}
+
+var _Bytes_write_string = F3(function(mb, offset, string)
+{
+	for (var i = 0; i < string.length; i++)
+	{
+		var code = string.charCodeAt(i);
+		offset +=
+			(code < 0x80)
+				? (mb.setUint8(offset, code)
+				, 1
+				)
+				:
+			(code < 0x800)
+				? (mb.setUint16(offset, 0xC080 /* 0b1100000010000000 */
+					| (code >>> 6 & 0x1F /* 0b00011111 */) << 8
+					| code & 0x3F /* 0b00111111 */)
+				, 2
+				)
+				:
+			(code < 0xD800 || 0xDBFF < code)
+				? (mb.setUint16(offset, 0xE080 /* 0b1110000010000000 */
+					| (code >>> 12 & 0xF /* 0b00001111 */) << 8
+					| code >>> 6 & 0x3F /* 0b00111111 */)
+				, mb.setUint8(offset + 2, 0x80 /* 0b10000000 */
+					| code & 0x3F /* 0b00111111 */)
+				, 3
+				)
+				:
+			(code = (code - 0xD800) * 0x400 + string.charCodeAt(++i) - 0xDC00 + 0x10000
+			, mb.setUint32(offset, 0xF0808080 /* 0b11110000100000001000000010000000 */
+				| (code >>> 18 & 0x7 /* 0b00000111 */) << 24
+				| (code >>> 12 & 0x3F /* 0b00111111 */) << 16
+				| (code >>> 6 & 0x3F /* 0b00111111 */) << 8
+				| code & 0x3F /* 0b00111111 */)
+			, 4
+			);
+	}
+	return offset;
+});
+
+
+// DECODER
+
+var _Bytes_decode = F2(function(decoder, bytes)
+{
+	try {
+		return $elm$core$Maybe$Just(A2(decoder, bytes, 0).b);
+	} catch(e) {
+		return $elm$core$Maybe$Nothing;
+	}
+});
+
+var _Bytes_read_i8  = F2(function(      bytes, offset) { return _Utils_Tuple2(offset + 1, bytes.getInt8(offset)); });
+var _Bytes_read_i16 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 2, bytes.getInt16(offset, isLE)); });
+var _Bytes_read_i32 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 4, bytes.getInt32(offset, isLE)); });
+var _Bytes_read_u8  = F2(function(      bytes, offset) { return _Utils_Tuple2(offset + 1, bytes.getUint8(offset)); });
+var _Bytes_read_u16 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 2, bytes.getUint16(offset, isLE)); });
+var _Bytes_read_u32 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 4, bytes.getUint32(offset, isLE)); });
+var _Bytes_read_f32 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 4, bytes.getFloat32(offset, isLE)); });
+var _Bytes_read_f64 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 8, bytes.getFloat64(offset, isLE)); });
+
+var _Bytes_read_bytes = F3(function(len, bytes, offset)
+{
+	return _Utils_Tuple2(offset + len, new DataView(bytes.buffer, bytes.byteOffset + offset, len));
+});
+
+var _Bytes_read_string = F3(function(len, bytes, offset)
+{
+	var string = '';
+	var end = offset + len;
+	for (; offset < end;)
+	{
+		var byte = bytes.getUint8(offset++);
+		string +=
+			(byte < 128)
+				? String.fromCharCode(byte)
+				:
+			((byte & 0xE0 /* 0b11100000 */) === 0xC0 /* 0b11000000 */)
+				? String.fromCharCode((byte & 0x1F /* 0b00011111 */) << 6 | bytes.getUint8(offset++) & 0x3F /* 0b00111111 */)
+				:
+			((byte & 0xF0 /* 0b11110000 */) === 0xE0 /* 0b11100000 */)
+				? String.fromCharCode(
+					(byte & 0xF /* 0b00001111 */) << 12
+					| (bytes.getUint8(offset++) & 0x3F /* 0b00111111 */) << 6
+					| bytes.getUint8(offset++) & 0x3F /* 0b00111111 */
+				)
+				:
+				(byte =
+					((byte & 0x7 /* 0b00000111 */) << 18
+						| (bytes.getUint8(offset++) & 0x3F /* 0b00111111 */) << 12
+						| (bytes.getUint8(offset++) & 0x3F /* 0b00111111 */) << 6
+						| bytes.getUint8(offset++) & 0x3F /* 0b00111111 */
+					) - 0x10000
+				, String.fromCharCode(Math.floor(byte / 0x400) + 0xD800, byte % 0x400 + 0xDC00)
+				);
+	}
+	return _Utils_Tuple2(offset, string);
+});
+
+var _Bytes_decodeFailure = F2(function() { throw 0; });
+
+
+
+var _Bitwise_and = F2(function(a, b)
+{
+	return a & b;
+});
+
+var _Bitwise_or = F2(function(a, b)
+{
+	return a | b;
+});
+
+var _Bitwise_xor = F2(function(a, b)
+{
+	return a ^ b;
+});
+
+function _Bitwise_complement(a)
+{
+	return ~a;
+};
+
+var _Bitwise_shiftLeftBy = F2(function(offset, a)
+{
+	return a << offset;
+});
+
+var _Bitwise_shiftRightBy = F2(function(offset, a)
+{
+	return a >> offset;
+});
+
+var _Bitwise_shiftRightZfBy = F2(function(offset, a)
+{
+	return a >>> offset;
+});
+
+
 /*
  * Copyright (c) 2010 Mozilla Corporation
  * Copyright (c) 2010 Vladimir Vukicevic
@@ -5256,11 +5532,11 @@ var _MJS_v2setY = F2(function(y, a) {
 });
 
 var _MJS_v2toRecord = function(a) {
-    return { eN: a[0], eQ: a[1] };
+    return { bE: a[0], bF: a[1] };
 };
 
 var _MJS_v2fromRecord = function(r) {
-    return new Float64Array([r.eN, r.eQ]);
+    return new Float64Array([r.bE, r.bF]);
 };
 
 var _MJS_v2add = F2(function(a, b) {
@@ -5369,11 +5645,11 @@ var _MJS_v3setZ = F2(function(z, a) {
 });
 
 var _MJS_v3toRecord = function(a) {
-    return { eN: a[0], eQ: a[1], a3: a[2] };
+    return { bE: a[0], bF: a[1], a3: a[2] };
 };
 
 var _MJS_v3fromRecord = function(r) {
-    return new Float64Array([r.eN, r.eQ, r.a3]);
+    return new Float64Array([r.bE, r.bF, r.a3]);
 };
 
 var _MJS_v3add = F2(function(a, b) {
@@ -5529,11 +5805,11 @@ var _MJS_v4setW = F2(function(w, a) {
 });
 
 var _MJS_v4toRecord = function(a) {
-    return { eN: a[0], eQ: a[1], a3: a[2], cZ: a[3] };
+    return { bE: a[0], bF: a[1], a3: a[2], c0: a[3] };
 };
 
 var _MJS_v4fromRecord = function(r) {
-    return new Float64Array([r.eN, r.eQ, r.a3, r.cZ]);
+    return new Float64Array([r.bE, r.bF, r.a3, r.c0]);
 };
 
 var _MJS_v4add = F2(function(a, b) {
@@ -5639,31 +5915,31 @@ var _MJS_m4x4identity = new Float64Array([
 
 var _MJS_m4x4fromRecord = function(r) {
     var m = new Float64Array(16);
-    m[0] = r.b9;
-    m[1] = r.cd;
-    m[2] = r.ch;
-    m[3] = r.cl;
-    m[4] = r.ca;
-    m[5] = r.ce;
-    m[6] = r.ci;
-    m[7] = r.cm;
-    m[8] = r.cb;
-    m[9] = r.cf;
-    m[10] = r.cj;
-    m[11] = r.cn;
-    m[12] = r.cc;
-    m[13] = r.cg;
-    m[14] = r.ck;
-    m[15] = r.co;
+    m[0] = r.cc;
+    m[1] = r.cg;
+    m[2] = r.ck;
+    m[3] = r.co;
+    m[4] = r.cd;
+    m[5] = r.ch;
+    m[6] = r.cl;
+    m[7] = r.cp;
+    m[8] = r.ce;
+    m[9] = r.ci;
+    m[10] = r.cm;
+    m[11] = r.cq;
+    m[12] = r.cf;
+    m[13] = r.cj;
+    m[14] = r.cn;
+    m[15] = r.cr;
     return m;
 };
 
 var _MJS_m4x4toRecord = function(m) {
     return {
-        b9: m[0], cd: m[1], ch: m[2], cl: m[3],
-        ca: m[4], ce: m[5], ci: m[6], cm: m[7],
-        cb: m[8], cf: m[9], cj: m[10], cn: m[11],
-        cc: m[12], cg: m[13], ck: m[14], co: m[15]
+        cc: m[0], cg: m[1], ck: m[2], co: m[3],
+        cd: m[4], ch: m[5], cl: m[6], cp: m[7],
+        ce: m[8], ci: m[9], cm: m[10], cq: m[11],
+        cf: m[12], cj: m[13], cn: m[14], cr: m[15]
     };
 };
 
@@ -6219,221 +6495,6 @@ var _MJS_m4x4makeBasis = F3(function(vx, vy, vz) {
 });
 
 
-
-var _Bitwise_and = F2(function(a, b)
-{
-	return a & b;
-});
-
-var _Bitwise_or = F2(function(a, b)
-{
-	return a | b;
-});
-
-var _Bitwise_xor = F2(function(a, b)
-{
-	return a ^ b;
-});
-
-function _Bitwise_complement(a)
-{
-	return ~a;
-};
-
-var _Bitwise_shiftLeftBy = F2(function(offset, a)
-{
-	return a << offset;
-});
-
-var _Bitwise_shiftRightBy = F2(function(offset, a)
-{
-	return a >> offset;
-});
-
-var _Bitwise_shiftRightZfBy = F2(function(offset, a)
-{
-	return a >>> offset;
-});
-
-
-// BYTES
-
-function _Bytes_width(bytes)
-{
-	return bytes.byteLength;
-}
-
-var _Bytes_getHostEndianness = F2(function(le, be)
-{
-	return _Scheduler_binding(function(callback)
-	{
-		callback(_Scheduler_succeed(new Uint8Array(new Uint32Array([1]))[0] === 1 ? le : be));
-	});
-});
-
-
-// ENCODERS
-
-function _Bytes_encode(encoder)
-{
-	var mutableBytes = new DataView(new ArrayBuffer($elm$bytes$Bytes$Encode$getWidth(encoder)));
-	$elm$bytes$Bytes$Encode$write(encoder)(mutableBytes)(0);
-	return mutableBytes;
-}
-
-
-// SIGNED INTEGERS
-
-var _Bytes_write_i8  = F3(function(mb, i, n) { mb.setInt8(i, n); return i + 1; });
-var _Bytes_write_i16 = F4(function(mb, i, n, isLE) { mb.setInt16(i, n, isLE); return i + 2; });
-var _Bytes_write_i32 = F4(function(mb, i, n, isLE) { mb.setInt32(i, n, isLE); return i + 4; });
-
-
-// UNSIGNED INTEGERS
-
-var _Bytes_write_u8  = F3(function(mb, i, n) { mb.setUint8(i, n); return i + 1 ;});
-var _Bytes_write_u16 = F4(function(mb, i, n, isLE) { mb.setUint16(i, n, isLE); return i + 2; });
-var _Bytes_write_u32 = F4(function(mb, i, n, isLE) { mb.setUint32(i, n, isLE); return i + 4; });
-
-
-// FLOATS
-
-var _Bytes_write_f32 = F4(function(mb, i, n, isLE) { mb.setFloat32(i, n, isLE); return i + 4; });
-var _Bytes_write_f64 = F4(function(mb, i, n, isLE) { mb.setFloat64(i, n, isLE); return i + 8; });
-
-
-// BYTES
-
-var _Bytes_write_bytes = F3(function(mb, offset, bytes)
-{
-	for (var i = 0, len = bytes.byteLength, limit = len - 4; i <= limit; i += 4)
-	{
-		mb.setUint32(offset + i, bytes.getUint32(i));
-	}
-	for (; i < len; i++)
-	{
-		mb.setUint8(offset + i, bytes.getUint8(i));
-	}
-	return offset + len;
-});
-
-
-// STRINGS
-
-function _Bytes_getStringWidth(string)
-{
-	for (var width = 0, i = 0; i < string.length; i++)
-	{
-		var code = string.charCodeAt(i);
-		width +=
-			(code < 0x80) ? 1 :
-			(code < 0x800) ? 2 :
-			(code < 0xD800 || 0xDBFF < code) ? 3 : (i++, 4);
-	}
-	return width;
-}
-
-var _Bytes_write_string = F3(function(mb, offset, string)
-{
-	for (var i = 0; i < string.length; i++)
-	{
-		var code = string.charCodeAt(i);
-		offset +=
-			(code < 0x80)
-				? (mb.setUint8(offset, code)
-				, 1
-				)
-				:
-			(code < 0x800)
-				? (mb.setUint16(offset, 0xC080 /* 0b1100000010000000 */
-					| (code >>> 6 & 0x1F /* 0b00011111 */) << 8
-					| code & 0x3F /* 0b00111111 */)
-				, 2
-				)
-				:
-			(code < 0xD800 || 0xDBFF < code)
-				? (mb.setUint16(offset, 0xE080 /* 0b1110000010000000 */
-					| (code >>> 12 & 0xF /* 0b00001111 */) << 8
-					| code >>> 6 & 0x3F /* 0b00111111 */)
-				, mb.setUint8(offset + 2, 0x80 /* 0b10000000 */
-					| code & 0x3F /* 0b00111111 */)
-				, 3
-				)
-				:
-			(code = (code - 0xD800) * 0x400 + string.charCodeAt(++i) - 0xDC00 + 0x10000
-			, mb.setUint32(offset, 0xF0808080 /* 0b11110000100000001000000010000000 */
-				| (code >>> 18 & 0x7 /* 0b00000111 */) << 24
-				| (code >>> 12 & 0x3F /* 0b00111111 */) << 16
-				| (code >>> 6 & 0x3F /* 0b00111111 */) << 8
-				| code & 0x3F /* 0b00111111 */)
-			, 4
-			);
-	}
-	return offset;
-});
-
-
-// DECODER
-
-var _Bytes_decode = F2(function(decoder, bytes)
-{
-	try {
-		return $elm$core$Maybe$Just(A2(decoder, bytes, 0).b);
-	} catch(e) {
-		return $elm$core$Maybe$Nothing;
-	}
-});
-
-var _Bytes_read_i8  = F2(function(      bytes, offset) { return _Utils_Tuple2(offset + 1, bytes.getInt8(offset)); });
-var _Bytes_read_i16 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 2, bytes.getInt16(offset, isLE)); });
-var _Bytes_read_i32 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 4, bytes.getInt32(offset, isLE)); });
-var _Bytes_read_u8  = F2(function(      bytes, offset) { return _Utils_Tuple2(offset + 1, bytes.getUint8(offset)); });
-var _Bytes_read_u16 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 2, bytes.getUint16(offset, isLE)); });
-var _Bytes_read_u32 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 4, bytes.getUint32(offset, isLE)); });
-var _Bytes_read_f32 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 4, bytes.getFloat32(offset, isLE)); });
-var _Bytes_read_f64 = F3(function(isLE, bytes, offset) { return _Utils_Tuple2(offset + 8, bytes.getFloat64(offset, isLE)); });
-
-var _Bytes_read_bytes = F3(function(len, bytes, offset)
-{
-	return _Utils_Tuple2(offset + len, new DataView(bytes.buffer, bytes.byteOffset + offset, len));
-});
-
-var _Bytes_read_string = F3(function(len, bytes, offset)
-{
-	var string = '';
-	var end = offset + len;
-	for (; offset < end;)
-	{
-		var byte = bytes.getUint8(offset++);
-		string +=
-			(byte < 128)
-				? String.fromCharCode(byte)
-				:
-			((byte & 0xE0 /* 0b11100000 */) === 0xC0 /* 0b11000000 */)
-				? String.fromCharCode((byte & 0x1F /* 0b00011111 */) << 6 | bytes.getUint8(offset++) & 0x3F /* 0b00111111 */)
-				:
-			((byte & 0xF0 /* 0b11110000 */) === 0xE0 /* 0b11100000 */)
-				? String.fromCharCode(
-					(byte & 0xF /* 0b00001111 */) << 12
-					| (bytes.getUint8(offset++) & 0x3F /* 0b00111111 */) << 6
-					| bytes.getUint8(offset++) & 0x3F /* 0b00111111 */
-				)
-				:
-				(byte =
-					((byte & 0x7 /* 0b00000111 */) << 18
-						| (bytes.getUint8(offset++) & 0x3F /* 0b00111111 */) << 12
-						| (bytes.getUint8(offset++) & 0x3F /* 0b00111111 */) << 6
-						| bytes.getUint8(offset++) & 0x3F /* 0b00111111 */
-					) - 0x10000
-				, String.fromCharCode(Math.floor(byte / 0x400) + 0xD800, byte % 0x400 + 0xDC00)
-				);
-	}
-	return _Utils_Tuple2(offset, string);
-});
-
-var _Bytes_decodeFailure = F2(function() { throw 0; });
-
-
 // CREATE
 
 var _Regex_never = /.^/;
@@ -6441,8 +6502,8 @@ var _Regex_never = /.^/;
 var _Regex_fromStringWith = F2(function(options, string)
 {
 	var flags = 'g';
-	if (options.dZ) { flags += 'm'; }
-	if (options.da) { flags += 'i'; }
+	if (options.d0) { flags += 'm'; }
+	if (options.dd) { flags += 'i'; }
 
 	try
 	{
@@ -6533,67 +6594,6 @@ var _Regex_splitAtMost = F3(function(n, re, str)
 });
 
 var _Regex_infinity = Infinity;
-
-
-// eslint-disable-next-line no-unused-vars
-var _Texture_load = F6(function (magnify, mininify, horizontalWrap, verticalWrap, flipY, url) {
-  var isMipmap = mininify !== 9728 && mininify !== 9729;
-  return _Scheduler_binding(function (callback) {
-    var img = new Image();
-    function createTexture(gl) {
-      var texture = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magnify);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mininify);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, horizontalWrap);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, verticalWrap);
-      if (isMipmap) {
-        gl.generateMipmap(gl.TEXTURE_2D);
-      }
-      gl.bindTexture(gl.TEXTURE_2D, null);
-      return texture;
-    }
-    img.onload = function () {
-      var width = img.width;
-      var height = img.height;
-      var widthPowerOfTwo = (width & (width - 1)) === 0;
-      var heightPowerOfTwo = (height & (height - 1)) === 0;
-      var isSizeValid = (widthPowerOfTwo && heightPowerOfTwo) || (
-        !isMipmap
-        && horizontalWrap === 33071 // clamp to edge
-        && verticalWrap === 33071
-      );
-      if (isSizeValid) {
-        callback(_Scheduler_succeed({
-          $: 0,
-          di: createTexture,
-          a: width,
-          b: height
-        }));
-      } else {
-        callback(_Scheduler_fail(A2(
-          $elm_explorations$webgl$WebGL$Texture$SizeError,
-          width,
-          height
-        )));
-      }
-    };
-    img.onerror = function () {
-      callback(_Scheduler_fail($elm_explorations$webgl$WebGL$Texture$LoadError));
-    };
-    if (url.slice(0, 5) !== 'data:') {
-      img.crossOrigin = 'Anonymous';
-    }
-    img.src = url;
-  });
-});
-
-// eslint-disable-next-line no-unused-vars
-var _Texture_size = function (texture) {
-  return _Utils_Tuple2(texture.a, texture.b);
-};
 var $elm$core$List$cons = _List_cons;
 var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
 var $elm$core$Array$foldr = F3(
@@ -6676,8 +6676,8 @@ var $elm$core$Basics$GT = 2;
 var $elm$core$Basics$LT = 0;
 var $author$project$Durak$Protocol$Message$Watch = {$: 2};
 var $author$project$Durak$Spectator$World$empty = {
-	ee: _List_Nil,
-	ar: {c0: 2, c4: 6, dj: 6, dq: 6, dA: 16, dF: 6}
+	eh: _List_Nil,
+	ar: {c3: 2, c7: 6, dm: 6, dt: 6, dD: 16, dI: 6}
 };
 var $elm$core$Result$Err = function (a) {
 	return {$: 1, a: a};
@@ -7084,7 +7084,7 @@ var $author$project$Durak$Spectator$init = F2(
 				_Utils_update(
 					world,
 					{
-						ee: _List_fromArray(
+						eh: _List_fromArray(
 							[$author$project$Durak$Protocol$Message$Watch])
 					})),
 			$elm$core$Platform$Cmd$none);
@@ -7118,7 +7118,7 @@ var $elm$url$Url$Http = 0;
 var $elm$url$Url$Https = 1;
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {bU: fragment, b_: host, cA: path, cC: port_, cF: protocol, cG: query};
+		return {bW: fragment, b0: host, cD: path, cF: port_, cI: protocol, cJ: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -7412,15 +7412,15 @@ var $elm$core$Basics$negate = function (n) {
 };
 var $author$project$Game$Client$Util$toScreen = F2(
 	function (width, height) {
-		return {c8: (-height) * 0.5, bZ: height, dR: (-width) * 0.5, ej: width * 0.5, ew: height * 0.5, c_: width};
+		return {db: (-height) * 0.5, b$: height, dU: (-width) * 0.5, em: width * 0.5, ez: height * 0.5, c1: width};
 	});
 var $author$project$Game$Client$Model$empty = function (world) {
 	return {
-		du: _List_Nil,
-		dv: '',
-		ek: A2($author$project$Game$Client$Util$toScreen, 2, 2),
-		cV: {$7: $elm$core$Dict$empty, bj: $elm$core$Set$empty},
-		eu: 0,
+		dx: _List_Nil,
+		dy: '',
+		en: A2($author$project$Game$Client$Util$toScreen, 2, 2),
+		cY: {dr: $elm$core$Dict$empty, bj: $elm$core$Set$empty},
+		ex: 0,
 		bC: world
 	};
 };
@@ -7469,7 +7469,7 @@ var $author$project$Game$Client$init = F2(
 		return _Utils_Tuple2(
 			_Utils_update(
 				model,
-				{ek: screen}),
+				{en: screen}),
 			cmd);
 	});
 var $author$project$Game$Client$Model$Message = function (a) {
@@ -7604,10 +7604,12 @@ var $author$project$Game$Client$Port$InputKeyboard = F2(
 var $author$project$Game$Client$Port$InputMouse = function (a) {
 	return {$: 3, a: a};
 };
-var $author$project$Game$Client$Port$InputTouch = {$: 4};
+var $author$project$Game$Client$Port$InputTouch = function (a) {
+	return {$: 4, a: a};
+};
 var $author$project$Game$Client$Port$MouseData = F4(
 	function (x, y, key1, key2) {
-		return {dO: key1, dP: key2, eN: x, eQ: y};
+		return {dR: key1, dS: key2, bE: x, bF: y};
 	});
 var $author$project$Game$Client$Port$NetworkData = function (a) {
 	return {$: 7, a: a};
@@ -7802,6 +7804,8 @@ var $author$project$Game$Client$Component$Action$decode = A2(
 	},
 	$elm$json$Json$Decode$int);
 var $elm$json$Json$Decode$index = _Json_decodeIndex;
+var $elm$json$Json$Decode$list = _Json_decodeList;
+var $elm$json$Json$Decode$map3 = _Json_map3;
 var $elm$json$Json$Decode$map4 = _Json_map4;
 var $elm$json$Json$Decode$string = _Json_decodeString;
 var $author$project$Game$Client$Port$decoder = A2(
@@ -7840,7 +7844,22 @@ var $author$project$Game$Client$Port$decoder = A2(
 						A2($elm$json$Json$Decode$index, 3, $elm$json$Json$Decode$bool),
 						A2($elm$json$Json$Decode$index, 4, $elm$json$Json$Decode$bool)));
 			case 104:
-				return $elm$json$Json$Decode$succeed($author$project$Game$Client$Port$InputTouch);
+				var touchDecoder = A4(
+					$elm$json$Json$Decode$map3,
+					F3(
+						function (id, x, y) {
+							return {b4: id, bE: x, bF: y};
+						}),
+					A2($elm$json$Json$Decode$index, 0, $elm$json$Json$Decode$int),
+					A2($elm$json$Json$Decode$index, 1, $elm$json$Json$Decode$float),
+					A2($elm$json$Json$Decode$index, 2, $elm$json$Json$Decode$float));
+				return A2(
+					$elm$json$Json$Decode$map,
+					$author$project$Game$Client$Port$InputTouch,
+					A2(
+						$elm$json$Json$Decode$index,
+						1,
+						$elm$json$Json$Decode$list(touchDecoder)));
 			case 201:
 				return $elm$json$Json$Decode$succeed($author$project$Game$Client$Port$NetworkJoin);
 			case 202:
@@ -7860,7 +7879,6 @@ var $author$project$Game$Client$Port$decoder = A2(
 		}
 	},
 	A2($elm$json$Json$Decode$index, 0, $elm$json$Json$Decode$int));
-var $elm$json$Json$Decode$list = _Json_decodeList;
 var $author$project$Game$Client$Port$parse = $elm$json$Json$Decode$decodeValue(
 	$elm$json$Json$Decode$list($author$project$Game$Client$Port$decoder));
 var $elm$core$Dict$getMin = function (dict) {
@@ -8232,7 +8250,7 @@ var $elm$core$Set$remove = F2(
 	});
 var $author$project$Game$Client$update = F3(
 	function (update2, msg, model) {
-		var textures = model.cV;
+		var textures = model.cY;
 		switch (msg.$) {
 			case 2:
 				var v = msg.a;
@@ -8263,7 +8281,7 @@ var $author$project$Game$Client$update = F3(
 						_Utils_update(
 							model,
 							{
-								dv: $elm$json$Json$Decode$errorToString(err)
+								dy: $elm$json$Json$Decode$errorToString(err)
 							}),
 						$elm$core$Platform$Cmd$none);
 				}
@@ -8274,10 +8292,10 @@ var $author$project$Game$Client$update = F3(
 					_Utils_update(
 						model,
 						{
-							cV: _Utils_update(
+							cY: _Utils_update(
 								textures,
 								{
-									$7: A3($elm$core$Dict$insert, url, t, textures.$7),
+									dr: A3($elm$core$Dict$insert, url, t, textures.dr),
 									bj: A2($elm$core$Set$remove, url, textures.bj)
 								})
 						}),
@@ -8369,27 +8387,27 @@ var $author$project$Game$Client$wrap = F2(
 		return A4($elm$html$Html$Lazy$lazy3, $elm_explorations$webgl$WebGL$toHtmlWith, $author$project$Game$Client$webGLOption, attrs, entities);
 	});
 var $author$project$Game$Client$view = function (_v0) {
-	var screen = _v0.ek;
-	var entities = _v0.du;
+	var screen = _v0.en;
+	var entities = _v0.dx;
 	var world = _v0.bC;
 	return A2(
 		$author$project$Game$Client$wrap,
 		_List_fromArray(
 			[
 				$elm$html$Html$Attributes$width(
-				$elm$core$Basics$round(screen.c_)),
+				$elm$core$Basics$round(screen.c1)),
 				$elm$html$Html$Attributes$height(
-				$elm$core$Basics$round(screen.bZ))
+				$elm$core$Basics$round(screen.b$))
 			]),
 		entities);
 };
 var $author$project$Game$Client$start = function (opt) {
 	return $elm$browser$Browser$element(
 		{
-			dN: $author$project$Game$Client$init(opt.dN),
-			er: $author$project$Game$Client$Port$subscriptions,
-			eF: $author$project$Game$Client$update(opt.eF),
-			eK: $author$project$Game$Client$view
+			dQ: $author$project$Game$Client$init(opt.dQ),
+			eu: $author$project$Game$Client$Port$subscriptions,
+			eI: $author$project$Game$Client$update(opt.eI),
+			eN: $author$project$Game$Client$view
 		});
 };
 var $justgook$webgl_shape$WebGL$Shape2d$Group = function (a) {
@@ -8398,13 +8416,13 @@ var $justgook$webgl_shape$WebGL$Shape2d$Group = function (a) {
 var $justgook$webgl_shape$WebGL$Shape2d$Shape2d = $elm$core$Basics$identity;
 var $justgook$webgl_playground$Playground$group = function (shapes) {
 	return {
-		c0: 0,
+		c3: 0,
 		k: $justgook$webgl_shape$WebGL$Shape2d$Group(shapes),
 		i: 1,
 		e: 1,
 		f: 1,
-		eN: 0,
-		eQ: 0,
+		bE: 0,
+		bF: 0,
 		a3: 0
 	};
 };
@@ -8471,6 +8489,764 @@ var $elm$core$Set$diff = F2(
 		var dict2 = _v1;
 		return A2($elm$core$Dict$diff, dict1, dict2);
 	});
+var $elm$core$Set$foldl = F3(
+	function (func, initialState, _v0) {
+		var dict = _v0;
+		return A3(
+			$elm$core$Dict$foldl,
+			F3(
+				function (key, _v1, state) {
+					return A2(func, key, state);
+				}),
+			initialState,
+			dict);
+	});
+var $author$project$Game$Client$Model$Texture = F2(
+	function (a, b) {
+		return {$: 0, a: a, b: b};
+	});
+var $author$project$Game$Client$Model$TextureFail = function (a) {
+	return {$: 1, a: a};
+};
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var $elm$core$Task$onError = _Scheduler_onError;
+var $elm$core$Task$attempt = F2(
+	function (resultToMessage, task) {
+		return $elm$core$Task$command(
+			A2(
+				$elm$core$Task$onError,
+				A2(
+					$elm$core$Basics$composeL,
+					A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+					$elm$core$Result$Err),
+				A2(
+					$elm$core$Task$andThen,
+					A2(
+						$elm$core$Basics$composeL,
+						A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+						$elm$core$Result$Ok),
+					task)));
+	});
+var $elm_explorations$webgl$WebGL$Texture$LoadError = {$: 0};
+var $elm_explorations$webgl$WebGL$Texture$SizeError = F2(
+	function (a, b) {
+		return {$: 1, a: a, b: b};
+	});
+var $elm_explorations$webgl$WebGL$Texture$loadWith = F2(
+	function (_v0, url) {
+		var magnify = _v0.dV;
+		var minify = _v0.d_;
+		var horizontalWrap = _v0.dN;
+		var verticalWrap = _v0.eM;
+		var flipY = _v0.dG;
+		var expand = F4(
+			function (_v1, _v2, _v3, _v4) {
+				var mag = _v1;
+				var min = _v2;
+				var hor = _v3;
+				var vert = _v4;
+				return A6(_Texture_load, mag, min, hor, vert, flipY, url);
+			});
+		return A4(expand, magnify, minify, horizontalWrap, verticalWrap);
+	});
+var $elm_explorations$webgl$WebGL$Texture$Wrap = $elm$core$Basics$identity;
+var $elm_explorations$webgl$WebGL$Texture$clampToEdge = 33071;
+var $elm_explorations$webgl$WebGL$Texture$Resize = $elm$core$Basics$identity;
+var $elm_explorations$webgl$WebGL$Texture$linear = 9729;
+var $author$project$Game$Client$Model$textureOption = {dG: true, dN: $elm_explorations$webgl$WebGL$Texture$clampToEdge, dV: $elm_explorations$webgl$WebGL$Texture$linear, d_: $elm_explorations$webgl$WebGL$Texture$linear, eM: $elm_explorations$webgl$WebGL$Texture$clampToEdge};
+var $author$project$Game$Client$Model$getTexture = F2(
+	function (name, url) {
+		return A2(
+			$elm$core$Task$attempt,
+			function (r) {
+				if (!r.$) {
+					var t = r.a;
+					return A2($author$project$Game$Client$Model$Texture, name, t);
+				} else {
+					var e = r.a;
+					return $author$project$Game$Client$Model$TextureFail(e);
+				}
+			},
+			A2($elm_explorations$webgl$WebGL$Texture$loadWith, $author$project$Game$Client$Model$textureOption, url));
+	});
+var $author$project$Durak$Spectator$System$Tick$getTexture = function (url) {
+	return A2($author$project$Game$Client$Model$getTexture, url, url);
+};
+var $elm$bytes$Bytes$Encode$Seq = F2(
+	function (a, b) {
+		return {$: 8, a: a, b: b};
+	});
+var $elm$bytes$Bytes$LE = 0;
+var $elm$bytes$Bytes$Encode$write = F3(
+	function (builder, mb, offset) {
+		switch (builder.$) {
+			case 0:
+				var n = builder.a;
+				return A3(_Bytes_write_i8, mb, offset, n);
+			case 1:
+				var e = builder.a;
+				var n = builder.b;
+				return A4(_Bytes_write_i16, mb, offset, n, !e);
+			case 2:
+				var e = builder.a;
+				var n = builder.b;
+				return A4(_Bytes_write_i32, mb, offset, n, !e);
+			case 3:
+				var n = builder.a;
+				return A3(_Bytes_write_u8, mb, offset, n);
+			case 4:
+				var e = builder.a;
+				var n = builder.b;
+				return A4(_Bytes_write_u16, mb, offset, n, !e);
+			case 5:
+				var e = builder.a;
+				var n = builder.b;
+				return A4(_Bytes_write_u32, mb, offset, n, !e);
+			case 6:
+				var e = builder.a;
+				var n = builder.b;
+				return A4(_Bytes_write_f32, mb, offset, n, !e);
+			case 7:
+				var e = builder.a;
+				var n = builder.b;
+				return A4(_Bytes_write_f64, mb, offset, n, !e);
+			case 8:
+				var bs = builder.b;
+				return A3($elm$bytes$Bytes$Encode$writeSequence, bs, mb, offset);
+			case 9:
+				var s = builder.b;
+				return A3(_Bytes_write_string, mb, offset, s);
+			default:
+				var bs = builder.a;
+				return A3(_Bytes_write_bytes, mb, offset, bs);
+		}
+	});
+var $elm$bytes$Bytes$Encode$writeSequence = F3(
+	function (builders, mb, offset) {
+		writeSequence:
+		while (true) {
+			if (!builders.b) {
+				return offset;
+			} else {
+				var b = builders.a;
+				var bs = builders.b;
+				var $temp$builders = bs,
+					$temp$mb = mb,
+					$temp$offset = A3($elm$bytes$Bytes$Encode$write, b, mb, offset);
+				builders = $temp$builders;
+				mb = $temp$mb;
+				offset = $temp$offset;
+				continue writeSequence;
+			}
+		}
+	});
+var $elm$bytes$Bytes$Encode$getWidth = function (builder) {
+	switch (builder.$) {
+		case 0:
+			return 1;
+		case 1:
+			return 2;
+		case 2:
+			return 4;
+		case 3:
+			return 1;
+		case 4:
+			return 2;
+		case 5:
+			return 4;
+		case 6:
+			return 4;
+		case 7:
+			return 8;
+		case 8:
+			var w = builder.a;
+			return w;
+		case 9:
+			var w = builder.a;
+			return w;
+		default:
+			var bs = builder.a;
+			return _Bytes_width(bs);
+	}
+};
+var $elm$bytes$Bytes$Encode$getWidths = F2(
+	function (width, builders) {
+		getWidths:
+		while (true) {
+			if (!builders.b) {
+				return width;
+			} else {
+				var b = builders.a;
+				var bs = builders.b;
+				var $temp$width = width + $elm$bytes$Bytes$Encode$getWidth(b),
+					$temp$builders = bs;
+				width = $temp$width;
+				builders = $temp$builders;
+				continue getWidths;
+			}
+		}
+	});
+var $elm$bytes$Bytes$Encode$sequence = function (builders) {
+	return A2(
+		$elm$bytes$Bytes$Encode$Seq,
+		A2($elm$bytes$Bytes$Encode$getWidths, 0, builders),
+		builders);
+};
+var $author$project$Durak$Common$Table$spotToInt = function (spot_) {
+	switch (spot_) {
+		case 0:
+			return 1;
+		case 1:
+			return 2;
+		case 2:
+			return 3;
+		case 3:
+			return 4;
+		case 4:
+			return 5;
+		default:
+			return 6;
+	}
+};
+var $author$project$Durak$Common$Card$toInt = function (c) {
+	switch (c) {
+		case 0:
+			return 0;
+		case 1:
+			return 1;
+		case 2:
+			return 2;
+		case 3:
+			return 3;
+		case 4:
+			return 4;
+		case 5:
+			return 5;
+		case 6:
+			return 6;
+		case 7:
+			return 7;
+		case 8:
+			return 8;
+		case 9:
+			return 9;
+		case 10:
+			return 10;
+		case 11:
+			return 11;
+		case 12:
+			return 12;
+		case 13:
+			return 13;
+		case 14:
+			return 14;
+		case 15:
+			return 15;
+		case 16:
+			return 16;
+		case 17:
+			return 17;
+		case 18:
+			return 18;
+		case 19:
+			return 19;
+		case 20:
+			return 20;
+		case 21:
+			return 21;
+		case 22:
+			return 22;
+		case 23:
+			return 23;
+		case 24:
+			return 24;
+		case 25:
+			return 25;
+		case 26:
+			return 26;
+		case 27:
+			return 27;
+		case 28:
+			return 28;
+		case 29:
+			return 29;
+		case 30:
+			return 30;
+		case 31:
+			return 31;
+		case 32:
+			return 32;
+		case 33:
+			return 33;
+		case 34:
+			return 34;
+		case 35:
+			return 35;
+		case 36:
+			return 36;
+		case 37:
+			return 37;
+		case 38:
+			return 38;
+		case 39:
+			return 39;
+		case 40:
+			return 40;
+		case 41:
+			return 41;
+		case 42:
+			return 42;
+		case 43:
+			return 43;
+		case 44:
+			return 44;
+		case 45:
+			return 45;
+		case 46:
+			return 46;
+		case 47:
+			return 47;
+		case 48:
+			return 48;
+		case 49:
+			return 49;
+		case 50:
+			return 50;
+		default:
+			return 51;
+	}
+};
+var $elm$bytes$Bytes$Encode$U8 = function (a) {
+	return {$: 3, a: a};
+};
+var $elm$bytes$Bytes$Encode$unsignedInt8 = $elm$bytes$Bytes$Encode$U8;
+var $author$project$Durak$Protocol$Player$encode = function (msg) {
+	switch (msg.$) {
+		case 0:
+			var card = msg.a;
+			return $elm$bytes$Bytes$Encode$sequence(
+				_List_fromArray(
+					[
+						$elm$bytes$Bytes$Encode$unsignedInt8(1),
+						$elm$bytes$Bytes$Encode$unsignedInt8(
+						$author$project$Durak$Common$Card$toInt(card))
+					]));
+		case 1:
+			return $elm$bytes$Bytes$Encode$sequence(
+				_List_fromArray(
+					[
+						$elm$bytes$Bytes$Encode$unsignedInt8(2)
+					]));
+		case 2:
+			return $elm$bytes$Bytes$Encode$sequence(
+				_List_fromArray(
+					[
+						$elm$bytes$Bytes$Encode$unsignedInt8(3)
+					]));
+		case 3:
+			return $elm$bytes$Bytes$Encode$sequence(
+				_List_fromArray(
+					[
+						$elm$bytes$Bytes$Encode$unsignedInt8(4)
+					]));
+		case 4:
+			var cover = msg.a;
+			var card = msg.b;
+			return $elm$bytes$Bytes$Encode$sequence(
+				_List_fromArray(
+					[
+						$elm$bytes$Bytes$Encode$unsignedInt8(5),
+						$elm$bytes$Bytes$Encode$unsignedInt8(
+						$author$project$Durak$Common$Table$spotToInt(cover)),
+						$elm$bytes$Bytes$Encode$unsignedInt8(
+						$author$project$Durak$Common$Card$toInt(card))
+					]));
+		case 5:
+			return $elm$bytes$Bytes$Encode$sequence(
+				_List_fromArray(
+					[
+						$elm$bytes$Bytes$Encode$unsignedInt8(6)
+					]));
+		default:
+			return $elm$bytes$Bytes$Encode$sequence(
+				_List_fromArray(
+					[
+						$elm$bytes$Bytes$Encode$unsignedInt8(7)
+					]));
+	}
+};
+var $elm$bytes$Bytes$Encode$encode = _Bytes_encode;
+var $elm$bytes$Bytes$Decode$decode = F2(
+	function (_v0, bs) {
+		var decoder = _v0;
+		return A2(_Bytes_decode, decoder, bs);
+	});
+var $elm$bytes$Bytes$Decode$Decoder = $elm$core$Basics$identity;
+var $elm$bytes$Bytes$Decode$loopHelp = F4(
+	function (state, callback, bites, offset) {
+		loopHelp:
+		while (true) {
+			var _v0 = callback(state);
+			var decoder = _v0;
+			var _v1 = A2(decoder, bites, offset);
+			var newOffset = _v1.a;
+			var step = _v1.b;
+			if (!step.$) {
+				var newState = step.a;
+				var $temp$state = newState,
+					$temp$callback = callback,
+					$temp$bites = bites,
+					$temp$offset = newOffset;
+				state = $temp$state;
+				callback = $temp$callback;
+				bites = $temp$bites;
+				offset = $temp$offset;
+				continue loopHelp;
+			} else {
+				var result = step.a;
+				return _Utils_Tuple2(newOffset, result);
+			}
+		}
+	});
+var $elm$bytes$Bytes$Decode$loop = F2(
+	function (state, callback) {
+		return A2($elm$bytes$Bytes$Decode$loopHelp, state, callback);
+	});
+var $elm$bytes$Bytes$Decode$Done = function (a) {
+	return {$: 1, a: a};
+};
+var $elm$bytes$Bytes$Decode$Loop = function (a) {
+	return {$: 0, a: a};
+};
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$String$cons = _String_cons;
+var $elm$core$String$fromChar = function (_char) {
+	return A2($elm$core$String$cons, _char, '');
+};
+var $danfishgold$base64_bytes$Decode$lowest6BitsMask = 63;
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var $elm$core$Char$fromCode = _Char_fromCode;
+var $danfishgold$base64_bytes$Decode$unsafeToChar = function (n) {
+	if (n <= 25) {
+		return $elm$core$Char$fromCode(65 + n);
+	} else {
+		if (n <= 51) {
+			return $elm$core$Char$fromCode(97 + (n - 26));
+		} else {
+			if (n <= 61) {
+				return $elm$core$Char$fromCode(48 + (n - 52));
+			} else {
+				switch (n) {
+					case 62:
+						return '+';
+					case 63:
+						return '/';
+					default:
+						return '\u0000';
+				}
+			}
+		}
+	}
+};
+var $danfishgold$base64_bytes$Decode$bitsToChars = F2(
+	function (bits, missing) {
+		var s = $danfishgold$base64_bytes$Decode$unsafeToChar(bits & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var r = $danfishgold$base64_bytes$Decode$unsafeToChar((bits >>> 6) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var q = $danfishgold$base64_bytes$Decode$unsafeToChar((bits >>> 12) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var p = $danfishgold$base64_bytes$Decode$unsafeToChar(bits >>> 18);
+		switch (missing) {
+			case 0:
+				return A2(
+					$elm$core$String$cons,
+					p,
+					A2(
+						$elm$core$String$cons,
+						q,
+						A2(
+							$elm$core$String$cons,
+							r,
+							$elm$core$String$fromChar(s))));
+			case 1:
+				return A2(
+					$elm$core$String$cons,
+					p,
+					A2(
+						$elm$core$String$cons,
+						q,
+						A2($elm$core$String$cons, r, '=')));
+			case 2:
+				return A2(
+					$elm$core$String$cons,
+					p,
+					A2($elm$core$String$cons, q, '=='));
+			default:
+				return '';
+		}
+	});
+var $danfishgold$base64_bytes$Decode$bitsToCharSpecialized = F4(
+	function (bits1, bits2, bits3, accum) {
+		var z = $danfishgold$base64_bytes$Decode$unsafeToChar((bits3 >>> 6) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var y = $danfishgold$base64_bytes$Decode$unsafeToChar((bits3 >>> 12) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var x = $danfishgold$base64_bytes$Decode$unsafeToChar(bits3 >>> 18);
+		var w = $danfishgold$base64_bytes$Decode$unsafeToChar(bits3 & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var s = $danfishgold$base64_bytes$Decode$unsafeToChar(bits1 & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var r = $danfishgold$base64_bytes$Decode$unsafeToChar((bits1 >>> 6) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var q = $danfishgold$base64_bytes$Decode$unsafeToChar((bits1 >>> 12) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var p = $danfishgold$base64_bytes$Decode$unsafeToChar(bits1 >>> 18);
+		var d = $danfishgold$base64_bytes$Decode$unsafeToChar(bits2 & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var c = $danfishgold$base64_bytes$Decode$unsafeToChar((bits2 >>> 6) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var b = $danfishgold$base64_bytes$Decode$unsafeToChar((bits2 >>> 12) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
+		var a = $danfishgold$base64_bytes$Decode$unsafeToChar(bits2 >>> 18);
+		return A2(
+			$elm$core$String$cons,
+			x,
+			A2(
+				$elm$core$String$cons,
+				y,
+				A2(
+					$elm$core$String$cons,
+					z,
+					A2(
+						$elm$core$String$cons,
+						w,
+						A2(
+							$elm$core$String$cons,
+							a,
+							A2(
+								$elm$core$String$cons,
+								b,
+								A2(
+									$elm$core$String$cons,
+									c,
+									A2(
+										$elm$core$String$cons,
+										d,
+										A2(
+											$elm$core$String$cons,
+											p,
+											A2(
+												$elm$core$String$cons,
+												q,
+												A2(
+													$elm$core$String$cons,
+													r,
+													A2($elm$core$String$cons, s, accum))))))))))));
+	});
+var $elm$core$Bitwise$or = _Bitwise_or;
+var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var $danfishgold$base64_bytes$Decode$decode18Help = F5(
+	function (a, b, c, d, e) {
+		var combined6 = ((255 & d) << 16) | e;
+		var combined5 = d >>> 8;
+		var combined4 = 16777215 & c;
+		var combined3 = ((65535 & b) << 8) | (c >>> 24);
+		var combined2 = ((255 & a) << 16) | (b >>> 16);
+		var combined1 = a >>> 8;
+		return A4(
+			$danfishgold$base64_bytes$Decode$bitsToCharSpecialized,
+			combined3,
+			combined2,
+			combined1,
+			A4($danfishgold$base64_bytes$Decode$bitsToCharSpecialized, combined6, combined5, combined4, ''));
+	});
+var $elm$bytes$Bytes$Decode$map5 = F6(
+	function (func, _v0, _v1, _v2, _v3, _v4) {
+		var decodeA = _v0;
+		var decodeB = _v1;
+		var decodeC = _v2;
+		var decodeD = _v3;
+		var decodeE = _v4;
+		return F2(
+			function (bites, offset) {
+				var _v5 = A2(decodeA, bites, offset);
+				var aOffset = _v5.a;
+				var a = _v5.b;
+				var _v6 = A2(decodeB, bites, aOffset);
+				var bOffset = _v6.a;
+				var b = _v6.b;
+				var _v7 = A2(decodeC, bites, bOffset);
+				var cOffset = _v7.a;
+				var c = _v7.b;
+				var _v8 = A2(decodeD, bites, cOffset);
+				var dOffset = _v8.a;
+				var d = _v8.b;
+				var _v9 = A2(decodeE, bites, dOffset);
+				var eOffset = _v9.a;
+				var e = _v9.b;
+				return _Utils_Tuple2(
+					eOffset,
+					A5(func, a, b, c, d, e));
+			});
+	});
+var $elm$bytes$Bytes$BE = 1;
+var $elm$bytes$Bytes$Decode$unsignedInt16 = function (endianness) {
+	return _Bytes_read_u16(!endianness);
+};
+var $danfishgold$base64_bytes$Decode$u16BE = $elm$bytes$Bytes$Decode$unsignedInt16(1);
+var $elm$bytes$Bytes$Decode$unsignedInt32 = function (endianness) {
+	return _Bytes_read_u32(!endianness);
+};
+var $danfishgold$base64_bytes$Decode$u32BE = $elm$bytes$Bytes$Decode$unsignedInt32(1);
+var $danfishgold$base64_bytes$Decode$decode18Bytes = A6($elm$bytes$Bytes$Decode$map5, $danfishgold$base64_bytes$Decode$decode18Help, $danfishgold$base64_bytes$Decode$u32BE, $danfishgold$base64_bytes$Decode$u32BE, $danfishgold$base64_bytes$Decode$u32BE, $danfishgold$base64_bytes$Decode$u32BE, $danfishgold$base64_bytes$Decode$u16BE);
+var $elm$core$Basics$ge = _Utils_ge;
+var $elm$bytes$Bytes$Decode$map = F2(
+	function (func, _v0) {
+		var decodeA = _v0;
+		return F2(
+			function (bites, offset) {
+				var _v1 = A2(decodeA, bites, offset);
+				var aOffset = _v1.a;
+				var a = _v1.b;
+				return _Utils_Tuple2(
+					aOffset,
+					func(a));
+			});
+	});
+var $elm$bytes$Bytes$Decode$map2 = F3(
+	function (func, _v0, _v1) {
+		var decodeA = _v0;
+		var decodeB = _v1;
+		return F2(
+			function (bites, offset) {
+				var _v2 = A2(decodeA, bites, offset);
+				var aOffset = _v2.a;
+				var a = _v2.b;
+				var _v3 = A2(decodeB, bites, aOffset);
+				var bOffset = _v3.a;
+				var b = _v3.b;
+				return _Utils_Tuple2(
+					bOffset,
+					A2(func, a, b));
+			});
+	});
+var $elm$bytes$Bytes$Decode$map3 = F4(
+	function (func, _v0, _v1, _v2) {
+		var decodeA = _v0;
+		var decodeB = _v1;
+		var decodeC = _v2;
+		return F2(
+			function (bites, offset) {
+				var _v3 = A2(decodeA, bites, offset);
+				var aOffset = _v3.a;
+				var a = _v3.b;
+				var _v4 = A2(decodeB, bites, aOffset);
+				var bOffset = _v4.a;
+				var b = _v4.b;
+				var _v5 = A2(decodeC, bites, bOffset);
+				var cOffset = _v5.a;
+				var c = _v5.b;
+				return _Utils_Tuple2(
+					cOffset,
+					A3(func, a, b, c));
+			});
+	});
+var $elm$bytes$Bytes$Decode$succeed = function (a) {
+	return F2(
+		function (_v0, offset) {
+			return _Utils_Tuple2(offset, a);
+		});
+};
+var $elm$bytes$Bytes$Decode$unsignedInt8 = _Bytes_read_u8;
+var $danfishgold$base64_bytes$Decode$loopHelp = function (_v0) {
+	var remaining = _v0.aZ;
+	var string = _v0.a0;
+	if (remaining >= 18) {
+		return A2(
+			$elm$bytes$Bytes$Decode$map,
+			function (result) {
+				return $elm$bytes$Bytes$Decode$Loop(
+					{
+						aZ: remaining - 18,
+						a0: _Utils_ap(string, result)
+					});
+			},
+			$danfishgold$base64_bytes$Decode$decode18Bytes);
+	} else {
+		if (remaining >= 3) {
+			var helper = F3(
+				function (a, b, c) {
+					var combined = ((a << 16) | (b << 8)) | c;
+					return $elm$bytes$Bytes$Decode$Loop(
+						{
+							aZ: remaining - 3,
+							a0: _Utils_ap(
+								string,
+								A2($danfishgold$base64_bytes$Decode$bitsToChars, combined, 0))
+						});
+				});
+			return A4($elm$bytes$Bytes$Decode$map3, helper, $elm$bytes$Bytes$Decode$unsignedInt8, $elm$bytes$Bytes$Decode$unsignedInt8, $elm$bytes$Bytes$Decode$unsignedInt8);
+		} else {
+			if (!remaining) {
+				return $elm$bytes$Bytes$Decode$succeed(
+					$elm$bytes$Bytes$Decode$Done(string));
+			} else {
+				if (remaining === 2) {
+					var helper = F2(
+						function (a, b) {
+							var combined = (a << 16) | (b << 8);
+							return $elm$bytes$Bytes$Decode$Done(
+								_Utils_ap(
+									string,
+									A2($danfishgold$base64_bytes$Decode$bitsToChars, combined, 1)));
+						});
+					return A3($elm$bytes$Bytes$Decode$map2, helper, $elm$bytes$Bytes$Decode$unsignedInt8, $elm$bytes$Bytes$Decode$unsignedInt8);
+				} else {
+					return A2(
+						$elm$bytes$Bytes$Decode$map,
+						function (a) {
+							return $elm$bytes$Bytes$Decode$Done(
+								_Utils_ap(
+									string,
+									A2($danfishgold$base64_bytes$Decode$bitsToChars, a << 16, 2)));
+						},
+						$elm$bytes$Bytes$Decode$unsignedInt8);
+				}
+			}
+		}
+	}
+};
+var $danfishgold$base64_bytes$Decode$decoder = function (width) {
+	return A2(
+		$elm$bytes$Bytes$Decode$loop,
+		{aZ: width, a0: ''},
+		$danfishgold$base64_bytes$Decode$loopHelp);
+};
+var $elm$bytes$Bytes$width = _Bytes_width;
+var $danfishgold$base64_bytes$Decode$fromBytes = function (bytes) {
+	return A2(
+		$elm$bytes$Bytes$Decode$decode,
+		$danfishgold$base64_bytes$Decode$decoder(
+			$elm$bytes$Bytes$width(bytes)),
+		bytes);
+};
+var $danfishgold$base64_bytes$Base64$fromBytes = $danfishgold$base64_bytes$Decode$fromBytes;
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Game$Protocol$Util$toPacket = F2(
+	function (encode, out) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			'',
+			$danfishgold$base64_bytes$Base64$fromBytes(
+				$elm$bytes$Bytes$Encode$encode(
+					$elm$bytes$Bytes$Encode$sequence(
+						A2($elm$core$List$map, encode, out)))));
+	});
+var $author$project$Durak$Spectator$System$Tick$output = function (out) {
+	return _Utils_eq(out, _List_Nil) ? $elm$core$Platform$Cmd$none : $author$project$Game$Client$Port$output(
+		A2($author$project$Game$Protocol$Util$toPacket, $author$project$Durak$Protocol$Player$encode, out));
+};
 var $justgook$webgl_playground$Playground$intFromHexChar = function (s) {
 	switch (s) {
 		case '0':
@@ -8580,15 +9356,6 @@ var $justgook$webgl_playground$Playground$hexColor2Vec3 = function (str) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (!maybe.$) {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
 var $justgook$webgl_playground$Playground$black = A2(
 	$elm$core$Maybe$withDefault,
 	A3($elm_explorations$linear_algebra$Math$Vector3$vec3, 0, 0, 0),
@@ -8606,9 +9373,6 @@ var $elm$core$Result$andThen = F2(
 			return $elm$core$Result$Err(msg);
 		}
 	});
-var $elm$core$Basics$ge = _Utils_ge;
-var $elm$core$Bitwise$and = _Bitwise_and;
-var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
 var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
 var $elm$core$Array$getHelp = F3(
@@ -8632,7 +9396,6 @@ var $elm$core$Array$getHelp = F3(
 			}
 		}
 	});
-var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
 var $elm$core$Array$tailIndex = function (len) {
 	return (len >>> 5) << 5;
 };
@@ -9761,7 +10524,6 @@ var $pablohirafuji$elm_qrcode$QRCode$Matrix$maskToInt = function (mask) {
 			return 7;
 	}
 };
-var $elm$core$Bitwise$or = _Bitwise_or;
 var $elm$core$Bitwise$xor = _Bitwise_xor;
 var $pablohirafuji$elm_qrcode$QRCode$Matrix$encodeFormatInfo = F2(
 	function (ecLevel, mask) {
@@ -9994,8 +10756,8 @@ var $pablohirafuji$elm_qrcode$QRCode$Matrix$timingPattern = F2(
 			range);
 	});
 var $pablohirafuji$elm_qrcode$QRCode$Matrix$apply = function (_v0) {
-	var ecLevel = _v0.a.bP;
-	var groupInfo = _v0.a.dH;
+	var ecLevel = _v0.a.bR;
+	var groupInfo = _v0.a.dK;
 	var bytes = _v0.b;
 	var version = groupInfo.bB;
 	var size = ((version - 1) * 4) + 21;
@@ -10266,9 +11028,9 @@ var $pablohirafuji$elm_qrcode$QRCode$Encode$charCountIndicatorLength = F2(
 	});
 var $pablohirafuji$elm_qrcode$QRCode$Encode$charCountIndicator = F2(
 	function (_v0, bits) {
-		var groupInfo = _v0.dH;
+		var groupInfo = _v0.dK;
 		var inputStr = _v0.bi;
-		var mode = _v0.cr;
+		var mode = _v0.cu;
 		var length = A2($pablohirafuji$elm_qrcode$QRCode$Encode$charCountIndicatorLength, mode, groupInfo.bB);
 		var charCount = (mode === 3) ? $elm$core$List$length(bits) : $elm$core$String$length(inputStr);
 		return _Utils_Tuple2(charCount, length);
@@ -10292,16 +11054,16 @@ var $pablohirafuji$elm_qrcode$QRCode$Encode$addInfoAndFinalBits = function (_v0)
 		model,
 		A2(
 			$pablohirafuji$elm_qrcode$QRCode$Encode$addFiller,
-			model.dH.aQ,
+			model.dK.aQ,
 			$pablohirafuji$elm_qrcode$QRCode$Encode$bitsToBytes(
 				A3(
 					$pablohirafuji$elm_qrcode$QRCode$Encode$addTerminator,
-					model.dH.aQ,
+					model.dK.aQ,
 					model.a6,
 					A2(
 						$elm$core$List$cons,
 						_Utils_Tuple2(
-							$pablohirafuji$elm_qrcode$QRCode$Encode$modeIndicator(model.cr),
+							$pablohirafuji$elm_qrcode$QRCode$Encode$modeIndicator(model.cu),
 							4),
 						A2(
 							$elm$core$List$cons,
@@ -10548,163 +11310,7 @@ var $pablohirafuji$elm_qrcode$QRCode$Encode$Numeric$encode = function (str) {
 				$elm$core$String$toList(str))));
 };
 var $pablohirafuji$elm_qrcode$QRCode$Error$InvalidUTF8Char = {$: 3};
-var $elm$bytes$Bytes$Encode$getWidth = function (builder) {
-	switch (builder.$) {
-		case 0:
-			return 1;
-		case 1:
-			return 2;
-		case 2:
-			return 4;
-		case 3:
-			return 1;
-		case 4:
-			return 2;
-		case 5:
-			return 4;
-		case 6:
-			return 4;
-		case 7:
-			return 8;
-		case 8:
-			var w = builder.a;
-			return w;
-		case 9:
-			var w = builder.a;
-			return w;
-		default:
-			var bs = builder.a;
-			return _Bytes_width(bs);
-	}
-};
-var $elm$bytes$Bytes$LE = 0;
-var $elm$bytes$Bytes$Encode$write = F3(
-	function (builder, mb, offset) {
-		switch (builder.$) {
-			case 0:
-				var n = builder.a;
-				return A3(_Bytes_write_i8, mb, offset, n);
-			case 1:
-				var e = builder.a;
-				var n = builder.b;
-				return A4(_Bytes_write_i16, mb, offset, n, !e);
-			case 2:
-				var e = builder.a;
-				var n = builder.b;
-				return A4(_Bytes_write_i32, mb, offset, n, !e);
-			case 3:
-				var n = builder.a;
-				return A3(_Bytes_write_u8, mb, offset, n);
-			case 4:
-				var e = builder.a;
-				var n = builder.b;
-				return A4(_Bytes_write_u16, mb, offset, n, !e);
-			case 5:
-				var e = builder.a;
-				var n = builder.b;
-				return A4(_Bytes_write_u32, mb, offset, n, !e);
-			case 6:
-				var e = builder.a;
-				var n = builder.b;
-				return A4(_Bytes_write_f32, mb, offset, n, !e);
-			case 7:
-				var e = builder.a;
-				var n = builder.b;
-				return A4(_Bytes_write_f64, mb, offset, n, !e);
-			case 8:
-				var bs = builder.b;
-				return A3($elm$bytes$Bytes$Encode$writeSequence, bs, mb, offset);
-			case 9:
-				var s = builder.b;
-				return A3(_Bytes_write_string, mb, offset, s);
-			default:
-				var bs = builder.a;
-				return A3(_Bytes_write_bytes, mb, offset, bs);
-		}
-	});
-var $elm$bytes$Bytes$Encode$writeSequence = F3(
-	function (builders, mb, offset) {
-		writeSequence:
-		while (true) {
-			if (!builders.b) {
-				return offset;
-			} else {
-				var b = builders.a;
-				var bs = builders.b;
-				var $temp$builders = bs,
-					$temp$mb = mb,
-					$temp$offset = A3($elm$bytes$Bytes$Encode$write, b, mb, offset);
-				builders = $temp$builders;
-				mb = $temp$mb;
-				offset = $temp$offset;
-				continue writeSequence;
-			}
-		}
-	});
-var $elm$bytes$Bytes$Decode$decode = F2(
-	function (_v0, bs) {
-		var decoder = _v0;
-		return A2(_Bytes_decode, decoder, bs);
-	});
-var $elm$bytes$Bytes$Encode$encode = _Bytes_encode;
 var $elm$bytes$Bytes$Encode$getStringWidth = _Bytes_getStringWidth;
-var $elm$bytes$Bytes$Decode$Decoder = $elm$core$Basics$identity;
-var $elm$bytes$Bytes$Decode$loopHelp = F4(
-	function (state, callback, bites, offset) {
-		loopHelp:
-		while (true) {
-			var _v0 = callback(state);
-			var decoder = _v0;
-			var _v1 = A2(decoder, bites, offset);
-			var newOffset = _v1.a;
-			var step = _v1.b;
-			if (!step.$) {
-				var newState = step.a;
-				var $temp$state = newState,
-					$temp$callback = callback,
-					$temp$bites = bites,
-					$temp$offset = newOffset;
-				state = $temp$state;
-				callback = $temp$callback;
-				bites = $temp$bites;
-				offset = $temp$offset;
-				continue loopHelp;
-			} else {
-				var result = step.a;
-				return _Utils_Tuple2(newOffset, result);
-			}
-		}
-	});
-var $elm$bytes$Bytes$Decode$loop = F2(
-	function (state, callback) {
-		return A2($elm$bytes$Bytes$Decode$loopHelp, state, callback);
-	});
-var $elm$bytes$Bytes$Decode$Done = function (a) {
-	return {$: 1, a: a};
-};
-var $elm$bytes$Bytes$Decode$Loop = function (a) {
-	return {$: 0, a: a};
-};
-var $elm$bytes$Bytes$Decode$map = F2(
-	function (func, _v0) {
-		var decodeA = _v0;
-		return F2(
-			function (bites, offset) {
-				var _v1 = A2(decodeA, bites, offset);
-				var aOffset = _v1.a;
-				var a = _v1.b;
-				return _Utils_Tuple2(
-					aOffset,
-					func(a));
-			});
-	});
-var $elm$bytes$Bytes$Decode$succeed = function (a) {
-	return F2(
-		function (_v0, offset) {
-			return _Utils_Tuple2(offset, a);
-		});
-};
-var $elm$bytes$Bytes$Decode$unsignedInt8 = _Bytes_read_u8;
 var $pablohirafuji$elm_qrcode$QRCode$Encode$UTF8$step = function (_v0) {
 	var n = _v0.a;
 	var xs = _v0.b;
@@ -11112,20 +11718,20 @@ var $pablohirafuji$elm_qrcode$QRCode$Encode$getErrorCorrection = function (_v0) 
 		function (c) {
 			return _Utils_Tuple3(model, dataBlocks, c);
 		},
-		A2($pablohirafuji$elm_qrcode$QRCode$ErrorCorrection$get, model.dH.dr, dataBlocks));
+		A2($pablohirafuji$elm_qrcode$QRCode$ErrorCorrection$get, model.dK.du, dataBlocks));
 };
 var $pablohirafuji$elm_qrcode$QRCode$Encode$Alphanumeric = 1;
 var $pablohirafuji$elm_qrcode$QRCode$Encode$Byte = 2;
 var $pablohirafuji$elm_qrcode$QRCode$Encode$Numeric = 0;
 var $elm$regex$Regex$Match = F4(
 	function (match, index, number, submatches) {
-		return {dM: index, dT: match, d9: number, eq: submatches};
+		return {dP: index, dW: match, ec: number, et: submatches};
 	});
 var $elm$regex$Regex$contains = _Regex_contains;
 var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
 var $pablohirafuji$elm_qrcode$QRCode$Encode$Alphanumeric$onlyAlphanumeric = A2(
 	$elm$regex$Regex$fromStringWith,
-	{da: false, dZ: false},
+	{dd: false, d0: false},
 	'^[0-9A-Z $%*+\\-.\\/:]+$');
 var $pablohirafuji$elm_qrcode$QRCode$Encode$Alphanumeric$isValid = function (input) {
 	return A2(
@@ -11140,7 +11746,7 @@ var $pablohirafuji$elm_qrcode$QRCode$Encode$Alphanumeric$isValid = function (inp
 };
 var $pablohirafuji$elm_qrcode$QRCode$Encode$Byte$only8Bit = A2(
 	$elm$regex$Regex$fromStringWith,
-	{da: false, dZ: false},
+	{dd: false, d0: false},
 	'^[\\u0000-\\u00ff]+$');
 var $pablohirafuji$elm_qrcode$QRCode$Encode$Byte$isValid = function (input) {
 	return A2(
@@ -11155,7 +11761,7 @@ var $pablohirafuji$elm_qrcode$QRCode$Encode$Byte$isValid = function (input) {
 };
 var $pablohirafuji$elm_qrcode$QRCode$Encode$Numeric$onlyNumber = A2(
 	$elm$regex$Regex$fromStringWith,
-	{da: false, dZ: false},
+	{dd: false, d0: false},
 	'^[0-9]+$');
 var $pablohirafuji$elm_qrcode$QRCode$Encode$Numeric$isValid = function (input) {
 	return A2(
@@ -11198,9 +11804,9 @@ var $pablohirafuji$elm_qrcode$QRCode$GroupInfo$newGroupInfo = F4(
 	function (version, ecPerBlock, group1, maybeGroup2) {
 		return {
 			aQ: A2($pablohirafuji$elm_qrcode$QRCode$GroupInfo$byteCapacity, group1, maybeGroup2) * 8,
-			dr: ecPerBlock,
-			bY: group1,
-			dU: maybeGroup2,
+			du: ecPerBlock,
+			b_: group1,
+			dX: maybeGroup2,
 			bB: version
 		};
 	});
@@ -12337,10 +12943,10 @@ var $pablohirafuji$elm_qrcode$QRCode$Encode$versionToModel = F5(
 	function (inputStr, ecLevel, mode, partialBitsCount, groupInfo) {
 		return {
 			a6: partialBitsCount + A2($pablohirafuji$elm_qrcode$QRCode$Encode$charCountIndicatorLength, mode, groupInfo.bB),
-			bP: ecLevel,
-			dH: groupInfo,
+			bR: ecLevel,
+			dK: groupInfo,
 			bi: inputStr,
-			cr: mode
+			cu: mode
 		};
 	});
 var $pablohirafuji$elm_qrcode$QRCode$Encode$selectVersion = F4(
@@ -12395,9 +13001,9 @@ var $pablohirafuji$elm_qrcode$QRCode$Encode$breakList = F3(
 	});
 var $pablohirafuji$elm_qrcode$QRCode$Encode$toBlocks = function (_v0) {
 	var model = _v0.a;
-	var groupInfo = model.dH;
+	var groupInfo = model.dK;
 	var byteList = _v0.b;
-	var _v1 = groupInfo.dU;
+	var _v1 = groupInfo.dX;
 	if (!_v1.$) {
 		var group2 = _v1.a;
 		return A2(
@@ -12414,7 +13020,7 @@ var $pablohirafuji$elm_qrcode$QRCode$Encode$toBlocks = function (_v0) {
 					A3(
 						$pablohirafuji$elm_qrcode$QRCode$Encode$breakList,
 						false,
-						groupInfo.bY,
+						groupInfo.b_,
 						_Utils_Tuple2(byteList, _List_Nil)))));
 	} else {
 		return A2(
@@ -12428,7 +13034,7 @@ var $pablohirafuji$elm_qrcode$QRCode$Encode$toBlocks = function (_v0) {
 				A3(
 					$pablohirafuji$elm_qrcode$QRCode$Encode$breakList,
 					true,
-					groupInfo.bY,
+					groupInfo.b_,
 					_Utils_Tuple2(byteList, _List_Nil))));
 	}
 };
@@ -12476,7 +13082,7 @@ var $pablohirafuji$elm_qrcode$QRCode$fromStringWith = F2(
 					return A2(
 						$elm$core$Result$map,
 						function (matrix) {
-							return {aA: matrix, bB: encodeModel.dH.bB};
+							return {aA: matrix, bB: encodeModel.dK.bB};
 						},
 						$pablohirafuji$elm_qrcode$QRCode$Matrix$apply(
 							_Utils_Tuple2(encodeModel, encodedData)));
@@ -12487,6 +13093,20 @@ var $pablohirafuji$elm_qrcode$QRCode$fromStringWith = F2(
 					$pablohirafuji$elm_qrcode$QRCode$convertEC(ecLevel))));
 	});
 var $pablohirafuji$elm_qrcode$QRCode$fromString = $pablohirafuji$elm_qrcode$QRCode$fromStringWith(2);
+var $justgook$webgl_playground$Playground$scale = F2(
+	function (ns, _v0) {
+		var shape = _v0;
+		var x = shape.bE;
+		var y = shape.bF;
+		var a = shape.c3;
+		var sx = shape.e;
+		var sy = shape.f;
+		var o = shape.i;
+		var form = shape.k;
+		return _Utils_update(
+			shape,
+			{e: sx * ns, f: sy * ns});
+	});
 var $pablohirafuji$elm_qrcode$QRCode$toMatrix = function (_v0) {
 	var matrix = _v0.aA;
 	return matrix;
@@ -12522,9 +13142,9 @@ var $elm_explorations$webgl$WebGL$Internal$Blend = function (a) {
 };
 var $elm_explorations$webgl$WebGL$Settings$Blend$custom = function (_v0) {
 	var r = _v0.aY;
-	var g = _v0.dF;
-	var b = _v0.c4;
-	var a = _v0.c0;
+	var g = _v0.dI;
+	var b = _v0.c7;
+	var a = _v0.c3;
 	var color = _v0.aS;
 	var alpha = _v0.an;
 	var expand = F2(
@@ -12553,11 +13173,11 @@ var $elm_explorations$webgl$WebGL$Settings$Blend$add = F2(
 	function (factor1, factor2) {
 		return $elm_explorations$webgl$WebGL$Settings$Blend$custom(
 			{
-				c0: 0,
+				c3: 0,
 				an: A2($elm_explorations$webgl$WebGL$Settings$Blend$customAdd, factor1, factor2),
-				c4: 0,
+				c7: 0,
 				aS: A2($elm_explorations$webgl$WebGL$Settings$Blend$customAdd, factor1, factor2),
-				dF: 0,
+				dI: 0,
 				aY: 0
 			});
 	});
@@ -12572,8 +13192,8 @@ var $elm_explorations$webgl$WebGL$Internal$DepthTest = F4(
 	});
 var $elm_explorations$webgl$WebGL$Settings$DepthTest$lessOrEqual = function (_v0) {
 	var write = _v0.X;
-	var near = _v0.S;
-	var far = _v0.R;
+	var near = _v0.T;
+	var far = _v0.S;
 	return A4($elm_explorations$webgl$WebGL$Internal$DepthTest, 515, write, near, far);
 };
 var $elm_explorations$webgl$WebGL$Settings$Blend$Factor = $elm$core$Basics$identity;
@@ -12584,7 +13204,7 @@ var $justgook$webgl_playground$Playground$Render$defaultEntitySettings = _List_f
 		A2($elm_explorations$webgl$WebGL$Settings$Blend$add, $elm_explorations$webgl$WebGL$Settings$Blend$srcAlpha, $elm_explorations$webgl$WebGL$Settings$Blend$oneMinusSrcAlpha),
 		A4($elm_explorations$webgl$WebGL$Settings$colorMask, true, true, true, false),
 		$elm_explorations$webgl$WebGL$Settings$DepthTest$lessOrEqual(
-		{R: 1, S: 0, X: true})
+		{S: 1, T: 0, X: true})
 	]);
 var $elm_explorations$webgl$WebGL$entityWith = _WebGL_entity;
 var $justgook$webgl_playground$Playground$Shader$fragImageColor = {
@@ -12597,7 +13217,7 @@ var $elm_explorations$webgl$WebGL$Mesh1 = F2(
 		return {$: 0, a: a, b: b};
 	});
 var $elm_explorations$webgl$WebGL$triangleStrip = $elm_explorations$webgl$WebGL$Mesh1(
-	{bQ: 1, b2: 0, cr: 5});
+	{bS: 1, b5: 0, cu: 5});
 var $elm_explorations$linear_algebra$Math$Vector2$vec2 = _MJS_v2;
 var $justgook$webgl_playground$Playground$Shader$mesh = $elm_explorations$webgl$WebGL$triangleStrip(
 	_List_fromArray(
@@ -12621,12 +13241,12 @@ var $justgook$webgl_playground$Playground$Render$setAlpha = A2(
 	$elm$core$Basics$composeR,
 	$elm_explorations$linear_algebra$Math$Vector3$toRecord,
 	function (a) {
-		return A3($elm_explorations$linear_algebra$Math$Vector4$vec4, a.eN, a.eQ, a.a3);
+		return A3($elm_explorations$linear_algebra$Math$Vector4$vec4, a.bE, a.bF, a.a3);
 	});
 var $justgook$webgl_playground$Playground$Shader$vertTile = {
 	src: '\n            precision mediump float;\n            attribute vec2 aP;\n            uniform vec4 uT;\n            uniform vec2 uP;\n            uniform float z;\n            uniform float index;\n            uniform vec2 spriteSize;\n            uniform vec2 uImgSize;\n            varying vec2 uv;\n            vec2 edgeFix = vec2(0.0000001, -0.0000001);\n            void main () {\n                vec2 ratio = spriteSize / uImgSize;\n                float row = (uImgSize.y / spriteSize.y - 1.0) - floor((index + 0.5) * ratio.x);\n                float column = floor(mod((index + 0.5), uImgSize.x / spriteSize.x));\n                vec2 offset = vec2(column, row) * ratio;\n                uv = (aP * 0.5 + 0.5) * ratio + offset + edgeFix;\n                gl_Position = vec4(aP * mat2(uT) + uP, z  * -1.19209304e-7, 1.0);\n            }\n        ',
 	attributes: {aP: 'aO'},
-	uniforms: {index: 'dM', spriteSize: 'cQ', uImgSize: 'aK', uP: 'eC', uT: 'eD', z: 'a3'}
+	uniforms: {index: 'dP', spriteSize: 'cT', uImgSize: 'aK', uP: 'eF', uT: 'eG', z: 'a3'}
 };
 var $justgook$webgl_playground$Playground$Render$tileWithColor = F9(
 	function (spriteSheet, spriteSize, imageSize, color, index, translate, scaleRotateSkew, z, opacity) {
@@ -12638,20 +13258,20 @@ var $justgook$webgl_playground$Playground$Render$tileWithColor = F9(
 			$justgook$webgl_playground$Playground$Shader$mesh,
 			{
 				aS: A2($justgook$webgl_playground$Playground$Render$setAlpha, color, opacity),
-				dM: index,
-				cQ: spriteSize,
-				ex: opacity,
+				dP: index,
+				cT: spriteSize,
+				eA: opacity,
 				aJ: spriteSheet,
 				aK: imageSize,
-				eC: translate,
-				eD: scaleRotateSkew,
+				eF: translate,
+				eG: scaleRotateSkew,
 				a3: z
 			});
 	});
 var $justgook$webgl_playground$Playground$Extra$Font$char = F8(
 	function (spriteSheet, imageSize, color, w, h, x, y, index) {
 		return {
-			c0: 0,
+			c3: 0,
 			k: A3(
 				$justgook$webgl_shape$WebGL$Shape2d$Form,
 				w,
@@ -12666,8 +13286,8 @@ var $justgook$webgl_playground$Playground$Extra$Font$char = F8(
 			i: 1,
 			e: 1,
 			f: 1,
-			eN: x,
-			eQ: y,
+			bE: x,
+			bF: y,
 			a3: 0
 		};
 	});
@@ -12682,14 +13302,14 @@ var $elm$core$Tuple$mapBoth = F3(
 var $justgook$webgl_playground$Playground$Extra$Font$outputFold = F6(
 	function (toChar, getIndex, w, h, c, _v0) {
 		var chars = _v0.av;
-		var x = _v0.eN;
-		var y = _v0.eQ;
-		var width = _v0.c_;
+		var x = _v0.bE;
+		var y = _v0.bF;
+		var width = _v0.c1;
 		return (c === '\n') ? {
 			av: chars,
-			c_: A2($elm$core$Basics$max, width, x),
-			eN: w,
-			eQ: y - h
+			c1: A2($elm$core$Basics$max, width, x),
+			bE: w,
+			bF: y - h
 		} : {
 			av: A2(
 				$elm$core$List$cons,
@@ -12699,25 +13319,20 @@ var $justgook$webgl_playground$Playground$Extra$Font$outputFold = F6(
 					y,
 					getIndex(c)),
 				chars),
-			c_: width,
-			eN: x + w,
-			eQ: y
+			c1: width,
+			bE: x + w,
+			bF: y
 		};
-	});
-var $elm_explorations$webgl$WebGL$Texture$LoadError = {$: 0};
-var $elm_explorations$webgl$WebGL$Texture$SizeError = F2(
-	function (a, b) {
-		return {$: 1, a: a, b: b};
 	});
 var $elm_explorations$webgl$WebGL$Texture$size = _Texture_size;
 var $justgook$webgl_playground$Playground$Extra$Font$tileFont = F3(
 	function (_v0, color, string) {
-		var charW = _v0.dd;
-		var charH = _v0.dc;
-		var src = _v0.ep;
-		var getIndex = _v0.dG;
+		var charW = _v0.dg;
+		var charH = _v0.df;
+		var src = _v0.es;
+		var getIndex = _v0.dJ;
 		return {
-			c0: 0,
+			c3: 0,
 			k: A2(
 				$justgook$webgl_shape$WebGL$Shape2d$Textured,
 				src,
@@ -12734,24 +13349,24 @@ var $justgook$webgl_playground$Playground$Extra$Font$tileFont = F3(
 					var output = A3(
 						$elm$core$List$foldl,
 						A4($justgook$webgl_playground$Playground$Extra$Font$outputFold, toChar, getIndex, charW, charH),
-						{av: _List_Nil, c_: 0, eN: charW, eQ: charH},
+						{av: _List_Nil, c1: 0, bE: charW, bF: charH},
 						$elm$core$String$toList(string));
 					return {
-						c0: 0,
+						c3: 0,
 						k: $justgook$webgl_shape$WebGL$Shape2d$Group(output.av),
 						i: 1,
 						e: 1,
 						f: 1,
-						eN: A2($elm$core$Basics$max, output.eN, output.c_) * (-0.5),
-						eQ: (output.eQ * (-0.5)) + (0.5 * (-charH)),
+						bE: A2($elm$core$Basics$max, output.bE, output.c1) * (-0.5),
+						bF: (output.bF * (-0.5)) + (0.5 * (-charH)),
 						a3: 0
 					};
 				}),
 			i: 1,
 			e: 1,
 			f: 1,
-			eN: 0,
-			eQ: 0,
+			bE: 0,
+			bF: 0,
 			a3: 0
 		};
 	});
@@ -12805,9 +13420,9 @@ var $justgook$webgl_playground$Playground$Font$SimpleMood$letters = function (c)
 		0,
 		A2($elm$core$Dict$get, c, $justgook$webgl_playground$Playground$Font$SimpleMood$letters_));
 };
-var $justgook$webgl_playground$Playground$wordsConfig = {dc: 16, dd: 16, dG: $justgook$webgl_playground$Playground$Font$SimpleMood$letters, ep: $justgook$webgl_playground$Playground$Font$SimpleMood$image};
+var $justgook$webgl_playground$Playground$wordsConfig = {df: 16, dg: 16, dJ: $justgook$webgl_playground$Playground$Font$SimpleMood$letters, es: $justgook$webgl_playground$Playground$Font$SimpleMood$image};
 var $justgook$webgl_playground$Playground$words = $justgook$webgl_playground$Playground$Extra$Font$tileFont($justgook$webgl_playground$Playground$wordsConfig);
-var $author$project$Durak$Spectator$System$Qr$draw = A2(
+var $author$project$Durak$Common$Qr$render = A2(
 	$elm$core$Basics$composeR,
 	$pablohirafuji$elm_qrcode$QRCode$fromString,
 	A2(
@@ -12830,605 +13445,11 @@ var $author$project$Durak$Spectator$System$Qr$draw = A2(
 		A2(
 			$elm$core$Basics$composeR,
 			$elm$core$Result$withDefault(''),
-			$justgook$webgl_playground$Playground$words($justgook$webgl_playground$Playground$black))));
-var $elm$core$Set$foldl = F3(
-	function (func, initialState, _v0) {
-		var dict = _v0;
-		return A3(
-			$elm$core$Dict$foldl,
-			F3(
-				function (key, _v1, state) {
-					return A2(func, key, state);
-				}),
-			initialState,
-			dict);
-	});
-var $author$project$Game$Client$Model$Texture = F2(
-	function (a, b) {
-		return {$: 0, a: a, b: b};
-	});
-var $author$project$Game$Client$Model$TextureFail = function (a) {
-	return {$: 1, a: a};
-};
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
-var $elm$core$Task$onError = _Scheduler_onError;
-var $elm$core$Task$attempt = F2(
-	function (resultToMessage, task) {
-		return $elm$core$Task$command(
 			A2(
-				$elm$core$Task$onError,
-				A2(
-					$elm$core$Basics$composeL,
-					A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
-					$elm$core$Result$Err),
-				A2(
-					$elm$core$Task$andThen,
-					A2(
-						$elm$core$Basics$composeL,
-						A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
-						$elm$core$Result$Ok),
-					task)));
-	});
-var $elm_explorations$webgl$WebGL$Texture$loadWith = F2(
-	function (_v0, url) {
-		var magnify = _v0.dS;
-		var minify = _v0.dX;
-		var horizontalWrap = _v0.dK;
-		var verticalWrap = _v0.eJ;
-		var flipY = _v0.dD;
-		var expand = F4(
-			function (_v1, _v2, _v3, _v4) {
-				var mag = _v1;
-				var min = _v2;
-				var hor = _v3;
-				var vert = _v4;
-				return A6(_Texture_load, mag, min, hor, vert, flipY, url);
-			});
-		return A4(expand, magnify, minify, horizontalWrap, verticalWrap);
-	});
-var $elm_explorations$webgl$WebGL$Texture$Wrap = $elm$core$Basics$identity;
-var $elm_explorations$webgl$WebGL$Texture$clampToEdge = 33071;
-var $elm_explorations$webgl$WebGL$Texture$Resize = $elm$core$Basics$identity;
-var $elm_explorations$webgl$WebGL$Texture$linear = 9729;
-var $author$project$Game$Client$Model$textureOption = {dD: true, dK: $elm_explorations$webgl$WebGL$Texture$clampToEdge, dS: $elm_explorations$webgl$WebGL$Texture$linear, dX: $elm_explorations$webgl$WebGL$Texture$linear, eJ: $elm_explorations$webgl$WebGL$Texture$clampToEdge};
-var $author$project$Game$Client$Model$getTexture = F2(
-	function (name, url) {
-		return A2(
-			$elm$core$Task$attempt,
-			function (r) {
-				if (!r.$) {
-					var t = r.a;
-					return A2($author$project$Game$Client$Model$Texture, name, t);
-				} else {
-					var e = r.a;
-					return $author$project$Game$Client$Model$TextureFail(e);
-				}
-			},
-			A2($elm_explorations$webgl$WebGL$Texture$loadWith, $author$project$Game$Client$Model$textureOption, url));
-	});
-var $author$project$Durak$Spectator$System$Tick$getTexture = function (url) {
-	return A2($author$project$Game$Client$Model$getTexture, url, url);
-};
-var $elm$bytes$Bytes$Encode$Seq = F2(
-	function (a, b) {
-		return {$: 8, a: a, b: b};
-	});
-var $elm$bytes$Bytes$Encode$getWidths = F2(
-	function (width, builders) {
-		getWidths:
-		while (true) {
-			if (!builders.b) {
-				return width;
-			} else {
-				var b = builders.a;
-				var bs = builders.b;
-				var $temp$width = width + $elm$bytes$Bytes$Encode$getWidth(b),
-					$temp$builders = bs;
-				width = $temp$width;
-				builders = $temp$builders;
-				continue getWidths;
-			}
-		}
-	});
-var $elm$bytes$Bytes$Encode$sequence = function (builders) {
-	return A2(
-		$elm$bytes$Bytes$Encode$Seq,
-		A2($elm$bytes$Bytes$Encode$getWidths, 0, builders),
-		builders);
-};
-var $author$project$Durak$Common$Table$spotToInt = function (spot_) {
-	switch (spot_) {
-		case 0:
-			return 1;
-		case 1:
-			return 2;
-		case 2:
-			return 3;
-		case 3:
-			return 4;
-		case 4:
-			return 5;
-		default:
-			return 6;
-	}
-};
-var $author$project$Durak$Common$Card$toInt = function (c) {
-	switch (c) {
-		case 0:
-			return 0;
-		case 1:
-			return 1;
-		case 2:
-			return 2;
-		case 3:
-			return 3;
-		case 4:
-			return 4;
-		case 5:
-			return 5;
-		case 6:
-			return 6;
-		case 7:
-			return 7;
-		case 8:
-			return 8;
-		case 9:
-			return 9;
-		case 10:
-			return 10;
-		case 11:
-			return 11;
-		case 12:
-			return 12;
-		case 13:
-			return 13;
-		case 14:
-			return 14;
-		case 15:
-			return 15;
-		case 16:
-			return 16;
-		case 17:
-			return 17;
-		case 18:
-			return 18;
-		case 19:
-			return 19;
-		case 20:
-			return 20;
-		case 21:
-			return 21;
-		case 22:
-			return 22;
-		case 23:
-			return 23;
-		case 24:
-			return 24;
-		case 25:
-			return 25;
-		case 26:
-			return 26;
-		case 27:
-			return 27;
-		case 28:
-			return 28;
-		case 29:
-			return 29;
-		case 30:
-			return 30;
-		case 31:
-			return 31;
-		case 32:
-			return 32;
-		case 33:
-			return 33;
-		case 34:
-			return 34;
-		case 35:
-			return 35;
-		case 36:
-			return 36;
-		case 37:
-			return 37;
-		case 38:
-			return 38;
-		case 39:
-			return 39;
-		case 40:
-			return 40;
-		case 41:
-			return 41;
-		case 42:
-			return 42;
-		case 43:
-			return 43;
-		case 44:
-			return 44;
-		case 45:
-			return 45;
-		case 46:
-			return 46;
-		case 47:
-			return 47;
-		case 48:
-			return 48;
-		case 49:
-			return 49;
-		case 50:
-			return 50;
-		default:
-			return 51;
-	}
-};
-var $elm$bytes$Bytes$Encode$U8 = function (a) {
-	return {$: 3, a: a};
-};
-var $elm$bytes$Bytes$Encode$unsignedInt8 = $elm$bytes$Bytes$Encode$U8;
-var $author$project$Durak$Protocol$Player$encode = function (msg) {
-	switch (msg.$) {
-		case 0:
-			var card = msg.a;
-			return $elm$bytes$Bytes$Encode$sequence(
-				_List_fromArray(
-					[
-						$elm$bytes$Bytes$Encode$unsignedInt8(1),
-						$elm$bytes$Bytes$Encode$unsignedInt8(
-						$author$project$Durak$Common$Card$toInt(card))
-					]));
-		case 1:
-			return $elm$bytes$Bytes$Encode$sequence(
-				_List_fromArray(
-					[
-						$elm$bytes$Bytes$Encode$unsignedInt8(2)
-					]));
-		case 2:
-			return $elm$bytes$Bytes$Encode$sequence(
-				_List_fromArray(
-					[
-						$elm$bytes$Bytes$Encode$unsignedInt8(3)
-					]));
-		case 3:
-			return $elm$bytes$Bytes$Encode$sequence(
-				_List_fromArray(
-					[
-						$elm$bytes$Bytes$Encode$unsignedInt8(4)
-					]));
-		case 4:
-			var cover = msg.a;
-			var card = msg.b;
-			return $elm$bytes$Bytes$Encode$sequence(
-				_List_fromArray(
-					[
-						$elm$bytes$Bytes$Encode$unsignedInt8(5),
-						$elm$bytes$Bytes$Encode$unsignedInt8(
-						$author$project$Durak$Common$Table$spotToInt(cover)),
-						$elm$bytes$Bytes$Encode$unsignedInt8(
-						$author$project$Durak$Common$Card$toInt(card))
-					]));
-		case 5:
-			return $elm$bytes$Bytes$Encode$sequence(
-				_List_fromArray(
-					[
-						$elm$bytes$Bytes$Encode$unsignedInt8(6)
-					]));
-		default:
-			return $elm$bytes$Bytes$Encode$sequence(
-				_List_fromArray(
-					[
-						$elm$bytes$Bytes$Encode$unsignedInt8(7)
-					]));
-	}
-};
-var $elm$core$String$cons = _String_cons;
-var $elm$core$String$fromChar = function (_char) {
-	return A2($elm$core$String$cons, _char, '');
-};
-var $danfishgold$base64_bytes$Decode$lowest6BitsMask = 63;
-var $elm$core$Char$fromCode = _Char_fromCode;
-var $danfishgold$base64_bytes$Decode$unsafeToChar = function (n) {
-	if (n <= 25) {
-		return $elm$core$Char$fromCode(65 + n);
-	} else {
-		if (n <= 51) {
-			return $elm$core$Char$fromCode(97 + (n - 26));
-		} else {
-			if (n <= 61) {
-				return $elm$core$Char$fromCode(48 + (n - 52));
-			} else {
-				switch (n) {
-					case 62:
-						return '+';
-					case 63:
-						return '/';
-					default:
-						return '\u0000';
-				}
-			}
-		}
-	}
-};
-var $danfishgold$base64_bytes$Decode$bitsToChars = F2(
-	function (bits, missing) {
-		var s = $danfishgold$base64_bytes$Decode$unsafeToChar(bits & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var r = $danfishgold$base64_bytes$Decode$unsafeToChar((bits >>> 6) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var q = $danfishgold$base64_bytes$Decode$unsafeToChar((bits >>> 12) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var p = $danfishgold$base64_bytes$Decode$unsafeToChar(bits >>> 18);
-		switch (missing) {
-			case 0:
-				return A2(
-					$elm$core$String$cons,
-					p,
-					A2(
-						$elm$core$String$cons,
-						q,
-						A2(
-							$elm$core$String$cons,
-							r,
-							$elm$core$String$fromChar(s))));
-			case 1:
-				return A2(
-					$elm$core$String$cons,
-					p,
-					A2(
-						$elm$core$String$cons,
-						q,
-						A2($elm$core$String$cons, r, '=')));
-			case 2:
-				return A2(
-					$elm$core$String$cons,
-					p,
-					A2($elm$core$String$cons, q, '=='));
-			default:
-				return '';
-		}
-	});
-var $danfishgold$base64_bytes$Decode$bitsToCharSpecialized = F4(
-	function (bits1, bits2, bits3, accum) {
-		var z = $danfishgold$base64_bytes$Decode$unsafeToChar((bits3 >>> 6) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var y = $danfishgold$base64_bytes$Decode$unsafeToChar((bits3 >>> 12) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var x = $danfishgold$base64_bytes$Decode$unsafeToChar(bits3 >>> 18);
-		var w = $danfishgold$base64_bytes$Decode$unsafeToChar(bits3 & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var s = $danfishgold$base64_bytes$Decode$unsafeToChar(bits1 & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var r = $danfishgold$base64_bytes$Decode$unsafeToChar((bits1 >>> 6) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var q = $danfishgold$base64_bytes$Decode$unsafeToChar((bits1 >>> 12) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var p = $danfishgold$base64_bytes$Decode$unsafeToChar(bits1 >>> 18);
-		var d = $danfishgold$base64_bytes$Decode$unsafeToChar(bits2 & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var c = $danfishgold$base64_bytes$Decode$unsafeToChar((bits2 >>> 6) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var b = $danfishgold$base64_bytes$Decode$unsafeToChar((bits2 >>> 12) & $danfishgold$base64_bytes$Decode$lowest6BitsMask);
-		var a = $danfishgold$base64_bytes$Decode$unsafeToChar(bits2 >>> 18);
-		return A2(
-			$elm$core$String$cons,
-			x,
-			A2(
-				$elm$core$String$cons,
-				y,
-				A2(
-					$elm$core$String$cons,
-					z,
-					A2(
-						$elm$core$String$cons,
-						w,
-						A2(
-							$elm$core$String$cons,
-							a,
-							A2(
-								$elm$core$String$cons,
-								b,
-								A2(
-									$elm$core$String$cons,
-									c,
-									A2(
-										$elm$core$String$cons,
-										d,
-										A2(
-											$elm$core$String$cons,
-											p,
-											A2(
-												$elm$core$String$cons,
-												q,
-												A2(
-													$elm$core$String$cons,
-													r,
-													A2($elm$core$String$cons, s, accum))))))))))));
-	});
-var $danfishgold$base64_bytes$Decode$decode18Help = F5(
-	function (a, b, c, d, e) {
-		var combined6 = ((255 & d) << 16) | e;
-		var combined5 = d >>> 8;
-		var combined4 = 16777215 & c;
-		var combined3 = ((65535 & b) << 8) | (c >>> 24);
-		var combined2 = ((255 & a) << 16) | (b >>> 16);
-		var combined1 = a >>> 8;
-		return A4(
-			$danfishgold$base64_bytes$Decode$bitsToCharSpecialized,
-			combined3,
-			combined2,
-			combined1,
-			A4($danfishgold$base64_bytes$Decode$bitsToCharSpecialized, combined6, combined5, combined4, ''));
-	});
-var $elm$bytes$Bytes$Decode$map5 = F6(
-	function (func, _v0, _v1, _v2, _v3, _v4) {
-		var decodeA = _v0;
-		var decodeB = _v1;
-		var decodeC = _v2;
-		var decodeD = _v3;
-		var decodeE = _v4;
-		return F2(
-			function (bites, offset) {
-				var _v5 = A2(decodeA, bites, offset);
-				var aOffset = _v5.a;
-				var a = _v5.b;
-				var _v6 = A2(decodeB, bites, aOffset);
-				var bOffset = _v6.a;
-				var b = _v6.b;
-				var _v7 = A2(decodeC, bites, bOffset);
-				var cOffset = _v7.a;
-				var c = _v7.b;
-				var _v8 = A2(decodeD, bites, cOffset);
-				var dOffset = _v8.a;
-				var d = _v8.b;
-				var _v9 = A2(decodeE, bites, dOffset);
-				var eOffset = _v9.a;
-				var e = _v9.b;
-				return _Utils_Tuple2(
-					eOffset,
-					A5(func, a, b, c, d, e));
-			});
-	});
-var $elm$bytes$Bytes$BE = 1;
-var $elm$bytes$Bytes$Decode$unsignedInt16 = function (endianness) {
-	return _Bytes_read_u16(!endianness);
-};
-var $danfishgold$base64_bytes$Decode$u16BE = $elm$bytes$Bytes$Decode$unsignedInt16(1);
-var $elm$bytes$Bytes$Decode$unsignedInt32 = function (endianness) {
-	return _Bytes_read_u32(!endianness);
-};
-var $danfishgold$base64_bytes$Decode$u32BE = $elm$bytes$Bytes$Decode$unsignedInt32(1);
-var $danfishgold$base64_bytes$Decode$decode18Bytes = A6($elm$bytes$Bytes$Decode$map5, $danfishgold$base64_bytes$Decode$decode18Help, $danfishgold$base64_bytes$Decode$u32BE, $danfishgold$base64_bytes$Decode$u32BE, $danfishgold$base64_bytes$Decode$u32BE, $danfishgold$base64_bytes$Decode$u32BE, $danfishgold$base64_bytes$Decode$u16BE);
-var $elm$bytes$Bytes$Decode$map2 = F3(
-	function (func, _v0, _v1) {
-		var decodeA = _v0;
-		var decodeB = _v1;
-		return F2(
-			function (bites, offset) {
-				var _v2 = A2(decodeA, bites, offset);
-				var aOffset = _v2.a;
-				var a = _v2.b;
-				var _v3 = A2(decodeB, bites, aOffset);
-				var bOffset = _v3.a;
-				var b = _v3.b;
-				return _Utils_Tuple2(
-					bOffset,
-					A2(func, a, b));
-			});
-	});
-var $elm$bytes$Bytes$Decode$map3 = F4(
-	function (func, _v0, _v1, _v2) {
-		var decodeA = _v0;
-		var decodeB = _v1;
-		var decodeC = _v2;
-		return F2(
-			function (bites, offset) {
-				var _v3 = A2(decodeA, bites, offset);
-				var aOffset = _v3.a;
-				var a = _v3.b;
-				var _v4 = A2(decodeB, bites, aOffset);
-				var bOffset = _v4.a;
-				var b = _v4.b;
-				var _v5 = A2(decodeC, bites, bOffset);
-				var cOffset = _v5.a;
-				var c = _v5.b;
-				return _Utils_Tuple2(
-					cOffset,
-					A3(func, a, b, c));
-			});
-	});
-var $danfishgold$base64_bytes$Decode$loopHelp = function (_v0) {
-	var remaining = _v0.aZ;
-	var string = _v0.a0;
-	if (remaining >= 18) {
-		return A2(
-			$elm$bytes$Bytes$Decode$map,
-			function (result) {
-				return $elm$bytes$Bytes$Decode$Loop(
-					{
-						aZ: remaining - 18,
-						a0: _Utils_ap(string, result)
-					});
-			},
-			$danfishgold$base64_bytes$Decode$decode18Bytes);
-	} else {
-		if (remaining >= 3) {
-			var helper = F3(
-				function (a, b, c) {
-					var combined = ((a << 16) | (b << 8)) | c;
-					return $elm$bytes$Bytes$Decode$Loop(
-						{
-							aZ: remaining - 3,
-							a0: _Utils_ap(
-								string,
-								A2($danfishgold$base64_bytes$Decode$bitsToChars, combined, 0))
-						});
-				});
-			return A4($elm$bytes$Bytes$Decode$map3, helper, $elm$bytes$Bytes$Decode$unsignedInt8, $elm$bytes$Bytes$Decode$unsignedInt8, $elm$bytes$Bytes$Decode$unsignedInt8);
-		} else {
-			if (!remaining) {
-				return $elm$bytes$Bytes$Decode$succeed(
-					$elm$bytes$Bytes$Decode$Done(string));
-			} else {
-				if (remaining === 2) {
-					var helper = F2(
-						function (a, b) {
-							var combined = (a << 16) | (b << 8);
-							return $elm$bytes$Bytes$Decode$Done(
-								_Utils_ap(
-									string,
-									A2($danfishgold$base64_bytes$Decode$bitsToChars, combined, 1)));
-						});
-					return A3($elm$bytes$Bytes$Decode$map2, helper, $elm$bytes$Bytes$Decode$unsignedInt8, $elm$bytes$Bytes$Decode$unsignedInt8);
-				} else {
-					return A2(
-						$elm$bytes$Bytes$Decode$map,
-						function (a) {
-							return $elm$bytes$Bytes$Decode$Done(
-								_Utils_ap(
-									string,
-									A2($danfishgold$base64_bytes$Decode$bitsToChars, a << 16, 2)));
-						},
-						$elm$bytes$Bytes$Decode$unsignedInt8);
-				}
-			}
-		}
-	}
-};
-var $danfishgold$base64_bytes$Decode$decoder = function (width) {
-	return A2(
-		$elm$bytes$Bytes$Decode$loop,
-		{aZ: width, a0: ''},
-		$danfishgold$base64_bytes$Decode$loopHelp);
-};
-var $elm$bytes$Bytes$width = _Bytes_width;
-var $danfishgold$base64_bytes$Decode$fromBytes = function (bytes) {
-	return A2(
-		$elm$bytes$Bytes$Decode$decode,
-		$danfishgold$base64_bytes$Decode$decoder(
-			$elm$bytes$Bytes$width(bytes)),
-		bytes);
-};
-var $danfishgold$base64_bytes$Base64$fromBytes = $danfishgold$base64_bytes$Decode$fromBytes;
-var $author$project$Game$Protocol$Util$toPacket = F2(
-	function (encode, out) {
-		return A2(
-			$elm$core$Maybe$withDefault,
-			'',
-			$danfishgold$base64_bytes$Base64$fromBytes(
-				$elm$bytes$Bytes$Encode$encode(
-					$elm$bytes$Bytes$Encode$sequence(
-						A2($elm$core$List$map, encode, out)))));
-	});
-var $author$project$Durak$Spectator$System$Tick$output = function (out) {
-	return _Utils_eq(out, _List_Nil) ? $elm$core$Platform$Cmd$none : $author$project$Game$Client$Port$output(
-		A2($author$project$Game$Protocol$Util$toPacket, $author$project$Durak$Protocol$Player$encode, out));
-};
-var $justgook$webgl_playground$Playground$scale = F2(
-	function (ns, _v0) {
-		var shape = _v0;
-		var x = shape.eN;
-		var y = shape.eQ;
-		var a = shape.c0;
-		var sx = shape.e;
-		var sy = shape.f;
-		var o = shape.i;
-		var form = shape.k;
-		return _Utils_update(
-			shape,
-			{e: sx * ns, f: sy * ns});
-	});
-var $author$project$Durak$Player$Component$Card$size = {bZ: 48, dV: 4, dW: 7, c_: 32};
+				$elm$core$Basics$composeR,
+				$justgook$webgl_playground$Playground$words($justgook$webgl_playground$Playground$black),
+				$justgook$webgl_playground$Playground$scale(0.125)))));
+var $author$project$Durak$Player$Component$Card$size = {b$: 48, dY: 4, dZ: 7, c1: 32};
 var $justgook$webgl_playground$Playground$Extra$size = function (t) {
 	return function (_v0) {
 		var w = _v0.a;
@@ -13440,7 +13461,7 @@ var $justgook$webgl_playground$Playground$Extra$size = function (t) {
 var $justgook$webgl_playground$Playground$Shader$fragImage = {
 	src: '\n        precision mediump float;\n        varying vec2 uv;\n        uniform vec2 uImgSize;\n        uniform sampler2D uImg;\n        uniform float uA;\n        void main () {\n            vec2 pixel = (floor(uv * uImgSize) + 0.5) / uImgSize;\n            gl_FragColor = texture2D(uImg, pixel);\n            gl_FragColor.a *= uA;\n            if(gl_FragColor.a <= 0.025) discard;\n        }\n    ',
 	attributes: {},
-	uniforms: {uA: 'ex', uImg: 'aJ', uImgSize: 'aK'}
+	uniforms: {uA: 'eA', uImg: 'aJ', uImgSize: 'aK'}
 };
 var $justgook$webgl_playground$Playground$Render$tile = F8(
 	function (spriteSheet, spriteSize, imageSize, index, translate, scaleRotateSkew, z, opacity) {
@@ -13450,18 +13471,18 @@ var $justgook$webgl_playground$Playground$Render$tile = F8(
 			$justgook$webgl_playground$Playground$Shader$vertTile,
 			$justgook$webgl_playground$Playground$Shader$fragImage,
 			$justgook$webgl_playground$Playground$Shader$mesh,
-			{dM: index, cQ: spriteSize, ex: opacity, aJ: spriteSheet, aK: imageSize, eC: translate, eD: scaleRotateSkew, a3: z});
+			{dP: index, cT: spriteSize, eA: opacity, aJ: spriteSheet, aK: imageSize, eF: translate, eG: scaleRotateSkew, a3: z});
 	});
 var $justgook$webgl_playground$Playground$Extra$tile = F4(
 	function (tileW, tileH, tileset, index) {
 		return {
-			c0: 0,
+			c3: 0,
 			k: A2(
 				$justgook$webgl_shape$WebGL$Shape2d$Textured,
 				tileset,
 				function (t) {
 					return {
-						c0: 0,
+						c3: 0,
 						k: A3(
 							$justgook$webgl_shape$WebGL$Shape2d$Form,
 							tileW,
@@ -13475,48 +13496,48 @@ var $justgook$webgl_playground$Playground$Extra$tile = F4(
 						i: 1,
 						e: 1,
 						f: 1,
-						eN: 0,
-						eQ: 0,
+						bE: 0,
+						bF: 0,
 						a3: 0
 					};
 				}),
 			i: 1,
 			e: 1,
 			f: 1,
-			eN: 0,
-			eQ: 0,
+			bE: 0,
+			bF: 0,
 			a3: 0
 		};
 	});
-var $author$project$Durak$Player$Component$Card$shape = A3($justgook$webgl_playground$Playground$Extra$tile, $author$project$Durak$Player$Component$Card$size.c_, $author$project$Durak$Player$Component$Card$size.bZ, '/Durak/asset/cards.png');
+var $author$project$Durak$Player$Component$Card$shape = A3($justgook$webgl_playground$Playground$Extra$tile, $author$project$Durak$Player$Component$Card$size.c1, $author$project$Durak$Player$Component$Card$size.b$, '/Durak/asset/cards.png');
 var $author$project$Durak$Player$Component$Card$back = $author$project$Durak$Player$Component$Card$shape(53);
 var $justgook$webgl_playground$Playground$move = F3(
 	function (dx, dy, _v0) {
 		var shape = _v0;
-		var x = shape.eN;
-		var y = shape.eQ;
-		var a = shape.c0;
+		var x = shape.bE;
+		var y = shape.bF;
+		var a = shape.c3;
 		var sx = shape.e;
 		var sy = shape.f;
 		var o = shape.i;
 		var form = shape.k;
 		return _Utils_update(
 			shape,
-			{eN: x + dx, eQ: y + dy});
+			{bE: x + dx, bF: y + dy});
 	});
 var $justgook$webgl_playground$Playground$moveX = F2(
 	function (dx, _v0) {
 		var shape = _v0;
-		var x = shape.eN;
-		var y = shape.eQ;
-		var a = shape.c0;
+		var x = shape.bE;
+		var y = shape.bF;
+		var a = shape.c3;
 		var sx = shape.e;
 		var sy = shape.f;
 		var o = shape.i;
 		var form = shape.k;
 		return _Utils_update(
 			shape,
-			{eN: x + dx});
+			{bE: x + dx});
 	});
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
@@ -13529,9 +13550,9 @@ var $elm$core$Basics$degrees = function (angleInDegrees) {
 var $justgook$webgl_playground$Playground$rotate = F2(
 	function (da, _v0) {
 		var shape = _v0;
-		var x = shape.eN;
-		var y = shape.eQ;
-		var a = shape.c0;
+		var x = shape.bE;
+		var y = shape.bF;
+		var a = shape.c3;
 		var sx = shape.e;
 		var sy = shape.f;
 		var o = shape.i;
@@ -13539,11 +13560,11 @@ var $justgook$webgl_playground$Playground$rotate = F2(
 		return _Utils_update(
 			shape,
 			{
-				c0: a + $elm$core$Basics$degrees(da)
+				c3: a + $elm$core$Basics$degrees(da)
 			});
 	});
 var $author$project$Durak$Spectator$System$Players$system = function (_v0) {
-	var screen = _v0.ek;
+	var screen = _v0.en;
 	var world = _v0.bC;
 	var offset = 10;
 	return A2(
@@ -13564,7 +13585,7 @@ var $author$project$Durak$Spectator$System$Players$system = function (_v0) {
 								$justgook$webgl_playground$Playground$group(
 									_List_fromArray(
 										[
-											A3($justgook$webgl_playground$Playground$move, ((count - 1) * (-offset)) * 0.5, screen.ew - 32, a)
+											A3($justgook$webgl_playground$Playground$move, ((count - 1) * (-offset)) * 0.5, screen.ez - 32, a)
 										])));
 						}),
 					l) : A2($elm$core$List$map, $elm$core$Tuple$first, l);
@@ -13584,12 +13605,12 @@ var $author$project$Durak$Spectator$System$Players$system = function (_v0) {
 								count)) : $elm$core$Maybe$Nothing;
 					},
 					_List_fromArray(
-						[world.ar.c0, world.ar.c4, world.ar.dj, world.ar.dq, world.ar.dA, world.ar.dF])))));
+						[world.ar.c3, world.ar.c7, world.ar.dm, world.ar.dt, world.ar.dD, world.ar.dI])))));
 };
-var $justgook$webgl_shape$WebGL$Shape2d$Transformation$identity = {z: 1, A: 0, N: 0, B: 0, C: 1, O: 0};
+var $justgook$webgl_shape$WebGL$Shape2d$Transformation$identity = {z: 1, A: 0, O: 0, B: 0, C: 1, P: 0};
 var $justgook$webgl_shape$WebGL$Shape2d$Transformation$apply = F2(
 	function (a, b) {
-		return {z: (a.z * b.z) + (a.A * b.B), A: (a.z * b.A) + (a.A * b.C), N: ((a.z * b.N) + (a.A * b.O)) + a.N, B: (a.B * b.z) + (a.C * b.B), C: (a.B * b.A) + (a.C * b.C), O: ((a.B * b.N) + (a.C * b.O)) + a.O};
+		return {z: (a.z * b.z) + (a.A * b.B), A: (a.z * b.A) + (a.A * b.C), O: ((a.z * b.O) + (a.A * b.P)) + a.O, B: (a.B * b.z) + (a.C * b.B), C: (a.B * b.A) + (a.C * b.C), P: ((a.B * b.O) + (a.C * b.P)) + a.P};
 	});
 var $elm$core$Basics$cos = _Basics_cos;
 var $elm$core$Basics$sin = _Basics_sin;
@@ -13598,10 +13619,10 @@ var $justgook$webgl_shape$WebGL$Shape2d$Transformation$transform = F5(
 		return {
 			z: $elm$core$Basics$cos(angle) * sx,
 			A: $elm$core$Basics$sin(angle) * (-sy),
-			N: tx,
+			O: tx,
 			B: $elm$core$Basics$sin(angle) * sx,
 			C: $elm$core$Basics$cos(angle) * sy,
-			O: ty
+			P: ty
 		};
 	});
 var $justgook$webgl_shape$WebGL$Shape2d$createTrans = F6(
@@ -13632,7 +13653,7 @@ var $elm$core$Set$member = F2(
 	});
 var $justgook$webgl_shape$WebGL$Shape2d$Transformation$scale = F3(
 	function (sx, sy, b) {
-		return {z: sx * b.z, A: sx * b.A, N: sx * b.N, B: sy * b.B, C: sy * b.C, O: sy * b.O};
+		return {z: sx * b.z, A: sx * b.A, O: sx * b.O, B: sy * b.B, C: sy * b.C, P: sy * b.P};
 	});
 var $justgook$webgl_shape$WebGL$Shape2d$setOZ = F3(
 	function (o, z, _v0) {
@@ -13646,24 +13667,24 @@ var $elm_explorations$linear_algebra$Math$Vector4$fromRecord = _MJS_v4fromRecord
 var $justgook$webgl_shape$WebGL$Shape2d$Transformation$toGL = function (_v0) {
 	var a11 = _v0.z;
 	var a12 = _v0.A;
-	var a13 = _v0.N;
+	var a13 = _v0.O;
 	var a21 = _v0.B;
 	var a22 = _v0.C;
-	var a23 = _v0.O;
+	var a23 = _v0.P;
 	return _Utils_Tuple2(
 		$elm_explorations$linear_algebra$Math$Vector4$fromRecord(
-			{cZ: a22, eN: a11, eQ: a12, a3: a21}),
+			{c0: a22, bE: a11, bF: a12, a3: a21}),
 		$elm_explorations$linear_algebra$Math$Vector2$fromRecord(
-			{eN: a13, eQ: a23}));
+			{bE: a13, bF: a23}));
 };
 var $justgook$webgl_shape$WebGL$Shape2d$renderShape = F5(
 	function (screen, textures, parent, _v0, acc) {
 		renderShape:
 		while (true) {
-			var x = _v0.eN;
-			var y = _v0.eQ;
+			var x = _v0.bE;
+			var y = _v0.bF;
 			var z = _v0.a3;
-			var a = _v0.c0;
+			var a = _v0.c3;
 			var sx = _v0.e;
 			var sy = _v0.f;
 			var o = _v0.i;
@@ -13678,8 +13699,8 @@ var $justgook$webgl_shape$WebGL$Shape2d$renderShape = F5(
 					var _v2 = $justgook$webgl_shape$WebGL$Shape2d$Transformation$toGL(
 						A3(
 							$justgook$webgl_shape$WebGL$Shape2d$Transformation$scale,
-							1 / screen.c_,
-							1 / screen.bZ,
+							1 / screen.c1,
+							1 / screen.b$,
 							A6($justgook$webgl_shape$WebGL$Shape2d$createTrans, x * 2, y * 2, width * sx, height * sy, a, parent)));
 					var t1 = _v2.a;
 					var t2 = _v2.b;
@@ -13746,8 +13767,8 @@ var $elm$core$Set$union = F2(
 	});
 var $author$project$Durak$Spectator$System$Tick$system = F2(
 	function (time, model) {
-		var textures = model.cV;
-		var screen = model.ek;
+		var textures = model.cY;
+		var screen = model.en;
 		var andThen = $author$project$Durak$Common$Util$andThen(model);
 		var _v0 = A2(
 			andThen,
@@ -13760,14 +13781,14 @@ var $author$project$Durak$Spectator$System$Tick$system = F2(
 							A2(
 							$justgook$webgl_playground$Playground$scale,
 							0.5,
-							$author$project$Durak$Spectator$System$Qr$draw('https://pandemic.z0.lv/?asdasdas'))
+							$author$project$Durak$Common$Qr$render('https://pandemic.z0.lv/?asdasdas'))
 						]))));
 		var world = _v0.a;
 		var shape = _v0.b;
-		var cmd = $author$project$Durak$Spectator$System$Tick$output(world.ee);
+		var cmd = $author$project$Durak$Spectator$System$Tick$output(world.eh);
 		var _v1 = A3(
 			$justgook$webgl_shape$WebGL$Shape2d$toEntities,
-			textures.$7,
+			textures.dr,
 			screen,
 			_List_fromArray(
 				[shape]));
@@ -13777,16 +13798,16 @@ var $author$project$Durak$Spectator$System$Tick$system = F2(
 			_Utils_update(
 				model,
 				{
-					du: entities,
-					cV: _Utils_update(
+					dx: entities,
+					cY: _Utils_update(
 						textures,
 						{
 							bj: A2($elm$core$Set$union, missing, textures.bj)
 						}),
-					eu: time,
+					ex: time,
 					bC: _Utils_update(
 						world,
-						{ee: _List_Nil})
+						{eh: _List_Nil})
 				}),
 			$elm$core$Platform$Cmd$batch(
 				A3(
@@ -13807,14 +13828,14 @@ var $author$project$Durak$Spectator$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{ek: screen}),
+						{en: screen}),
 					$elm$core$Platform$Cmd$none);
 			default:
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Durak$Spectator$main = $author$project$Game$Client$start(
-	{dN: $author$project$Durak$Spectator$init, eF: $author$project$Durak$Spectator$update});
+	{dQ: $author$project$Durak$Spectator$init, eI: $author$project$Durak$Spectator$update});
 /*
 _Platform_export({'Durak':{'Spectator':{'init':$author$project$Durak$Spectator$main($elm$json$Json$Decode$value)(0)}}});}(this));
 */

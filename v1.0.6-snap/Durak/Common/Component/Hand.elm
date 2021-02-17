@@ -1,4 +1,4 @@
-module Durak.Player.Component.Hand exposing (Hand, empty, foldl, indexedFoldl, length, push, remove)
+module Durak.Common.Component.Hand exposing (Hand, add, empty, foldl, indexedFoldl, isEmpty, length, push, remove)
 
 {-| Remove the element at the given index
 -}
@@ -14,6 +14,11 @@ type alias Hand =
 empty : Hand
 empty =
     Set.Any.empty Card.toInt
+
+
+isEmpty : Hand -> Bool
+isEmpty cards =
+    Set.Any.isEmpty cards
 
 
 length : Hand -> Int
@@ -44,3 +49,8 @@ remove =
 push : Card -> Hand -> Hand
 push =
     Set.Any.insert
+
+
+add : List Card -> Hand -> Hand
+add cards hand =
+    Set.Any.union (Set.Any.fromList Card.toInt cards) hand

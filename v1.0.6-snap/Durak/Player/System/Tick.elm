@@ -1,11 +1,11 @@
 module Durak.Player.System.Tick exposing (system)
 
 import Durak.Common.Util as Util
-import Durak.Player.Component.Ui as Ui
 import Durak.Player.System.Deck as Deck
 import Durak.Player.System.Hand as Hand
 import Durak.Player.System.Mouse as Mouse
 import Durak.Player.System.Table as Table
+import Durak.Player.System.Ui as Ui
 import Durak.Player.World exposing (World)
 import Durak.Protocol.Message exposing (ToServer)
 import Durak.Protocol.Player
@@ -28,16 +28,26 @@ system time ({ textures, screen } as model) =
         -- Logic
         ( world, shape ) =
             ( model.world
-            , Playground.group [ Ui.render model.world.ui ]
+            , Playground.group
+                [ ("Online: " ++ String.fromInt model.world.playerCount)
+                    |> Playground.words Playground.blue
+                    |> Playground.move (screen.right - 96) (screen.top - 16)
+                ]
             )
                 |> System.applyIf model.world.mouse.dirty (andThen Mouse.system)
+                |> andThen Ui.system
                 |> andThen Hand.system
                 |> andThen Table.system
                 |> andThen Deck.system
 
         -- Render
         ( entities, missing ) =
-            [ shape ]
+            (if String.length model.error == 0 then
+                [ shape ]
+
+             else
+                [ Playground.words red model.error ]
+            )
                 |> WebGL.Shape2d.toEntities textures.done screen
 
         -- Communication
