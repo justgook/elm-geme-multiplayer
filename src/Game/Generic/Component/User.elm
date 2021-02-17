@@ -1,4 +1,4 @@
-module Game.Generic.Component.User exposing (User, connectionId, connectionIds, empty, entityId, entityIds, remove, spawn, spec)
+module Game.Generic.Component.User exposing (User, connectionId, connectionIds, empty, entityId, entityIds, length, remove, spawn, spec)
 
 import Common.Util as Util
 import Dict exposing (Dict)
@@ -10,6 +10,11 @@ type alias User =
     { cnn2id : Dict ConnectionId EntityID
     , id2cnn : Dict EntityID ConnectionId
     }
+
+
+length : User -> Int
+length { cnn2id } =
+    cnn2id |> Dict.size
 
 
 connectionIds : User -> List ConnectionId

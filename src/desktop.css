@@ -14,10 +14,17 @@ body {
     height: 100vh;
     position: relative;
     overflow: hidden;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    user-select: none
 }
 
 canvas {
     display: block;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    user-select: none;
+    pointer-events: none;
 }
 
 img,
@@ -41,7 +48,7 @@ body:fullscreen::backdrop {
 
 /*Debug*/
 
-body {
+body.debug {
     display: grid;
     grid-template-columns: 1fr 1fr;
     /*grid-template-rows: 1fr 1fr;*/
@@ -53,15 +60,15 @@ body {
     background: antiquewhite;
 }
 
-[id^="game"] {
+body.debug [id^="game"] {
     background: darkgoldenrod;
     position: relative;
 }
-[id^="game"] div{
+body.debug [id^="game"] div{
     position: absolute;
     inset: 0;
 }
 
-[tabindex]:focus {
+body.debug [tabindex]:focus {
     outline: 3px solid #F00;
 }

@@ -1,8 +1,8 @@
-import { ClientProps, initClient, keyboardMap, KeyOf, Options } from "./initClient"
-import type { ClientConnection } from "../connection/ConnectionInterface"
+import { ClientProps, initClient, keyboardBind, Options } from "./initClient"
+import type { TransportClient } from "../transport/ConnectionInterface"
 import type { Game } from "../Game"
 
-export function spawnClient(id: string, factory: typeof Game.Client.init, connection: ClientConnection, options = {}): void {
+export function spawnClient(id: string, factory: typeof Game.Client.init, transport: TransportClient, options = {}): void {
     const element = document.createElement("div")
     element.id = `${id}`
     element.tabIndex = -1
@@ -16,9 +16,11 @@ export function spawnClient(id: string, factory: typeof Game.Client.init, connec
         const app = factory({
             flags: {
                 screen: { width, height },
-                dataUrl: "dataURL",
-                login: id,
-                password: `${id}_password`,
+                meta: {
+                    dataUrl: "dataURL",
+                    login: id,
+                    password: `${id}_password`,
+                },
             },
             node: element.firstChild as HTMLElement,
         })
@@ -41,20 +43,12 @@ export function spawnClient(id: string, factory: typeof Game.Client.init, connec
             element.addEventListener("mouseup", mouseTracker)
             element.addEventListener("contextmenu", mouseTracker)
         }
-        const keyBind: ClientProps["keyboard"] = (callback) => {
-            element.addEventListener("keydown", (e) => {
-                e.preventDefault()
-                if (!e.repeat && e.code in keyboardMap) {
-                    callback(true, keyboardMap[e.code as KeyOf<typeof keyboardMap>])
-                }
-            })
-            element.addEventListener("keyup", (e) => {
-                e.preventDefault()
-                if (e.code in keyboardMap) {
-                    callback(false, keyboardMap[e.code as KeyOf<typeof keyboardMap>])
-                }
-            })
-        }
-        initClient(app, { ...options, connection: connection, resize, keyboard: keyBind, mouse })
+        initClient(app, {
+            ...options,
+            transport: transport,
+            resize,
+            keyboard: keyboardBind(element),
+            mouse,
+        })
     }, 0)
 }

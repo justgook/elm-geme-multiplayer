@@ -14,9 +14,9 @@ module Durak.Server.Component.Flow exposing
     )
 
 import Durak.Common.Card as Card exposing (Card)
+import Durak.Common.Component.Hand as Hand exposing (Hand)
 import Durak.Common.Table as Table exposing (Spot, Table)
 import Durak.Server.Component.Deck as Deck exposing (Deck)
-import Durak.Server.Component.Hand as Hand exposing (Hand)
 import Durak.Server.Component.Turn as Turn exposing (Turn)
 import Logic.Component as Component
 import Logic.Entity exposing (EntityID)
@@ -48,6 +48,27 @@ type alias GameData =
     }
 
 
+autoPass : GameData -> GameData
+autoPass gameData =
+    let
+        defenderId =
+            Turn.defence gameData.turn
+    in
+    { gameData
+        | pass =
+            System.indexedFoldl
+                (\id hand acc ->
+                    if id /= defenderId && not (Table.haveToAdd gameData.table hand) then
+                        Set.insert id acc
+
+                    else
+                        acc
+                )
+                gameData.hands
+                gameData.pass
+    }
+
+
 attack : EntityID -> Card -> GameData -> Maybe GameData
 attack id card gameData =
     let
@@ -58,8 +79,7 @@ attack id card gameData =
             Turn.attack gameData.turn
 
         firstCard =
-            Table.length gameData.table
-                |> (==) 0
+            Table.length gameData.table == 0
 
         defenceId =
             Turn.defence gameData.turn
@@ -70,7 +90,7 @@ attack id card gameData =
                 |> Maybe.withDefault 0
 
         cardsToAdd =
-            Table.toList table
+            Table.toList gameData.table
                 |> List.foldl
                     (\a acc ->
                         if a.cover == Nothing then
@@ -89,7 +109,6 @@ attack id card gameData =
             , canHit = cardsToAdd > 0
             }
     in
-    --if (not firstCard || attackId == id) && defenceId /= id && Table.validateAttack card gameData.table && table /= gameData.table then
     if
         valid.firstAttack
             && valid.selfAttack
@@ -101,7 +120,7 @@ attack id card gameData =
             { gameData
                 | table = table
                 , pass = Set.empty
-                , hands = Component.update id (Hand.removeCard card) gameData.hands
+                , hands = Component.update id (Hand.remove card) gameData.hands
             }
 
     else
@@ -121,7 +140,7 @@ defence id spot card gameData =
         Just
             { gameData
                 | table = table
-                , hands = Component.update id (Hand.removeCard card) gameData.hands
+                , hands = Component.update id (Hand.remove card) gameData.hands
             }
 
     else
@@ -137,7 +156,7 @@ pickup gameData =
         id =
             Turn.defence gameData.turn
     in
-    { gameData | hands = Component.update id (Hand.addCards cards) gameData.hands }
+    { gameData | hands = Component.update id (Hand.add cards) gameData.hands }
 
 
 pass : EntityID -> GameData -> GameData
@@ -147,7 +166,7 @@ pass id gameData =
 
 isRoundEnd : GameData -> Bool
 isRoundEnd gameData =
-    gameData.pass == (Set.fromList gameData.turn |> Set.remove (Turn.defence gameData.turn))
+    Table.allCover gameData.table && (gameData |> autoPass |> .pass) == (Set.fromList gameData.turn |> Set.remove (Turn.defence gameData.turn))
 
 
 clearTable : GameData -> GameData
@@ -173,7 +192,7 @@ dealAll gameData =
                                 in
                                 if missing > 0 then
                                     { acc
-                                        | hands = Component.set id (Hand.addCards cards hand) acc.hands
+                                        | hands = Component.set id (Hand.add cards hand) acc.hands
                                         , turn = applyIf (Hand.isEmpty hand) (Turn.remove id) acc.turn
                                         , deck = newDeck
                                     }
@@ -197,7 +216,7 @@ empty : Seed -> Flow
 empty seed =
     PreGame
         { ready = Set.empty
-        , hands = Hand.empty
+        , hands = Component.empty
         , seed = seed
         , turn = Turn.empty
         }
@@ -209,7 +228,7 @@ join id flow =
         PreGame a ->
             PreGame
                 { a
-                    | hands = Component.spawn id Hand.spawn a.hands
+                    | hands = Component.spawn id Hand.empty a.hands
                     , turn = Turn.add id a.turn
                 }
                 |> Just
@@ -249,7 +268,7 @@ startGame preGameData =
                         ( cards, d2 ) =
                             Deck.dealN 6 d
                     in
-                    ( Component.set id (Hand.addCards cards hand) hands_, d2 )
+                    ( Component.set id (Hand.add cards hand) hands_, d2 )
                 )
                 preGameData.hands
                 ( preGameData.hands, deck )

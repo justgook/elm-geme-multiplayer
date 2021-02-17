@@ -1,4 +1,4 @@
-module Durak.Server.Component.Turn exposing (Turn, add, attack, defence, empty, fold, next, remove)
+module Durak.Server.Component.Turn exposing (Turn, add, attack, defence, empty, fold, length, next, remove)
 
 import Logic.Entity exposing (EntityID)
 
@@ -12,6 +12,11 @@ type alias Turn =
 empty : Turn
 empty =
     []
+
+
+length : Turn -> Int
+length =
+    List.length
 
 
 attack : Turn -> EntityID

@@ -35,6 +35,9 @@ decode =
                     0x07 ->
                         D.succeed JoinSuccess
 
+                    0x08 ->
+                        D.map OnlineCount D.unsignedInt8
+
                     0x09 ->
                         D.map (Card.fromInt >> RejectCard) D.unsignedInt8
 

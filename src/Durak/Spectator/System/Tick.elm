@@ -1,10 +1,10 @@
 module Durak.Spectator.System.Tick exposing (system)
 
+import Durak.Common.Qr as Qr
 import Durak.Common.Util as Util
 import Durak.Protocol.Message exposing (ToServer)
 import Durak.Protocol.Player
 import Durak.Spectator.System.Players as Players
-import Durak.Spectator.System.Qr as Qr
 import Durak.Spectator.World exposing (World)
 import Game.Client.Model as Model exposing (Message(..), Model)
 import Game.Client.Port as Port
@@ -24,7 +24,7 @@ system time ({ textures, screen } as model) =
         -- Logic
         ( world, shape ) =
             ( model.world
-            , [ Qr.draw "https://pandemic.z0.lv/?asdasdas"
+            , [ Qr.render "https://pandemic.z0.lv/?asdasdas"
                     |> Playground.scale 0.5
 
               --, Playground.rectangle red 10 1000

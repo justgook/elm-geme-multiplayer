@@ -29,6 +29,6 @@ export namespace Game {
             }
         }
 
-        export function init(options?: { node?: HTMLElement | null; flags?: null }): Server.App
+        export function init(options?: { node?: HTMLElement | null; flags?: unknown }): Server.App
     }
 }

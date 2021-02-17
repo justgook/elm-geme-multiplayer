@@ -9,10 +9,6 @@ import Rpg.Protocol.Message exposing (ToClient)
 
 system : ToClient -> System World
 system data world =
-    --let
-    --    _ =
-    --        Debug.log "Client::NetworkData" data
-    --in
     world
 
 

@@ -1,23 +1,41 @@
-import type { ClientConnection } from "../connection/ConnectionInterface"
-import { ConnectionEvent } from "../connection/ConnectionInterface"
+import type { TransportClient } from "../transport/ConnectionInterface"
+import { TransportEvent } from "../transport/ConnectionInterface"
 import type { Game } from "../Game"
+// import { keyboardBind } from "./util"
 
-export type Options = Partial<Omit<ClientProps, "connection">> & Pick<ClientProps, "connection">
+export const keyboardBind = (element: GlobalEventHandlers): ClientProps["keyboard"] => (callback) => {
+    element.addEventListener("keydown", (e: KeyboardEvent) => {
+        e.preventDefault()
+        if (!e.repeat && e.code in keyboardMap) {
+            callback(true, keyboardMap[e.code as KeyOf<typeof keyboardMap>])
+        }
+    })
+    element.addEventListener("keyup", (e: KeyboardEvent) => {
+        e.preventDefault()
+        if (e.code in keyboardMap) {
+            callback(false, keyboardMap[e.code as KeyOf<typeof keyboardMap>])
+        }
+    })
+}
+
+export type Options = Partial<Omit<ClientProps, "transport">> & Pick<ClientProps, "transport">
 
 export function initClient(app: Game.Client.App, options: Options): void {
     const opt = { ...defaultProps, ...options }
-    const { tick, resize, keyboard, mouse, connection, gameChannel } = opt
+    const { tick, resize, keyboard, mouse, touch, transport, channel } = opt
     const msgBuffer: Message[] = []
     resize((w, h) => msgBuffer.push([MessageId.resize, w, h]))
     keyboard((isDown, key) => msgBuffer.push([MessageId.inputKeyboard, isDown, key]))
     mouse((...args) => msgBuffer.push([MessageId.inputMouse, ...args]))
+    touch((touches) => msgBuffer.push([MessageId.inputTouch, touches]))
 
-    connection.on(ConnectionEvent.join, () => msgBuffer.push([MessageId.networkJoin]))
-    connection.on(ConnectionEvent.receive, (data) => msgBuffer.push([MessageId.networkReceive, data]))
-    connection.on(ConnectionEvent.error, (error) => msgBuffer.push([MessageId.networkError, error]))
-    connection.on(ConnectionEvent.leave, () => msgBuffer.push([MessageId.networkLeave]))
-    app.ports.output.subscribe(connection.send)
-    connection.connect(gameChannel)
+    transport.on(TransportEvent.join, () => msgBuffer.push([MessageId.networkJoin]))
+    transport.on(TransportEvent.receive, (data) => msgBuffer.push([MessageId.networkReceive, data]))
+    transport.on(TransportEvent.error, (error) => msgBuffer.push([MessageId.networkError, error]))
+    transport.on(TransportEvent.leave, () => msgBuffer.push([MessageId.networkLeave]))
+
+    app.ports.output.subscribe(transport.send)
+    transport.connect(channel)
     const gameLoop = () => {
         msgBuffer.push([MessageId.tick, performance.now()])
         app.ports.input.send(msgBuffer)
@@ -44,29 +62,29 @@ type Message =
     | [cmd: MessageId.resize, width: number, height: number]
     | [cmd: MessageId.inputKeyboard, isDown: boolean, key: number]
     | [cmd: MessageId.inputMouse, x: number, y: number, key1: boolean, key2: boolean]
-    | [cmd: MessageId.inputTouch, x: number, y: number, isDown: boolean]
+    | [cmd: MessageId.inputTouch, touches: ToucheMessage[]]
     // Network stuff
     | [cmd: MessageId.networkJoin]
     | [cmd: MessageId.networkLeave]
     | [cmd: MessageId.networkReceive, data: string]
     | [cmd: MessageId.networkError, data: string]
 
-// const ClientProps = Partial<Omit<ClientProps, "connection">> & Pick<ClientProps, "connection">
+type ToucheMessage = [identifier: number, x: number, y: number]
 
 export interface ClientProps {
-    gameChannel: string
-    connection: ClientConnection
+    channel: string
+    transport: TransportClient
     tick: (callback: (time: number) => void) => void
     resize: (callback: (w: number, h: number) => void) => void
     keyboard: (callback: (isDown: boolean, key: number) => void) => void
     mouse: (callback: (x: number, y: number, key1: boolean, key2: boolean) => void) => void
-    // touch: (callback: (isDown: boolean, key: Key) => void) => void
+    touch: (callback: (args: ToucheMessage[]) => void) => void
 }
 
 export type KeyOf<T> = Extract<keyof T, string>
 
-export const defaultProps: Omit<ClientProps, "connection"> = {
-    gameChannel: "gameChannel-client",
+export const defaultProps: Omit<ClientProps, "transport"> = {
+    channel: "gameChannel-client",
     tick: window.requestAnimationFrame,
     resize: (callback) => {
         window.addEventListener("resize", () => {
@@ -83,20 +101,24 @@ export const defaultProps: Omit<ClientProps, "connection"> = {
         document.addEventListener("mouseup", mouseTracker)
         document.addEventListener("contextmenu", mouseTracker)
     },
-    keyboard: (callback) => {
-        window.addEventListener("keydown", (e) => {
+    touch: (callback) => {
+        const touchTracker = (e: TouchEvent) => {
             e.preventDefault()
-            if (!e.repeat && e.code in keyboardMap) {
-                callback(true, keyboardMap[e.code as KeyOf<typeof keyboardMap>])
+            const { touches } = e
+            const output: ToucheMessage[] = []
+            for (let i = 0; i < touches.length; i++) {
+                const { identifier, pageX, pageY } = touches[i]
+                output.push([identifier, pageX, pageY])
             }
-        })
-        window.addEventListener("keyup", (e) => {
-            e.preventDefault()
-            if (e.code in keyboardMap) {
-                callback(false, keyboardMap[e.code as KeyOf<typeof keyboardMap>])
-            }
-        })
+            callback(output)
+        }
+
+        document.addEventListener("touchstart", touchTracker, { passive: false })
+        document.addEventListener("touchend", touchTracker, { passive: false })
+        document.addEventListener("touchmove", touchTracker, { passive: false })
+        document.addEventListener("touchcancel", touchTracker, { passive: false })
     },
+    keyboard: keyboardBind(window),
 }
 
 export const keyboardMap = {

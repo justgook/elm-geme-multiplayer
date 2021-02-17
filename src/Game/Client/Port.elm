@@ -20,8 +20,7 @@ subscriptions _ =
 
 parse : D.Value -> Result D.Error (List Message)
 parse =
-    D.list decoder
-        |> D.decodeValue
+    D.decodeValue (D.list decoder)
 
 
 type Message
@@ -29,7 +28,7 @@ type Message
     | Resize Screen
     | InputKeyboard Bool Button
     | InputMouse MouseData
-    | InputTouch
+    | InputTouch (List TouchData)
       --- Network
     | NetworkJoin
     | NetworkLeave
@@ -42,6 +41,13 @@ type alias MouseData =
     , y : Float
     , key1 : Bool
     , key2 : Bool
+    }
+
+
+type alias TouchData =
+    { x : Float
+    , y : Float
+    , identifier : Int
     }
 
 
@@ -82,13 +88,20 @@ decoder =
 
                     104 ->
                         --inputTouch = 104,
-                        D.succeed InputTouch
+                        let
+                            touchDecoder =
+                                D.map3 (\id x y -> { identifier = id, x = x, y = y })
+                                    (D.index 0 D.int)
+                                    (D.index 1 D.float)
+                                    (D.index 2 D.float)
+                        in
+                        D.index 1 (D.list touchDecoder)
+                            |> D.map InputTouch
 
                     201 ->
                         --networkJoin = 201,
                         D.succeed NetworkJoin
 
-                    --|> Debug.log "NetworkJoin"
                     202 ->
                         --networkLeave = 202,
                         D.succeed NetworkLeave
@@ -98,7 +111,6 @@ decoder =
                         D.map NetworkData
                             (D.index 1 D.string)
 
-                    --|> Debug.log "NetworkData"
                     204 ->
                         --networkError = 204,
                         D.map NetworkError

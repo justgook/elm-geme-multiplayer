@@ -5,6 +5,7 @@ module Durak.Common.Table exposing
     , allCover
     , clean
     , flat
+    , haveToAdd
     , hit
     , init
     , length
@@ -19,7 +20,8 @@ module Durak.Common.Table exposing
     )
 
 import Durak.Common.Card as Card exposing (Card, Suit)
-import Set.Any as AnySet exposing (AnySet)
+import Durak.Common.Component.Hand exposing (Hand)
+import Set.Any exposing (AnySet)
 
 
 type alias Node a next =
@@ -44,6 +46,24 @@ type alias Table =
     , values : AnySet Int Card.Value
     , trump : Suit
     }
+
+
+haveToAdd : Table -> Hand -> Bool
+haveToAdd table hand =
+    canAdd_ table.values (hand |> Set.Any.toList)
+
+
+canAdd_ values cards =
+    case cards of
+        card :: rest ->
+            if Set.Any.member (Card.value card) values then
+                True
+
+            else
+                canAdd_ values rest
+
+        [] ->
+            False
 
 
 allCover : Table -> Bool
@@ -114,7 +134,7 @@ validateAttack card { table, values } =
         True
 
     else
-        AnySet.member (Card.value card) values
+        Set.Any.member (Card.value card) values
 
 
 nextHitSpot : Table -> Maybe Spot
@@ -214,7 +234,7 @@ set spot_ card table =
         |> (\t ->
                 { table
                     | table = t
-                    , values = AnySet.insert (Card.value card) table.values
+                    , values = Set.Any.insert (Card.value card) table.values
                 }
            )
 
@@ -430,7 +450,7 @@ add card table =
         |> (\t ->
                 { table
                     | table = t
-                    , values = AnySet.insert (Card.value card) table.values
+                    , values = Set.Any.insert (Card.value card) table.values
                 }
            )
 
@@ -613,7 +633,7 @@ hit spot_ card table =
         |> (\t ->
                 { table
                     | table = t
-                    , values = AnySet.insert (Card.value card) table.values
+                    , values = Set.Any.insert (Card.value card) table.values
                 }
            )
 
@@ -621,7 +641,7 @@ hit spot_ card table =
 init : Suit -> Table
 init trump =
     { table = Nothing
-    , values = AnySet.empty Card.valueToInt
+    , values = Set.Any.empty Card.valueToInt
     , trump = trump
     }
 
@@ -630,5 +650,5 @@ clean : Table -> Table
 clean table =
     { table
         | table = Nothing
-        , values = AnySet.empty Card.valueToInt
+        , values = Set.Any.empty Card.valueToInt
     }

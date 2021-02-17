@@ -1,5 +1,5 @@
 import Peer from "peerjs"
-import { ClientConnection, ClientOnParams, ConnectionEvent, ServerConnection, ServerOnParams } from "./ConnectionInterface"
+import { TransportClient, ClientOnParams, TransportEvent, TransportServer, ServerOnParams } from "./ConnectionInterface"
 
 class PeerjsCommon {
     protected callbacks = {
@@ -17,45 +17,52 @@ class PeerjsCommon {
 
     on = (...args: ClientOnParams | ServerOnParams): void => {
         switch (args[0]) {
-            case ConnectionEvent.send:
+            case TransportEvent.send:
                 break
-            case ConnectionEvent.join:
+            case TransportEvent.join:
                 this.callbacks.join = args[1]
                 break
-            case ConnectionEvent.receive:
+            case TransportEvent.receive:
                 this.callbacks.receive = args[1]
                 break
-            case ConnectionEvent.error:
+            case TransportEvent.error:
                 this.callbacks.error = args[1]
                 break
-            case ConnectionEvent.leave:
+            case TransportEvent.leave:
                 this.callbacks.leave = args[1]
                 break
         }
     }
 }
 
-export class PeerJsServer extends PeerjsCommon implements ServerConnection {
+export class PeerJsServer extends PeerjsCommon implements TransportServer {
     connect = (channel: string): void => {
         const peer = new Peer(channel, this.options)
         const connections = new Map()
 
-        this.callbacks.send = ([cnn, data]: [cnn: string, data: string]) => connections.get(cnn).send(data)
+        this.callbacks.send = ([cnn, data]: [cnn: string, data: string]) => {
+            connections.get(cnn)?.send(data)
+        }
         peer.on("error", (err) => {
-            this.callbacks.error(err)
+            connections.clear()
+            this.callbacks.error(err.message)
         })
 
         peer.on("connection", (cnn) => {
             cnn.on("open", () => {
-                connections.set(cnn.label, cnn)
-                this.callbacks.join(cnn.label)
-            })
-            cnn.on("close", () => {
-                connections.delete(cnn.label)
-                this.callbacks.leave(cnn.label)
-            })
-            cnn.on("data", (data) => {
-                this.callbacks.receive(cnn.label, data)
+                if (connections.has(cnn.label)) {
+                    cnn.close()
+                } else {
+                    connections.set(cnn.label, cnn)
+                    this.callbacks.join(cnn.label)
+                    cnn.on("close", () => {
+                        connections.delete(cnn.label)
+                        this.callbacks.leave(cnn.label)
+                    })
+                    cnn.on("data", (data) => {
+                        this.callbacks.receive(cnn.label, data)
+                    })
+                }
             })
         })
     }
@@ -65,7 +72,7 @@ export class PeerJsServer extends PeerjsCommon implements ServerConnection {
     }
 }
 
-export class PeerJsClient extends PeerjsCommon implements ClientConnection {
+export class PeerJsClient extends PeerjsCommon implements TransportClient {
     private initialReconnectTime = 100
     private connectTimeOut = 3000
     private retryDelay = this.initialReconnectTime
@@ -82,15 +89,24 @@ export class PeerJsClient extends PeerjsCommon implements ClientConnection {
         leave: Function.prototype,
         send: this.buffering,
     }
+    private readonly saveKey
+    constructor(url = location.href, saveKey = "peerJsLabel") {
+        super(url)
+        this.saveKey = saveKey
+    }
 
-    connect = (channel: string, label: string = sessionStorage.peerJSlabel): void => {
+    connect = (channel: string, label: string = sessionStorage[this.saveKey]): void => {
         const peer = new Peer("", this.options)
+
         peer.on("error", (err) => {
-            this.reconnect(channel, peer, peer.connections[0], err)
+            this.reconnect(channel, peer, peer.connections[0], err.message)
+        })
+        peer.on("close", () => {
+            peer.destroy()
         })
         peer.on("open", () => {
             const cnn = peer.connect(channel, { serialization: "none", reliable: true, label })
-            sessionStorage.peerJSlabel = cnn.label
+            sessionStorage[this.saveKey] = cnn.label
             const reconnect = setTimeout(() => this.reconnect(channel, peer, cnn), this.connectTimeOut)
 
             cnn.on("open", () => {
@@ -107,24 +123,24 @@ export class PeerJsClient extends PeerjsCommon implements ClientConnection {
             })
 
             cnn.on("close", () => {
+                sessionStorage.removeItem(this.saveKey)
                 this.reconnect(channel, peer, cnn)
                 this.callbacks.leave()
             })
 
             cnn.on("error", (err) => {
-                this.callbacks.error(err)
+                this.callbacks.error(err.message)
             })
         })
     }
 
-    private reconnect = (channel: string, peer: Peer, cnn: Peer.DataConnection, error?: string) => {
+    private reconnect = (channel: string, peer: Peer, cnn?: Peer.DataConnection, error?: string) => {
         this.callbacks.send = this.buffering
+        cnn?.close()
+        peer.destroy()
         if (error) {
             this.callbacks.error(error)
         }
-        cnn?.close?.()
-        peer.disconnect()
-        peer.destroy()
         setTimeout(() => this.connect(channel), this.retryDelay)
         this.retryDelay = Math.min(this.retryDelay * 1.5, this.maxRetryTimeOut)
     }
@@ -137,8 +153,6 @@ export class PeerJsClient extends PeerjsCommon implements ClientConnection {
 const urlToOptions = (aa: string) => {
     try {
         const url = new URL(aa)
-        console.log("url", url)
-
         const options: Peer.PeerJSOption = {
             host: url.hostname,
             path: url.pathname,

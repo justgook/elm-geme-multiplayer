@@ -1,5 +1,5 @@
-import type { ClientConnection, ClientOnParams, ServerConnection, ServerOnParams } from "./ConnectionInterface"
-import { ConnectionEvent } from "./ConnectionInterface"
+import type { TransportClient, ClientOnParams, TransportServer, ServerOnParams } from "./ConnectionInterface"
+import { TransportEvent } from "./ConnectionInterface"
 
 export class Debug {
     private participants = new Map<string, (data: string) => void>()
@@ -7,7 +7,7 @@ export class Debug {
     private serverOnReceive = noop2
     private serverOnJoin = noop1
 
-    server: ServerConnection = {
+    server: TransportServer = {
         send: ([cnn, data]) => {
             this.participants.get(cnn)?.(data)
         },
@@ -19,26 +19,26 @@ export class Debug {
         },
         on: (...args: ServerOnParams) => {
             switch (args[0]) {
-                case ConnectionEvent.send:
+                case TransportEvent.send:
                     //  (cnn: string, data: string) => boolean]
                     break
-                case ConnectionEvent.join:
+                case TransportEvent.join:
                     this.serverOnJoin = args[1]
                     break
-                case ConnectionEvent.receive:
+                case TransportEvent.receive:
                     this.serverOnReceive = args[1]
                     break
-                case ConnectionEvent.error:
+                case TransportEvent.error:
                     //  (error: string) => void]
                     break
-                case ConnectionEvent.leave:
+                case TransportEvent.leave:
                     //  (cnn: string) => void]
                     break
             }
         },
     }
 
-    client = (): ClientConnection => {
+    client = (): TransportClient => {
         const call = {
             join: noop,
             receive: noop1,
@@ -59,17 +59,17 @@ export class Debug {
             },
             on: (...args: ClientOnParams) => {
                 switch (args[0]) {
-                    case ConnectionEvent.send:
+                    case TransportEvent.send:
                         break
-                    case ConnectionEvent.join:
+                    case TransportEvent.join:
                         call.join = args[1]
                         break
-                    case ConnectionEvent.receive:
+                    case TransportEvent.receive:
                         call.receive = args[1]
                         break
-                    case ConnectionEvent.error:
+                    case TransportEvent.error:
                         break
-                    case ConnectionEvent.leave:
+                    case TransportEvent.leave:
                         break
                 }
             },

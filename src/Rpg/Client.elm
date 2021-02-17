@@ -33,7 +33,7 @@ update msg m =
         Port.InputMouse mouseData ->
             ( m, Cmd.none )
 
-        Port.InputTouch ->
+        Port.InputTouch _ ->
             ( m, Cmd.none )
 
         Port.NetworkData data ->

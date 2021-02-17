@@ -67,6 +67,9 @@ encode msg =
         JoinSuccess ->
             E.sequence [ E.unsignedInt8 0x07 ]
 
+        OnlineCount i ->
+            E.sequence [ E.unsignedInt8 0x08, E.unsignedInt8 i ]
+
         --Role role ->
         --    E.sequence [ E.unsignedInt8 0x08, Role.toInt role |> E.unsignedInt8 ]
         RejectCard card ->

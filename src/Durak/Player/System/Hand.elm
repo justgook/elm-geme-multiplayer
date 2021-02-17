@@ -1,10 +1,12 @@
 module Durak.Player.System.Hand exposing (system)
 
+import Durak.Common.Component.Hand as Hand
+import Durak.Common.Table as Table
 import Durak.Player.Component.Card as Card
-import Durak.Player.Component.Hand as Hand
+import Durak.Player.Component.Ui as Ui
 import Durak.Player.World exposing (World)
 import Game.Client.Model exposing (Model)
-import Playground exposing (Shape, move, scale)
+import Playground exposing (Shape, fade, move, scale)
 
 
 system : Model World -> ( World, Shape )
@@ -108,8 +110,31 @@ system { screen, world } =
                           , ymax = ymin + (hitAreaVertical + offsetY)
                           }
                         )
+
+                    opacity =
+                        case world.ui of
+                            Ui.Attack ->
+                                fadeOut (Table.validateAttack card world.table)
+
+                            Ui.Support ->
+                                fadeOut (Table.validateAttack card world.table)
+
+                            Ui.CanPass _ ->
+                                fadeOut (Table.validateAttack card world.table)
+
+                            Ui.Defence _ ->
+                                case Table.nextHitSpot world.table of
+                                    Just spot ->
+                                        fadeOut (Table.validateDefence spot card world.table)
+
+                                    Nothing ->
+                                        0.5
+
+                            _ ->
+                                1
                 in
                 ( Card.render card
+                    |> fade opacity
                     |> move offset (screen.bottom + bottomOffset + offsetY)
                     |> scale scaleFactor
                 , bounding
@@ -124,3 +149,11 @@ system { screen, world } =
                 , Playground.group shapes
                 )
            )
+
+
+fadeOut b =
+    if b then
+        1
+
+    else
+        0.5

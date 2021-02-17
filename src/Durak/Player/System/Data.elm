@@ -1,19 +1,18 @@
 module Durak.Player.System.Data exposing (system)
 
 import Durak.Common.Card as Card
+import Durak.Common.Component.Hand as Hand
 import Durak.Common.Table as Table
-import Durak.Player.Component.Hand as Cards
 import Durak.Player.Component.Ui as Ui
 import Durak.Player.World as World exposing (World)
 import Durak.Protocol.Message exposing (ToClient(..))
-import Playground exposing (red)
 
 
 system : ToClient -> World -> World
 system msg world =
     case msg of
         TakeCard card ->
-            { world | hand = Cards.push card world.hand }
+            { world | hand = Hand.push card world.hand }
 
         Trump card ->
             { world
@@ -33,21 +32,17 @@ system msg world =
         ConfirmCard card ->
             { world
               -- TODO make me work as ECS  - so i can animate cards position / scale
-                | hand = world.hand |> Cards.remove card
+                | hand = world.hand |> Hand.remove card
             }
 
         NoMoreSeats ->
             { world | ui = Ui.waitForNextGame }
 
         JoinSuccess ->
-            let
-                w =
-                    World.empty
-            in
             { world | ui = Ui.waiting }
 
         RejectCard card ->
-            { world | hand = Cards.push card world.hand }
+            { world | hand = Hand.push card world.hand }
 
         TableSpot spot card ->
             let
@@ -114,3 +109,6 @@ system msg world =
                         Ui.Lose ->
                             world.ui
             }
+
+        OnlineCount i ->
+            { world | playerCount = i }

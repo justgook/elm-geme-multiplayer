@@ -1,11 +1,12 @@
 import "./desktop.css"
 import { iOS, initOverlay } from "./capabilities/ios"
 import { initServiceWorker } from "./init/initServiceWorker"
-import { initServer, tick } from "./init/initServer"
-import { Debug } from "./connection/Debug"
+import { initServer } from "./init/initServer"
+import { Debug } from "./transport/Debug"
 import ElmFactory from "./Rpg/Client.elm"
 import ElmServer from "./Rpg/Server.elm"
 import { spawnClient } from "./init/multiClient"
+import { tick } from "./init/util"
 // import { PeerJsClient, PeerJsServer } from "./connection/peerjs"
 
 initServiceWorker()
@@ -25,6 +26,7 @@ initServer(serverApp, {
     tick: tick(10),
 })
 
+document.body.classList.add("debug")
 spawnClient("game1", ElmFactory.Rpg.Client.init, connection.client())
 spawnClient("game2", ElmFactory.Rpg.Client.init, connection.client())
 spawnClient("game3", ElmFactory.Rpg.Client.init, connection.client())
