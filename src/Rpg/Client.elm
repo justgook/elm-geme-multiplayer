@@ -1,5 +1,6 @@
 module Rpg.Client exposing (..)
 
+import Common.Util as Util
 import Game.Client
 import Game.Client.Model exposing (Message, Model)
 import Game.Client.Port as Port
@@ -30,8 +31,19 @@ update msg m =
         Port.InputKeyboard down button ->
             ( { m | world = Data.keyboard down button m.world }, Cmd.none )
 
-        Port.InputMouse mouseData ->
-            ( m, Cmd.none )
+        Port.InputMouse data ->
+            ( m
+                |> Util.withWorld
+                    (\world ->
+                        { world
+                            | pointer =
+                                { x = m.screen.left + data.x
+                                , y = m.screen.top - data.y
+                                }
+                        }
+                    )
+            , Cmd.none
+            )
 
         Port.InputTouch _ ->
             ( m, Cmd.none )

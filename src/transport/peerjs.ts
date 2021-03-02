@@ -1,7 +1,7 @@
 import Peer from "peerjs"
 import { TransportClient, ClientOnParams, TransportEvent, TransportServer, ServerOnParams } from "./ConnectionInterface"
 
-class PeerjsCommon {
+class PeerjsCommon<T extends ClientOnParams | ServerOnParams> {
     protected callbacks = {
         join: Function.prototype,
         error: Function.prototype,
@@ -11,11 +11,14 @@ class PeerjsCommon {
     }
     options: Peer.PeerJSOption
 
+    private channel: MessageChannel
+
     constructor(url = location.href) {
         this.options = urlToOptions(url)
+        this.channel = new MessageChannel()
     }
 
-    on = (...args: ClientOnParams | ServerOnParams): void => {
+    on = (...args: T): void => {
         switch (args[0]) {
             case TransportEvent.send:
                 break
@@ -35,7 +38,7 @@ class PeerjsCommon {
     }
 }
 
-export class PeerJsServer extends PeerjsCommon implements TransportServer {
+export class PeerJsServer extends PeerjsCommon<ServerOnParams> implements TransportServer {
     connect = (channel: string): void => {
         const peer = new Peer(channel, this.options)
         const connections = new Map()
@@ -72,7 +75,7 @@ export class PeerJsServer extends PeerjsCommon implements TransportServer {
     }
 }
 
-export class PeerJsClient extends PeerjsCommon implements TransportClient {
+export class PeerJsClient extends PeerjsCommon<ClientOnParams> implements TransportClient {
     private initialReconnectTime = 100
     private connectTimeOut = 3000
     private retryDelay = this.initialReconnectTime

@@ -57,7 +57,7 @@ click world =
         YouPass ->
             world
 
-        Defence { hitArea } ->
+        Defense { hitArea } ->
             world |> firstButtonClick hitArea (Util.send Protocol.Pickup)
 
         Win ->

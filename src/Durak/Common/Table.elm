@@ -3,11 +3,13 @@ module Durak.Common.Table exposing
     , Table
     , add
     , allCover
+    , cardsToCover
     , clean
     , flat
     , haveToAdd
     , hit
     , init
+    , isEmpty
     , length
     , nextHitSpot
     , set
@@ -16,7 +18,7 @@ module Durak.Common.Table exposing
     , spotToInt
     , toList
     , validateAttack
-    , validateDefence
+    , validateDefense
     )
 
 import Durak.Common.Card as Card exposing (Card, Suit)
@@ -48,19 +50,38 @@ type alias Table =
     }
 
 
+isEmpty : Table -> Bool
+isEmpty { table } =
+    table == Nothing
+
+
+cardsToCover : Table -> Int
+cardsToCover table =
+    toList table
+        |> List.foldl
+            (\a acc ->
+                if a.cover == Nothing then
+                    acc - 1
+
+                else
+                    acc
+            )
+            6
+
+
 haveToAdd : Table -> Hand -> Bool
 haveToAdd table hand =
-    canAdd_ table.values (hand |> Set.Any.toList)
+    haveToAdd_ table.values (hand |> Set.Any.toList)
 
 
-canAdd_ values cards =
+haveToAdd_ values cards =
     case cards of
         card :: rest ->
             if Set.Any.member (Card.value card) values then
                 True
 
             else
-                canAdd_ values rest
+                haveToAdd_ values rest
 
         [] ->
             False
@@ -109,8 +130,8 @@ spot table =
             Nothing
 
 
-validateDefence : Spot -> Card -> Table -> Bool
-validateDefence spot_ card table =
+validateDefense : Spot -> Card -> Table -> Bool
+validateDefense spot_ card table =
     case get spot_ table of
         Just { current, cover } ->
             case cover of

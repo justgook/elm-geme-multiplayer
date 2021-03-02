@@ -46,6 +46,11 @@ decode =
                             (D.map Table.spotFromInt D.unsignedInt8)
                             (D.map Card.fromInt D.unsignedInt8)
 
+                    0x0B ->
+                        D.map2 (\role cards -> ( Role.fromInt role, cards )) D.unsignedInt8 D.unsignedInt8
+                            |> D.reverseList
+                            |> D.map PlayerStatus
+
                     _ ->
                         D.fail
             )
@@ -66,7 +71,7 @@ encode msg =
         Ready ->
             E.sequence [ E.unsignedInt8 0x04 ]
 
-        Defence cover card ->
+        Defense cover card ->
             E.sequence [ E.unsignedInt8 0x05, Table.spotToInt cover |> E.unsignedInt8, Card.toInt card |> E.unsignedInt8 ]
 
         Pickup ->

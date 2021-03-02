@@ -31,11 +31,11 @@ system { world, time } =
                         Ui.CanPass _ ->
                             attack
 
-                        Ui.Defence _ ->
+                        Ui.Defense _ ->
                             applyIfAndMaybe
                                 world.mouse.click
                                 (Table.nextHitSpot world.table)
-                                (\spot -> Util.send (Message.Defence spot card))
+                                (\spot -> Util.send (Message.Defense spot card))
 
                         _ ->
                             identity

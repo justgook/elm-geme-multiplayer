@@ -1,16 +1,17 @@
 module Durak.Player exposing (main)
 
+import Common.Util as Util
 import Dict
 import Durak.Common.Qr as Qr
-import Durak.Common.Util as Util
 import Durak.Player.System.Data as Data
 import Durak.Player.System.Tick as Tick
 import Durak.Player.World as World exposing (World)
 import Durak.Protocol.Message exposing (ToClient, ToServer(..))
 import Durak.Protocol.Player
 import Game.Client
-import Game.Client.Model exposing (Message, Model)
+import Game.Client.Model as Model exposing (Message, Model)
 import Game.Client.Port as Port
+import Game.Client.Util as Util
 import Game.Protocol.Util as ProtocolUtil
 import Json.Decode exposing (Value)
 import Playground
@@ -173,13 +174,16 @@ init flags initModel =
         w =
             World.empty
     in
-    ( initModel
-        { w
-            | qr =
-                Qr.render "https://pandemic.z0.lv/?asdasdas"
-        }
-    , Cmd.none
-    )
+    initModel { w | qr = Qr.render "https://pandemic.z0.lv/?asdasdas" }
+        |> (\m ->
+                m.textures
+                    |> Model.preload
+                        [ ( "cards-tileset", "/Durak/asset/cards.png" )
+                        , ( "logo", "/Durak/asset/logo.png" )
+                        , ( "bg0", "/Durak/asset/background/0.png" )
+                        ]
+                    |> Tuple.mapFirst (\textures -> { m | textures = textures })
+           )
 
 
 fromPacket : String -> List ToClient

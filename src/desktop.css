@@ -29,11 +29,7 @@ canvas {
 
 img,
 canvas {
-    /*width: 100%;*/
-    /*height: 100%;*/
     image-rendering: pixelated;
-    /*width: 1px;*/
-    /*height: 1px;*/
 }
 
 /* Weird chrome selector for fullscreen bbackground */

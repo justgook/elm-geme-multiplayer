@@ -58,7 +58,7 @@ autoPass gameData =
         | pass =
             System.indexedFoldl
                 (\id hand acc ->
-                    if id /= defenderId && not (Table.haveToAdd gameData.table hand) then
+                    if Turn.member id gameData.turn && id /= defenderId && not (Table.haveToAdd gameData.table hand) then
                         Set.insert id acc
 
                     else
@@ -89,24 +89,12 @@ attack id card gameData =
                 |> Maybe.map Hand.length
                 |> Maybe.withDefault 0
 
-        cardsToAdd =
-            Table.toList gameData.table
-                |> List.foldl
-                    (\a acc ->
-                        if a.cover == Nothing then
-                            acc - 1
-
-                        else
-                            acc
-                    )
-                    defenceCardsCount
-
         valid =
             { firstAttack = not firstCard || attackId == id
             , selfAttack = defenceId /= id
             , canPlace = Table.validateAttack card gameData.table
             , havePlace = table /= gameData.table
-            , canHit = cardsToAdd > 0
+            , canHit = Table.cardsToCover gameData.table - 6 + min 6 defenceCardsCount > 0
             }
     in
     if
@@ -133,10 +121,10 @@ defence id spot card gameData =
         table =
             Table.hit spot card gameData.table
 
-        defenceId =
+        defenseId =
             Turn.defence gameData.turn
     in
-    if defenceId == id && Table.validateDefence spot card gameData.table && table /= gameData.table then
+    if defenseId == id && Table.validateDefense spot card gameData.table && table /= gameData.table then
         Just
             { gameData
                 | table = table
@@ -166,7 +154,14 @@ pass id gameData =
 
 isRoundEnd : GameData -> Bool
 isRoundEnd gameData =
-    Table.allCover gameData.table && (gameData |> autoPass |> .pass) == (Set.fromList gameData.turn |> Set.remove (Turn.defence gameData.turn))
+    let
+        defenseId =
+            Turn.defence gameData.turn
+
+        defenseNoMoreCards =
+            Component.get defenseId gameData.hands |> Maybe.map Hand.isEmpty |> Maybe.withDefault False
+    in
+    Table.allCover gameData.table && (defenseNoMoreCards || (gameData |> autoPass |> .pass) == (Set.fromList gameData.turn |> Set.remove defenseId))
 
 
 clearTable : GameData -> GameData

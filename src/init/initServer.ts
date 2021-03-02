@@ -5,7 +5,7 @@ import type { Game } from "../Game"
 
 export type Options = Partial<Omit<ServerProps, "connection">> & Pick<ServerProps, "connection">
 export const initServer = (app: Game.Server.App, options: Options): void => {
-    const msgBuffer: Message[] = []
+    const msgBuffer: Game.Server.Message[] = []
     const opt = { ...defaultProps, ...options }
     const { connection, tick, gameChannel } = opt
 
@@ -32,14 +32,6 @@ const enum MessageId {
     networkReceive = 203,
     networkError = 204,
 }
-
-type Message =
-    | [cmd: MessageId.tick, timestamp: number]
-    // Network stuff
-    | [cmd: MessageId.networkJoin, cnn: string]
-    | [cmd: MessageId.networkLeave, cnn: string]
-    | [cmd: MessageId.networkReceive, cnn: string, data: string]
-    | [cmd: MessageId.networkError, data: string]
 
 export interface ServerProps {
     gameChannel: string

@@ -2,6 +2,7 @@ module Durak.Protocol.Server exposing (..)
 
 import Bytes.Encode as E exposing (Encoder)
 import Bytes.WithOffset.Decode as D exposing (Decoder)
+import Bytes.WithOffset.Encode as E
 import Durak.Common.Card as Card
 import Durak.Common.Role as Role
 import Durak.Common.Table as Table
@@ -27,7 +28,7 @@ decode =
                         D.succeed Ready
 
                     0x05 ->
-                        D.map2 Defence
+                        D.map2 Defense
                             (D.map Table.spotFromInt D.unsignedInt8)
                             (D.map Card.fromInt D.unsignedInt8)
 
@@ -77,3 +78,9 @@ encode msg =
 
         TableSpot spot card ->
             E.sequence [ E.unsignedInt8 0x0A, Table.spotToInt spot |> E.unsignedInt8, Card.toInt card |> E.unsignedInt8 ]
+
+        PlayerStatus list ->
+            E.sequence
+                [ E.unsignedInt8 0x0B
+                , E.reverseList (\( role, cards ) -> E.sequence [ E.unsignedInt8 (Role.toInt role), E.unsignedInt8 cards ]) list
+                ]

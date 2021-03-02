@@ -5,7 +5,7 @@ import Durak.Common.Bounding.Tree as Bounding
 import Durak.Common.Role as Role exposing (Role)
 import Durak.Player.Component.Card as Card
 import Game.Ui as Ui
-import Playground exposing (Shape, black, move, moveY, red, white)
+import Playground exposing (Shape, black, move, moveY, red, white, yellow)
 import Playground.Extra as Playground
 
 
@@ -19,7 +19,7 @@ type Ui
     | Support
     | CanPass Buttons
     | YouPass
-    | Defence Buttons
+    | Defense Buttons
     | Win
     | Lose
 
@@ -41,15 +41,15 @@ role rr ui =
         Role.Attack ->
             Attack
 
-        Role.Defence ->
+        Role.Defense ->
             let
                 state =
                     noneButton
             in
-            Defence
+            Defense
                 { state
                     | shape =
-                        Playground.words red "Defence"
+                        Playground.words Playground.brown "Defense"
                             |> moveY (Card.size.height * 2)
                 }
 
@@ -113,8 +113,12 @@ render : Ui -> Shape
 render ui =
     case ui of
         Init ->
-            Playground.words Playground.blue "Connecting"
+            [ Playground.image 328 124 "logo"
+            , Playground.image 928 793 "bg0"
+            ]
+                |> Playground.group
 
+        --7693B3
         WaitForNextGame ->
             Playground.words Playground.blue "Wait For Next Game"
 
@@ -127,7 +131,7 @@ render ui =
                 |> moveY (Card.size.height * 2)
 
         Attack ->
-            Playground.words Playground.blue "Attack"
+            Playground.words Playground.red "Attack"
                 |> moveY (Card.size.height * 2)
 
         Support ->
@@ -141,7 +145,7 @@ render ui =
             Playground.words Playground.blue "You Pass"
                 |> moveY (Card.size.height * 2)
 
-        Defence { shape } ->
+        Defense { shape } ->
             shape
 
         Win ->

@@ -30,11 +30,11 @@ if (location.search === "") {
         node: document.body.appendChild(document.createElement("div")),
     })
 
-    initClient(client, { transport: new PeerJsClient(peerjsSignalingUrl), channel: channel })
+    initClient(client, { transport: new PeerJsClient(peerjsSignalingUrl) })
 } else if (location.search.startsWith("?debug=")) {
     document.body.classList.add("debug")
-    spawnClient("game1", PlayerFactory.Durak.Player.init, new PeerJsClient(peerjsSignalingUrl, "game1"), { channel })
-    spawnClient("game2", PlayerFactory.Durak.Player.init, new PeerJsClient(peerjsSignalingUrl, "game2"), { channel })
-    spawnClient("game3", PlayerFactory.Durak.Player.init, new PeerJsClient(peerjsSignalingUrl, "game3"), { channel })
-    spawnClient("game4", PlayerFactory.Durak.Player.init, new PeerJsClient(peerjsSignalingUrl, "game4"), { channel })
+    spawnClient("game2", PlayerFactory.Durak.Player.init, new PeerJsClient(peerjsSignalingUrl, "game2"))
+    spawnClient("game1", PlayerFactory.Durak.Player.init, new PeerJsClient(peerjsSignalingUrl, "game1"))
+    spawnClient("game3", PlayerFactory.Durak.Player.init, new PeerJsClient(peerjsSignalingUrl, "game3"))
+    spawnClient("game4", PlayerFactory.Durak.Player.init, new PeerJsClient(peerjsSignalingUrl, "game4"))
 }

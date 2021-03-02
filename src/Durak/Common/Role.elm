@@ -3,7 +3,7 @@ module Durak.Common.Role exposing (Role(..), fromInt, toInt)
 
 type Role
     = Attack
-    | Defence
+    | Defense
     | Support
     | Win
     | Lose
@@ -15,7 +15,7 @@ toInt role =
         Attack ->
             1
 
-        Defence ->
+        Defense ->
             2
 
         Support ->
@@ -35,7 +35,7 @@ fromInt i =
             Attack
 
         2 ->
-            Defence
+            Defense
 
         3 ->
             Support

@@ -53,12 +53,12 @@ system msg world =
                 | table = table
                 , ui =
                     case world.ui of
-                        Ui.Defence _ ->
+                        Ui.Defense _ ->
                             if Table.allCover table then
-                                Ui.Defence Ui.noneButton
+                                Ui.Defense Ui.noneButton
 
                             else
-                                Ui.Defence Ui.pickupButton
+                                Ui.Defense Ui.pickupButton
 
                         Ui.Support ->
                             if Table.allCover table then
@@ -111,4 +111,7 @@ system msg world =
             }
 
         OnlineCount i ->
-            { world | playerCount = i }
+            { world | playersOnline = i }
+
+        PlayerStatus others ->
+            { world | others = others }

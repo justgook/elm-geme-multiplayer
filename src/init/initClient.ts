@@ -22,8 +22,8 @@ export type Options = Partial<Omit<ClientProps, "transport">> & Pick<ClientProps
 
 export function initClient(app: Game.Client.App, options: Options): void {
     const opt = { ...defaultProps, ...options }
-    const { tick, resize, keyboard, mouse, touch, transport, channel } = opt
-    const msgBuffer: Message[] = []
+    const { tick, resize, keyboard, mouse, touch, transport } = opt
+    const msgBuffer: Game.Client.Message[] = []
     resize((w, h) => msgBuffer.push([MessageId.resize, w, h]))
     keyboard((isDown, key) => msgBuffer.push([MessageId.inputKeyboard, isDown, key]))
     mouse((...args) => msgBuffer.push([MessageId.inputMouse, ...args]))
@@ -34,8 +34,18 @@ export function initClient(app: Game.Client.App, options: Options): void {
     transport.on(TransportEvent.error, (error) => msgBuffer.push([MessageId.networkError, error]))
     transport.on(TransportEvent.leave, () => msgBuffer.push([MessageId.networkLeave]))
 
+    app.ports.connect.subscribe((channel) => {
+        console.log("Client::connect", channel)
+    })
+    app.ports.disconnect.subscribe((channel) => {
+        console.log("Client::disconnect", channel)
+    })
+    app.ports.open.subscribe((channel) => {
+        console.log("Client::StartServer", channel)
+    })
+
     app.ports.output.subscribe(transport.send)
-    transport.connect(channel)
+    // transport.connect(channel)
     const gameLoop = () => {
         msgBuffer.push([MessageId.tick, performance.now()])
         app.ports.input.send(msgBuffer)
@@ -57,34 +67,18 @@ const enum MessageId {
     networkError = 204,
 }
 
-type Message =
-    | [cmd: MessageId.tick, timestamp: number]
-    | [cmd: MessageId.resize, width: number, height: number]
-    | [cmd: MessageId.inputKeyboard, isDown: boolean, key: number]
-    | [cmd: MessageId.inputMouse, x: number, y: number, key1: boolean, key2: boolean]
-    | [cmd: MessageId.inputTouch, touches: ToucheMessage[]]
-    // Network stuff
-    | [cmd: MessageId.networkJoin]
-    | [cmd: MessageId.networkLeave]
-    | [cmd: MessageId.networkReceive, data: string]
-    | [cmd: MessageId.networkError, data: string]
-
-type ToucheMessage = [identifier: number, x: number, y: number]
-
 export interface ClientProps {
-    channel: string
     transport: TransportClient
     tick: (callback: (time: number) => void) => void
     resize: (callback: (w: number, h: number) => void) => void
     keyboard: (callback: (isDown: boolean, key: number) => void) => void
     mouse: (callback: (x: number, y: number, key1: boolean, key2: boolean) => void) => void
-    touch: (callback: (args: ToucheMessage[]) => void) => void
+    touch: (callback: (args: Game.Client.Touch[]) => void) => void
 }
 
 export type KeyOf<T> = Extract<keyof T, string>
 
 export const defaultProps: Omit<ClientProps, "transport"> = {
-    channel: "gameChannel-client",
     tick: window.requestAnimationFrame,
     resize: (callback) => {
         window.addEventListener("resize", () => {
@@ -105,7 +99,7 @@ export const defaultProps: Omit<ClientProps, "transport"> = {
         const touchTracker = (e: TouchEvent) => {
             e.preventDefault()
             const { touches } = e
-            const output: ToucheMessage[] = []
+            const output: Game.Client.Touch[] = []
             for (let i = 0; i < touches.length; i++) {
                 const { identifier, pageX, pageY } = touches[i]
                 output.push([identifier, pageX, pageY])
