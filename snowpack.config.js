@@ -53,7 +53,7 @@ module.exports = {
     devOptions: {
         // hostname:
         port: 8888,
-        fallback: `404.html`,
+        // fallback: `404.html`,
         hmr: true,
         hmrErrorOverlay: true,
         // secure: true,
@@ -70,6 +70,7 @@ module.exports = {
         src: `/`,
     },
     exclude: isDev ? ["**/generated/**/*"] : [],
+
     routes: [
         {
             match: "routes",
@@ -80,6 +81,9 @@ module.exports = {
                 res.end("hello World")
             },
         },
+        // { match: "routes", src: "/durak.html", dest: "durak.html" },
+        // { match: "routes", src: "/rpg.html", dest: "rpg.html" },
+        // { match: "routes", src: ".*", dest: "index.html" },
     ],
     optimize: {
         // entrypoints: 'auto' | string[] | (({files: string[]}) => string[]);

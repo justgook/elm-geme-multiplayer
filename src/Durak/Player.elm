@@ -5,13 +5,13 @@ import Dict
 import Durak.Common.Qr as Qr
 import Durak.Player.System.Data as Data
 import Durak.Player.System.Tick as Tick
+import Durak.Player.System.Ui as Ui
 import Durak.Player.World as World exposing (World)
 import Durak.Protocol.Message exposing (ToClient, ToServer(..))
 import Durak.Protocol.Player
 import Game.Client
 import Game.Client.Model as Model exposing (Message, Model)
 import Game.Client.Port as Port
-import Game.Client.Util as Util
 import Game.Protocol.Util as ProtocolUtil
 import Json.Decode exposing (Value)
 import Playground
@@ -137,6 +137,10 @@ update msg model =
                     , Cmd.none
                     )
 
+        Port.InputKeyboard down button ->
+            Ui.keyboard down button model.world
+                |> Tuple.mapFirst (\world -> { model | world = world })
+
         Port.NetworkData data ->
             fromPacket data
                 |> List.foldl Data.system model.world
@@ -164,9 +168,6 @@ update msg model =
         Port.Resize screen ->
             ( { model | screen = screen }, Cmd.none )
 
-        _ ->
-            ( model, Cmd.none )
-
 
 init : Value -> (World -> Model World) -> ( Model World, Cmd Message )
 init flags initModel =
@@ -181,6 +182,15 @@ init flags initModel =
                         [ ( "cards-tileset", "/Durak/asset/cards.png" )
                         , ( "logo", "/Durak/asset/logo.png" )
                         , ( "bg0", "/Durak/asset/background/0.png" )
+                        , ( "bg1", "/Durak/asset/background/1.png" )
+                        , ( "bg2", "/Durak/asset/background/2.png" )
+                        , ( "bg3", "/Durak/asset/background/3.png" )
+                        , ( "bg4", "/Durak/asset/background/4.png" )
+                        , ( "bg5", "/Durak/asset/background/5.png" )
+                        , ( "bg6", "/Durak/asset/background/6.png" )
+                        , ( "bg7", "/Durak/asset/background/7.png" )
+                        , ( "bg8", "/Durak/asset/background/8.png" )
+                        , ( "bg9", "/Durak/asset/background/9.png" )
                         ]
                     |> Tuple.mapFirst (\textures -> { m | textures = textures })
            )

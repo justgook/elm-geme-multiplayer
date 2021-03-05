@@ -81,7 +81,7 @@ system msg world =
                             else
                                 Ui.Support
 
-                        Ui.Init ->
+                        Ui.Intro _ ->
                             world.ui
 
                         Ui.WaitForNextGame ->

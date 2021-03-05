@@ -33,6 +33,7 @@ system time ({ textures, screen } as model) =
                 [ ("Online: " ++ String.fromInt model.world.playersOnline)
                     |> Playground.words Playground.blue
                     |> Playground.move (screen.right - 96) (screen.top - 16)
+                    |> Playground.moveZ 1
                 ]
             )
                 |> System.applyIf model.world.mouse.dirty (andThen Mouse.system)

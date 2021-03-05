@@ -1,11 +1,16 @@
-module Playground.Extra2 exposing (color, greyscale, invert, none, spriteWith, tileWith, tint)
+module Playground.Extra.Tile exposing (color, greyscale, invert, none, spriteWith, tileWith, tint)
 
 import Math.Vector2 exposing (Vec2, vec2)
-import Playground.Settings exposing (defaultEntitySettings, size)
-import Playground.ShaderNew as Shader
-import Playground.ShaderOld as Shader
-import WebGL exposing (Entity, Shader)
+import Playground.Extra.Shader as Shader
+import Playground.Extra.Tile.Shader as TileShader
+import Playground.Util as Util
+import WebGL
 import WebGL.Shape2d exposing (Form(..), Render, Shape2d(..))
+import WebGL.Texture
+
+
+
+{- Tile Renderer -}
 
 
 {-| Show tile with effect from a tileset.
@@ -75,7 +80,7 @@ spriteWith effect tileW tileH tileset uI =
 
 
 invert vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z opacity =
-    effectWrap Shader.fragInvert
+    effectWrap TileShader.fragInvert
         vert
         { uP = translate
         , uT = scaleRotateSkew
@@ -103,7 +108,7 @@ none vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z opacit
 
 
 color cColor vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z opacity =
-    effectWrap Shader.fragColor
+    effectWrap TileShader.fragColor
         vert
         { uP = translate
         , uT = scaleRotateSkew
@@ -120,7 +125,7 @@ color cColor vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew 
 
 
 tint cColor vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z opacity =
-    effectWrap Shader.fragTint
+    effectWrap TileShader.fragTint
         vert
         { uP = translate
         , uT = scaleRotateSkew
@@ -137,7 +142,7 @@ tint cColor vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z
 
 
 greyscale vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z opacity =
-    effectWrap Shader.fragGreyscale
+    effectWrap TileShader.fragGreyscale
         vert
         { uP = translate
         , uT = scaleRotateSkew
@@ -147,14 +152,20 @@ greyscale vert spriteSheet spriteSize imageSize uI translate scaleRotateSkew z o
         , uImgSize = imageSize
         , uA = opacity
         , z = z
-
-        ----
         }
+
+
+size t =
+    WebGL.Texture.size t |> (\( w, h ) -> vec2 (toFloat w) (toFloat h))
+
+
+
+--tile effects
 
 
 effectWrap frag vert uniforms =
     WebGL.entityWith
-        defaultEntitySettings
+        Util.defaultEntitySettings
         vert
         frag
         Shader.mesh

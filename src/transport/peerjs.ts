@@ -11,11 +11,8 @@ class PeerjsCommon<T extends ClientOnParams | ServerOnParams> {
     }
     options: Peer.PeerJSOption
 
-    private channel: MessageChannel
-
     constructor(url = location.href) {
         this.options = urlToOptions(url)
-        this.channel = new MessageChannel()
     }
 
     on = (...args: T): void => {

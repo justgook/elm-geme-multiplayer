@@ -19,11 +19,15 @@ module Playground.Extra exposing
 
 import Math.Vector2 exposing (vec2)
 import Math.Vector4 exposing (Vec4, vec4)
-import Playground exposing (Color, Shape)
+import Playground.Extra.Render as Render
 import Playground.Extra.Tilemap as Tilemap
-import Playground.Render as Render
+import Playground.Util as Util
 import WebGL.Shape2d exposing (Form(..), Render, Shape2d(..))
 import WebGL.Texture exposing (Texture)
+
+
+type alias Shape =
+    Shape2d
 
 
 {-| Show tile from a tileset.
@@ -63,7 +67,7 @@ tile tileW tileH tileset index =
                         , sx = 1
                         , sy = 1
                         , o = 1
-                        , form = Form tileW tileH <| Render.tile t (vec2 tileW tileH) (size t) (toFloat index)
+                        , form = Form tileW tileH <| Render.tile t (vec2 tileW tileH) (Util.size t) (toFloat index)
                         }
         }
 
@@ -178,8 +182,3 @@ More details about this rendering technique can be found in [Brandon Jones’ bl
 tilemap : Float -> Float -> String -> String -> Shape
 tilemap =
     Tilemap.tilemap
-
-
-size : WebGL.Texture.Texture -> Math.Vector2.Vec2
-size t =
-    WebGL.Texture.size t |> (\( w, h ) -> vec2 (toFloat w) (toFloat h))

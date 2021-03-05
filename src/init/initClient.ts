@@ -22,8 +22,9 @@ export type Options = Partial<Omit<ClientProps, "transport">> & Pick<ClientProps
 
 export function initClient(app: Game.Client.App, options: Options): void {
     const opt = { ...defaultProps, ...options }
-    const { tick, resize, keyboard, mouse, touch, transport } = opt
+    const { tick, resize, keyboard, mouse, touch, transport, server } = opt
     const msgBuffer: Game.Client.Message[] = []
+
     resize((w, h) => msgBuffer.push([MessageId.resize, w, h]))
     keyboard((isDown, key) => msgBuffer.push([MessageId.inputKeyboard, isDown, key]))
     mouse((...args) => msgBuffer.push([MessageId.inputMouse, ...args]))
@@ -36,16 +37,19 @@ export function initClient(app: Game.Client.App, options: Options): void {
 
     app.ports.connect.subscribe((channel) => {
         console.log("Client::connect", channel)
+        transport.connect(channel)
     })
     app.ports.disconnect.subscribe((channel) => {
         console.log("Client::disconnect", channel)
     })
     app.ports.open.subscribe((channel) => {
         console.log("Client::StartServer", channel)
+        server(channel)
+        transport.connect(channel)
     })
 
     app.ports.output.subscribe(transport.send)
-    // transport.connect(channel)
+
     const gameLoop = () => {
         msgBuffer.push([MessageId.tick, performance.now()])
         app.ports.input.send(msgBuffer)
@@ -69,6 +73,7 @@ const enum MessageId {
 
 export interface ClientProps {
     transport: TransportClient
+    server: (channel: string) => void
     tick: (callback: (time: number) => void) => void
     resize: (callback: (w: number, h: number) => void) => void
     keyboard: (callback: (isDown: boolean, key: number) => void) => void
@@ -79,6 +84,7 @@ export interface ClientProps {
 export type KeyOf<T> = Extract<keyof T, string>
 
 export const defaultProps: Omit<ClientProps, "transport"> = {
+    server: () => ({}),
     tick: window.requestAnimationFrame,
     resize: (callback) => {
         window.addEventListener("resize", () => {
@@ -171,4 +177,5 @@ export const keyboardMap = {
     Slash: 52,
     Space: 53,
     Tab: 54,
+    Escape: 55,
 }

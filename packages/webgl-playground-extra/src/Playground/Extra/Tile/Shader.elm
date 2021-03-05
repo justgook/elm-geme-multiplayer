@@ -1,4 +1,12 @@
-module Playground.ShaderNew exposing (fragColor, fragFxCircle, fragFxTile, fragGreyscale, fragInvert, fragTint, vertFullscreenInvert)
+module Playground.Extra.Tile.Shader exposing
+    ( fragColor
+    , fragFxCircle
+    , fragFxTile
+    , fragGreyscale
+    , fragInvert
+    , fragTint
+    , vertFullscreenInvert
+    )
 
 {- VERTEX SHADER -}
 
@@ -18,14 +26,14 @@ varying vec2 uv;
 uniform float z;
 vec2 edgeFix = vec2(0.0000001, -0.0000001);
 mat2 inv(mat2 m) {
-  return mat2(m[1][1],-m[0][1], -m[1][0], m[0][0]) / (m[0][0]*m[1][1] - m[0][1]*m[1][0]);
+    return mat2(m[1][1], -m[0][1], -m[1][0], m[0][0]) / (m[0][0] * m[1][1] - m[0][1] * m[1][0]);
 }
-void main () {
+void main() {
     mat2 uTinv = inv(mat2(uT));
     uv = vec2(aP * uTinv) - uP * uTinv;
-    gl_Position = vec4(aP, z  * -1.19209304e-7, 1.0);
+    gl_Position = vec4(aP, z * -1.19209304e-7, 1.0);
 }
-        |]
+     |]
 
 
 
@@ -43,7 +51,7 @@ uniform float uI;
 uniform vec2 spriteSize;
 uniform vec2 uImgSize;
 uniform sampler2D uImg;
-void main () {
+void main() {
     vec2 ratio = spriteSize / uImgSize;
     float row = (uImgSize.y / spriteSize.y - 1.0) - floor((uI + 0.5) * ratio.x);
     float column = floor(mod((uI + 0.5), uImgSize.x / spriteSize.x));
@@ -51,9 +59,9 @@ void main () {
     vec2 uv2 = fract(uv * 0.5 + 0.5) * ratio + offset;
     vec2 pixel = (floor(uv2 * uImgSize) + 0.5) / uImgSize;
     gl_FragColor = texture2D(uImg, pixel);
-    if(gl_FragColor.a <= 0.025) discard;
+    if (gl_FragColor.a <= 0.025) discard;
 }
-    |]
+ |]
 
 
 {-| -}
@@ -63,12 +71,12 @@ fragFxCircle =
 precision highp float;
 uniform vec4 uC;
 varying vec2 uv;
-void main () {
+void main() {
     gl_FragColor = uC;
     gl_FragColor.a *= step(1.0, length(uv));
-    if(gl_FragColor.a <= 0.025) discard;
+    if (gl_FragColor.a <= 0.025) discard;
 }
-    |]
+ |]
 
 
 
@@ -84,14 +92,14 @@ varying vec2 uv;
 uniform vec2 uImgSize;
 uniform sampler2D uImg;
 uniform float uA;
-void main () {
+void main() {
     vec2 pixel = (floor(uv * uImgSize) + 0.5) / uImgSize;
     gl_FragColor = texture2D(uImg, pixel);
     gl_FragColor.rgb = vec3(1.0) - gl_FragColor.rgb;
     gl_FragColor.a *= uA;
-    if(gl_FragColor.a <= 0.025) discard;
+    if (gl_FragColor.a <= 0.025) discard;
 }
-    |]
+ |]
 
 
 fragColor =
@@ -102,13 +110,13 @@ uniform vec2 uImgSize;
 uniform sampler2D uImg;
 uniform vec3 uC;
 uniform float uA;
-void main () {
-    vec2 pixel = ((floor(uv * uImgSize) + 0.5) * 2.0 ) / uImgSize / 2.0;
+void main() {
+    vec2 pixel = ((floor(uv * uImgSize) + 0.5) * 2.0) / uImgSize / 2.0;
     gl_FragColor = vec4(color, uA);
     gl_FragColor.a *= texture2D(uImg, pixel).a;
-    if(gl_FragColor.a <= 0.025) discard;
+    if (gl_FragColor.a <= 0.025) discard;
 }
-        |]
+     |]
 
 
 fragGreyscale =
@@ -118,14 +126,14 @@ varying vec2 uv;
 uniform vec2 uImgSize;
 uniform sampler2D uImg;
 uniform float uA;
-void main () {
-    vec2 pixel = ((floor(uv * uImgSize) + 0.5) * 2.0 ) / uImgSize / 2.0;
+void main() {
+    vec2 pixel = ((floor(uv * uImgSize) + 0.5) * 2.0) / uImgSize / 2.0;
     vec4 color = texture2D(uImg, pixel);
     float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
     gl_FragColor = vec4(vec3(gray), color.a * uA);
-    if(gl_FragColor.a <= 0.025) discard;
+    if (gl_FragColor.a <= 0.025) discard;
 }
-        |]
+     |]
 
 
 fragTint =
@@ -136,11 +144,12 @@ uniform vec2 uImgSize;
 uniform sampler2D uImg;
 uniform vec3 uC;
 uniform float uA;
-void main () {
-    vec2 pixel = ((floor(uv * uImgSize) + 0.5) * 2.0 ) / uImgSize / 2.0;
+void main() {
+    vec2 pixel = ((floor(uv * uImgSize) + 0.5) * 2.0) / uImgSize / 2.0;
     vec4 color = texture2D(uImg, pixel);
     float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
     gl_FragColor = vec4(vec3(gray) * uC, color.a * uA);
-    if(gl_FragColor.a <= 0.025) discard;
+    if (gl_FragColor.a <= 0.025) discard;
 }
-    |]
+
+ |]

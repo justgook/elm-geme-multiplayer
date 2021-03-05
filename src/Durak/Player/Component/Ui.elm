@@ -1,16 +1,17 @@
-module Durak.Player.Component.Ui exposing (Ui(..), empty, noneButton, passButton, pickupButton, render, role, waitForNextGame, waiting)
+module Durak.Player.Component.Ui exposing (Buttons, Ui(..), empty, noneButton, passButton, pickupButton, render, role, waitForNextGame, waiting)
 
 import Durak.Common.Bounding exposing (Bounding)
 import Durak.Common.Bounding.Tree as Bounding
 import Durak.Common.Role as Role exposing (Role)
 import Durak.Player.Component.Card as Card
+import Durak.Player.Component.Ui.Intro as Intro
 import Game.Ui as Ui
-import Playground exposing (Shape, black, move, moveY, red, white, yellow)
+import Playground exposing (Shape, black, move, moveY, white)
 import Playground.Extra as Playground
 
 
 type Ui
-    = Init
+    = Intro Intro.Data
     | WaitForNextGame
     | Waiting Buttons
     | Ready
@@ -32,7 +33,7 @@ type alias Buttons =
 
 empty : Ui
 empty =
-    Init
+    Intro Intro.empty
 
 
 role : Role -> Ui -> Ui
@@ -109,16 +110,12 @@ waitForNextGame =
     WaitForNextGame
 
 
-render : Ui -> Shape
-render ui =
+render : Float -> Ui -> Shape
+render time ui =
     case ui of
-        Init ->
-            [ Playground.image 328 124 "logo"
-            , Playground.image 928 793 "bg0"
-            ]
-                |> Playground.group
+        Intro aaa ->
+            Intro.render time aaa
 
-        --7693B3
         WaitForNextGame ->
             Playground.words Playground.blue "Wait For Next Game"
 

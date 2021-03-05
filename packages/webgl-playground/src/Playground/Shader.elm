@@ -1,7 +1,8 @@
 module Playground.Shader exposing
-    ( vertNone, vertRect, vertImage, vertSprite, vertTile, vertTriangle
+    ( vertNone, vertRect, vertImage, vertTriangle
     , fragFill, fragCircle, fragNgon, fragImage, fragImageColor
     , mesh, meshTriangle
+    , vertTile
     )
 
 {-|
@@ -9,7 +10,7 @@ module Playground.Shader exposing
 
 # Vertex Shaders
 
-@docs vertNone, vertRect, vertImage, vertSprite, vertTile, vertTriangle
+@docs vertNone, vertRect, vertImage, vertTriangle
 
 
 # Fragment Shaders
@@ -27,6 +28,10 @@ import Math.Vector2 exposing (Vec2, vec2)
 import Math.Vector4 exposing (Vec4)
 import WebGL exposing (Mesh, Shader)
 import WebGL.Texture exposing (Texture)
+
+
+
+-- Vertex Shaders
 
 
 {-| -}
@@ -55,30 +60,6 @@ vertTriangle =
      gl_Position = vec4(aP * mat2(uT) + uP, z  * -1.19209304e-7, 1.0);
     }
     |]
-
-
-
--- Vertex Shaders
-
-
-{-| -}
-vertSprite : Shader { a | aP : Vec2 } { b | uP : Vec2, uT : Vec4, uUV : Vec4, z : Float } { uv : Vec2 }
-vertSprite =
-    [glsl|
-            precision highp float;
-            attribute vec2 aP;
-            uniform vec4 uT;
-            uniform vec2 uP;
-            varying vec2 uv;
-            uniform vec4 uUV;
-            uniform float z;
-            vec2 edgeFix = vec2(0.0000001, -0.0000001);
-            void main () {
-                vec2 aP_ = aP * .5 + 0.5;
-                uv = uUV.xy + (aP_ * uUV.zw) + edgeFix;
-                gl_Position = vec4(aP * mat2(uT) + uP, z  * -1.19209304e-7, 1.0);
-            }
-        |]
 
 
 {-| -}
