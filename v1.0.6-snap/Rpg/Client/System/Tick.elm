@@ -5,6 +5,7 @@ import Game.Client.Port as Port
 import Game.Client.Util as Util
 import Game.Protocol.Util as ProtocolUtil
 import Playground exposing (Shape)
+import Rpg.Client.Component.HexGrid as HexGrid
 import Rpg.Client.System.Action
 import Rpg.Client.System.Sprite
 import Rpg.Client.System.Ui
@@ -31,6 +32,7 @@ system time ({ textures, screen } as model) =
         -- Render
         ( entities, missing ) =
             [ shape
+            , HexGrid.shape world.pointer
             ]
                 |> WebGL.Shape2d.toEntities textures.done screen
 

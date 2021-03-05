@@ -1,4 +1,4 @@
-module Game.Generic.Component.User exposing (User, connectionId, connectionIds, empty, entityId, entityIds, length, remove, spawn, spec)
+module Game.Generic.Component.User exposing (User, connectionId, connectionIds, empty, entityId, entityIds, foldl, length, remove, spawn, spec)
 
 import Common.Util as Util
 import Dict exposing (Dict)
@@ -20,6 +20,11 @@ length { cnn2id } =
 connectionIds : User -> List ConnectionId
 connectionIds u =
     Dict.keys u.cnn2id
+
+
+foldl : (EntityID -> ConnectionId -> acc -> acc) -> acc -> User -> acc
+foldl func acc u =
+    Dict.foldl func acc u.id2cnn
 
 
 entityIds : User -> List EntityID

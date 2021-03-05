@@ -1,16 +1,17 @@
-module Durak.Player.Component.Ui exposing (Ui(..), empty, noneButton, passButton, pickupButton, render, role, waitForNextGame, waiting)
+module Durak.Player.Component.Ui exposing (Buttons, Ui(..), empty, noneButton, passButton, pickupButton, render, role, waitForNextGame, waiting)
 
 import Durak.Common.Bounding exposing (Bounding)
 import Durak.Common.Bounding.Tree as Bounding
 import Durak.Common.Role as Role exposing (Role)
 import Durak.Player.Component.Card as Card
+import Durak.Player.Component.Ui.Intro as Intro
 import Game.Ui as Ui
-import Playground exposing (Shape, black, move, moveY, red, white)
+import Playground exposing (Shape, black, move, moveY, white)
 import Playground.Extra as Playground
 
 
 type Ui
-    = Init
+    = Intro Intro.Data
     | WaitForNextGame
     | Waiting Buttons
     | Ready
@@ -19,7 +20,7 @@ type Ui
     | Support
     | CanPass Buttons
     | YouPass
-    | Defence Buttons
+    | Defense Buttons
     | Win
     | Lose
 
@@ -32,7 +33,7 @@ type alias Buttons =
 
 empty : Ui
 empty =
-    Init
+    Intro Intro.empty
 
 
 role : Role -> Ui -> Ui
@@ -41,15 +42,15 @@ role rr ui =
         Role.Attack ->
             Attack
 
-        Role.Defence ->
+        Role.Defense ->
             let
                 state =
                     noneButton
             in
-            Defence
+            Defense
                 { state
                     | shape =
-                        Playground.words red "Defence"
+                        Playground.words Playground.brown "Defense"
                             |> moveY (Card.size.height * 2)
                 }
 
@@ -109,11 +110,11 @@ waitForNextGame =
     WaitForNextGame
 
 
-render : Ui -> Shape
-render ui =
+render : Float -> Ui -> Shape
+render time ui =
     case ui of
-        Init ->
-            Playground.words Playground.blue "Connecting"
+        Intro aaa ->
+            Intro.render time aaa
 
         WaitForNextGame ->
             Playground.words Playground.blue "Wait For Next Game"
@@ -127,7 +128,7 @@ render ui =
                 |> moveY (Card.size.height * 2)
 
         Attack ->
-            Playground.words Playground.blue "Attack"
+            Playground.words Playground.red "Attack"
                 |> moveY (Card.size.height * 2)
 
         Support ->
@@ -141,7 +142,7 @@ render ui =
             Playground.words Playground.blue "You Pass"
                 |> moveY (Card.size.height * 2)
 
-        Defence { shape } ->
+        Defense { shape } ->
             shape
 
         Win ->

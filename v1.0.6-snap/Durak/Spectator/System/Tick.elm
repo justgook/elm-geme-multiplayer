@@ -1,7 +1,7 @@
 module Durak.Spectator.System.Tick exposing (system)
 
+import Common.Util as Util
 import Durak.Common.Qr as Qr
-import Durak.Common.Util as Util
 import Durak.Protocol.Message exposing (ToServer)
 import Durak.Protocol.Player
 import Durak.Spectator.System.Players as Players

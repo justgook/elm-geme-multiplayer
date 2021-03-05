@@ -1,6 +1,7 @@
 module Game.Client.Util exposing (eventToWorld, snap, toScreen)
 
 import Playground exposing (Screen)
+import Set
 
 
 snap : Float -> Float

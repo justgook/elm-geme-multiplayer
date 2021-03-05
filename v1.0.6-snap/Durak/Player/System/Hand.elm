@@ -1,6 +1,7 @@
 module Durak.Player.System.Hand exposing (system)
 
 import Durak.Common.Component.Hand as Hand
+import Durak.Common.Role as Role
 import Durak.Common.Table as Table
 import Durak.Player.Component.Card as Card
 import Durak.Player.Component.Ui as Ui
@@ -70,6 +71,14 @@ system { screen, world } =
 
         hitAreaVertical =
             min (bottomOffset + scaledHeight * 0.5) scaledHeight
+
+        canAddAtAll =
+            case find (Tuple.first >> (==) Role.Defense) world.others of
+                Just ( _, defenderCards ) ->
+                    Table.cardsToCover world.table - 6 + min 6 defenderCards > 0
+
+                Nothing ->
+                    False
     in
     world.hand
         |> Hand.indexedFoldl
@@ -114,18 +123,21 @@ system { screen, world } =
                     opacity =
                         case world.ui of
                             Ui.Attack ->
-                                fadeOut (Table.validateAttack card world.table)
+                                fadeOut (canAddAtAll && Table.validateAttack card world.table)
 
                             Ui.Support ->
-                                fadeOut (Table.validateAttack card world.table)
+                                fadeOut (canAddAtAll && not (Table.isEmpty world.table) && Table.validateAttack card world.table)
 
                             Ui.CanPass _ ->
-                                fadeOut (Table.validateAttack card world.table)
+                                fadeOut (canAddAtAll && Table.validateAttack card world.table)
 
-                            Ui.Defence _ ->
+                            Ui.YouPass ->
+                                0.5
+
+                            Ui.Defense _ ->
                                 case Table.nextHitSpot world.table of
                                     Just spot ->
-                                        fadeOut (Table.validateDefence spot card world.table)
+                                        fadeOut (Table.validateDefense spot card world.table)
 
                                     Nothing ->
                                         0.5
@@ -151,9 +163,24 @@ system { screen, world } =
            )
 
 
+fadeOut : Bool -> Float
 fadeOut b =
     if b then
         1
 
     else
         0.5
+
+
+find : (a -> Bool) -> List a -> Maybe a
+find predicate list =
+    case list of
+        [] ->
+            Nothing
+
+        first :: rest ->
+            if predicate first then
+                Just first
+
+            else
+                find predicate rest

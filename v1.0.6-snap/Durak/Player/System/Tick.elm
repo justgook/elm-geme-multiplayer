@@ -1,9 +1,10 @@
 module Durak.Player.System.Tick exposing (system)
 
-import Durak.Common.Util as Util
+import Common.Util as Util
 import Durak.Player.System.Deck as Deck
 import Durak.Player.System.Hand as Hand
 import Durak.Player.System.Mouse as Mouse
+import Durak.Player.System.Others as Others
 import Durak.Player.System.Table as Table
 import Durak.Player.System.Ui as Ui
 import Durak.Player.World exposing (World)
@@ -29,9 +30,10 @@ system time ({ textures, screen } as model) =
         ( world, shape ) =
             ( model.world
             , Playground.group
-                [ ("Online: " ++ String.fromInt model.world.playerCount)
+                [ ("Online: " ++ String.fromInt model.world.playersOnline)
                     |> Playground.words Playground.blue
                     |> Playground.move (screen.right - 96) (screen.top - 16)
+                    |> Playground.moveZ 1
                 ]
             )
                 |> System.applyIf model.world.mouse.dirty (andThen Mouse.system)
@@ -39,6 +41,7 @@ system time ({ textures, screen } as model) =
                 |> andThen Hand.system
                 |> andThen Table.system
                 |> andThen Deck.system
+                |> andThen Others.system
 
         -- Render
         ( entities, missing ) =

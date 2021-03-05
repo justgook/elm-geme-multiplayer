@@ -10,7 +10,7 @@ type ToServer
     | {- 0x02 -} Join
     | {- 0x03 -} Watch
     | {- 0x04 -} Ready
-    | {- 0x05 -} Defence Spot Card
+    | {- 0x05 -} Defense Spot Card
     | {- 0x06 -} Pickup
     | {- 0x07 -} Pass
 
@@ -26,3 +26,4 @@ type ToClient
     | {- 0x08 -} OnlineCount Int
     | {- 0x09 -} RejectCard Card
     | {- 0x0A -} TableSpot Spot Card
+    | {- 0x0B -} PlayerStatus (List ( Role, Int ))

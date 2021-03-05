@@ -31,6 +31,7 @@ system cnn msg world =
                             { world | flow = Game gameData }
                                 |> send cnn [ ConfirmCard card ]
                                 |> applyMaybe (Table.spot gameData.table) (\a -> broadcast [ TableSpot a card ])
+                                |> broadcastPlayerStatus
 
                         Nothing ->
                             world |> send cnn [ RejectCard card ]
@@ -38,7 +39,7 @@ system cnn msg world =
                 PreGame _ ->
                     world
 
-        Defence spot card ->
+        Defense spot card ->
             case world.flow of
                 Game gameData_ ->
                     case Flow.defence senderId spot card gameData_ of
@@ -47,6 +48,7 @@ system cnn msg world =
                                 |> send cnn [ ConfirmCard card ]
                                 |> broadcast [ TableSpot spot card ]
                                 |> resolve False world
+                                |> broadcastPlayerStatus
 
                         Nothing ->
                             world |> send cnn [ RejectCard card ]
@@ -58,7 +60,9 @@ system cnn msg world =
             case world.flow of
                 Game gameData_ ->
                     if senderId == Turn.defence gameData_.turn && not (Table.allCover gameData_.table) then
-                        world |> resolve True world
+                        world
+                            |> resolve True world
+                            |> broadcastPlayerStatus
 
                     else
                         world
@@ -70,6 +74,7 @@ system cnn msg world =
             case world.flow of
                 Game gameData_ ->
                     resolve False world { world | flow = Game (Flow.pass senderId gameData_) }
+                        |> broadcastPlayerStatus
 
                 PreGame _ ->
                     world
@@ -95,6 +100,10 @@ system cnn msg world =
                     case ( Component.get id gameData.hands, getRole id gameData ) of
                         ( Just hand, Just role ) ->
                             world
+                                |> send cnn [ Trump (Deck.trump gameData.deck) ]
+                                |> send cnn [ CardsLeft (Deck.length gameData.deck) ]
+                                |> send cnn (Set.Any.foldl (TakeCard >> (::)) [] hand)
+                                |> send cnn [ TableReset role ]
                                 |> send cnn
                                     (Table.toList gameData.table
                                         |> List.concatMap
@@ -106,12 +115,8 @@ system cnn msg world =
                                                     Nothing ->
                                                         [ TableSpot a.spot a.current ]
                                             )
-                                        |> List.reverse
                                     )
-                                |> send cnn [ Trump (Deck.trump gameData.deck) ]
-                                |> send cnn [ CardsLeft (Deck.length gameData.deck) ]
-                                |> send cnn (Set.Any.foldl (TakeCard >> (::)) [] hand)
-                                |> send cnn [ TableReset role ]
+                                |> broadcastPlayerStatus
 
                         _ ->
                             world |> send cnn [ NoMoreSeats ]
@@ -133,6 +138,7 @@ system cnn msg world =
                         |> broadcast [ CardsLeft (Deck.length deck) ]
                         |> broadcastCards world
                         |> broadcastTableReset
+                        |> broadcastPlayerStatus
 
                 _ ->
                     { world | flow = flow }
@@ -163,8 +169,6 @@ resolve pickup was now =
                                     else
                                         { a | turn = Turn.next a.turn }
                                )
-
-                    --|> (\a -> { a | turn = a.turn |> Turn.next })
                 in
                 { now | flow = Game newGameData }
                     |> broadcast [ CardsLeft (Deck.length newGameData.deck) ]
@@ -236,6 +240,51 @@ broadcastTableReset now =
             now
 
 
+broadcastPlayerStatus : World -> World
+broadcastPlayerStatus now =
+    case now.flow of
+        Game gameDataNow ->
+            let
+                others =
+                    System.indexedFoldl
+                        (\i comp acc ->
+                            case getRole i gameDataNow of
+                                Just role ->
+                                    ( i, role, Hand.length comp ) :: acc
+
+                                Nothing ->
+                                    acc
+                        )
+                        gameDataNow.hands
+                        []
+            in
+            User.foldl
+                (\i cnn ->
+                    List.foldl
+                        (\( ii, rr, cc ) (( before, after ) as acc2) ->
+                            if ii > i then
+                                ( before, after |> applyIf (cc > 0) ((::) ( rr, cc )) )
+
+                            else if ii < i then
+                                ( before |> applyIf (cc > 0) ((::) ( rr, cc )), after )
+
+                            else
+                                acc2
+                        )
+                        ( [], [] )
+                        others
+                        |> (\( a, b ) -> List.reverse a ++ List.reverse b)
+                        |> PlayerStatus
+                        |> List.singleton
+                        |> send cnn
+                )
+                now
+                now.user
+
+        PreGame _ ->
+            now
+
+
 getRole : EntityID -> Flow.GameData -> Maybe Role.Role
 getRole entityId gameDataNow =
     let
@@ -261,7 +310,7 @@ findRole attackerId defenderId handComp entityId =
         Role.Attack
 
     else if entityId == defenderId then
-        Role.Defence
+        Role.Defense
 
     else if Hand.length handComp > 0 then
         Role.Support

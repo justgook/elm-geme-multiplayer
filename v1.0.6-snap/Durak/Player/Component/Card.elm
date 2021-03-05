@@ -15,7 +15,7 @@ size =
 
 shape : Int -> Shape
 shape =
-    Playground.tile size.width size.height "/Durak/asset/cards.png"
+    Playground.tile size.width size.height "cards-tileset"
 
 
 render : Card -> Shape

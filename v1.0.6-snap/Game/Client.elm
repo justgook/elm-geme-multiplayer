@@ -56,6 +56,15 @@ init initFn flags =
         _ =
             Port.output
 
+        _ =
+            Port.open
+
+        _ =
+            Port.connect
+
+        _ =
+            Port.disconnect
+
         ( model, cmd ) =
             initFn flags (\w -> Game.Client.Model.empty w)
 

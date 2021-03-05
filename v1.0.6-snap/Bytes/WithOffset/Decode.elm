@@ -8,7 +8,7 @@ module Bytes.WithOffset.Decode exposing
     , string
     , map, map2, map3, map4, map5
     , andThen, succeed, fail
-    , loop, repeat
+    , loop, repeat, reverseList
     )
 
 {-|
@@ -57,7 +57,7 @@ module Bytes.WithOffset.Decode exposing
 
 # Loop
 
-@docs loop, repeat
+@docs loop, repeat, reverseList
 
 -}
 
@@ -511,11 +511,26 @@ repeat total decoder =
     loopWith []
         (\offset acc ->
             if total <= offset then
-                succeed (Done (List.reverse acc))
+                acc |> List.reverse |> Done |> succeed
 
             else
                 map (\x -> Loop (x :: acc)) decoder
         )
+
+
+reverseList : Decoder a -> Decoder (List a)
+reverseList decoder =
+    unsignedInt32 BE
+        |> andThen (\len -> loop ( len, [] ) (listStep decoder))
+
+
+listStep : Decoder a -> ( Int, List a ) -> Decoder (Step ( Int, List a ) (List a))
+listStep decoder ( n, xs ) =
+    if n <= 0 then
+        succeed (Done xs)
+
+    else
+        map (\x -> Loop ( n - 1, x :: xs )) decoder
 
 
 

@@ -1,4 +1,4 @@
-port module Game.Client.Port exposing (Message(..), MouseData, output, parse, subscriptions)
+port module Game.Client.Port exposing (Message(..), MouseData, connect, disconnect, open, output, parse, subscriptions)
 
 import Game.Client.Component.Action as Action exposing (Button)
 import Game.Client.Model
@@ -11,6 +11,15 @@ port input : (Value -> msg) -> Sub msg
 
 
 port output : String -> Cmd msg
+
+
+port open : String -> Cmd msg
+
+
+port connect : String -> Cmd msg
+
+
+port disconnect : String -> Cmd msg
 
 
 subscriptions : a -> Sub Game.Client.Model.Message

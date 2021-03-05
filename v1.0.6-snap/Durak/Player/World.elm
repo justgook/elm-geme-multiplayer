@@ -3,6 +3,7 @@ module Durak.Player.World exposing (World, empty)
 import Durak.Common.Bounding.Tree as Bounding
 import Durak.Common.Card exposing (Card(..), Suit(..))
 import Durak.Common.Component.Hand as Hand exposing (Hand)
+import Durak.Common.Role exposing (Role)
 import Durak.Common.Table as Table exposing (Table)
 import Durak.Player.Component.Ui as Ui exposing (Ui)
 import Durak.Protocol.Message exposing (ToServer)
@@ -28,8 +29,9 @@ type alias World =
     , cardsLeft : Int
     , lastCard : Card
     , ui : Ui
-    , playerCount : Int
+    , playersOnline : Int
     , qr : Playground.Shape
+    , others : List ( Role, Int )
     }
 
 
@@ -52,6 +54,7 @@ empty =
     , cardsLeft = 666
     , lastCard = ClubsAce
     , ui = Ui.empty
-    , playerCount = 0
+    , playersOnline = 0
     , qr = Playground.group []
+    , others = []
     }

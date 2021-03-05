@@ -1,4 +1,4 @@
-module Game.Client.Model exposing (Assets, Message(..), Model, empty, getTexture)
+module Game.Client.Model exposing (Assets, Message(..), Model, empty, getTexture, preload)
 
 import Dict exposing (Dict)
 import Game.Client.Util as Util
@@ -63,3 +63,14 @@ textureOption =
     , verticalWrap = Texture.clampToEdge
     , flipY = True
     }
+
+
+preload : List ( String, String ) -> Assets -> ( Assets, Cmd Message )
+preload data textures =
+    data
+        |> List.foldl
+            (\( name, url ) ( txt, cmd ) ->
+                ( { txt | loading = Set.insert name txt.loading }, getTexture name url :: cmd )
+            )
+            ( textures, [] )
+        |> Tuple.mapSecond Cmd.batch

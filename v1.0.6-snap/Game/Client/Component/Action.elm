@@ -1,4 +1,4 @@
-module Game.Client.Component.Action exposing (Action, Button(..), decode, down, empty, spec, up)
+module Game.Client.Component.Action exposing (Action, Button(..), buttonToChar, decode, down, empty, spec, up)
 
 import Common.Util as Util
 import Json.Decode as D
@@ -86,6 +86,179 @@ type Button
     | Slash
     | Space
     | Tab
+    | Escape
+
+
+buttonToChar : Button -> Char
+buttonToChar btn =
+    case btn of
+        ArrowDown ->
+            '↓'
+
+        ArrowLeft ->
+            '←'
+
+        ArrowRight ->
+            '→'
+
+        ArrowUp ->
+            '↑'
+
+        Backslash ->
+            '\\'
+
+        Backspace ->
+            '\u{0008}'
+
+        BracketLeft ->
+            '{'
+
+        BracketRight ->
+            '}'
+
+        Comma ->
+            ','
+
+        Digit0 ->
+            '0'
+
+        Digit1 ->
+            '1'
+
+        Digit2 ->
+            '2'
+
+        Digit3 ->
+            '3'
+
+        Digit4 ->
+            '4'
+
+        Digit5 ->
+            '5'
+
+        Digit6 ->
+            '6'
+
+        Digit7 ->
+            '7'
+
+        Digit8 ->
+            '8'
+
+        Digit9 ->
+            '9'
+
+        Enter ->
+            '⏎'
+
+        Equal ->
+            '='
+
+        IntlBackslash ->
+            '/'
+
+        KeyA ->
+            'a'
+
+        KeyB ->
+            'b'
+
+        KeyC ->
+            'c'
+
+        KeyD ->
+            'd'
+
+        KeyE ->
+            'e'
+
+        KeyF ->
+            'f'
+
+        KeyG ->
+            'g'
+
+        KeyH ->
+            'h'
+
+        KeyI ->
+            'i'
+
+        KeyJ ->
+            'j'
+
+        KeyK ->
+            'k'
+
+        KeyL ->
+            'l'
+
+        KeyM ->
+            'm'
+
+        KeyN ->
+            'n'
+
+        KeyO ->
+            'o'
+
+        KeyP ->
+            'p'
+
+        KeyQ ->
+            'q'
+
+        KeyR ->
+            'r'
+
+        KeyS ->
+            's'
+
+        KeyT ->
+            't'
+
+        KeyU ->
+            'u'
+
+        KeyV ->
+            'v'
+
+        KeyW ->
+            'w'
+
+        KeyX ->
+            'x'
+
+        KeyY ->
+            'y'
+
+        KeyZ ->
+            'z'
+
+        Minus ->
+            '-'
+
+        Period ->
+            '.'
+
+        Quote ->
+            '"'
+
+        Semicolon ->
+            ';'
+
+        Slash ->
+            '/'
+
+        Space ->
+            ' '
+
+        Tab ->
+            '\t'
+
+        Escape ->
+            '\u{001B}'
 
 
 buttonToInt : Button -> Int
@@ -255,6 +428,9 @@ buttonToInt btn =
 
         Tab ->
             54
+
+        Escape ->
+            55
 
 
 decode : D.Decoder Button
@@ -427,6 +603,9 @@ decode =
 
                     54 ->
                         D.succeed Tab
+
+                    55 ->
+                        D.succeed Escape
 
                     _ ->
                         D.fail ""
