@@ -87,7 +87,7 @@ waiting =
     Waiting
         { hitArea = Bounding.empty |> Bounding.insert 1 { xmin = -72, xmax = 72, ymin = -34, ymax = 34 }
         , shape =
-            [ Playground.sprite "/Durak/asset/buttons.png"
+            [ Playground.sprite "buttons"
                 { xmin = 0, xmax = 36, ymin = 0, ymax = 17 }
             ]
                 |> Playground.group

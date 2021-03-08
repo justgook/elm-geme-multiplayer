@@ -1,5 +1,6 @@
 module Durak.Player.System.Ui.Intro exposing (keyboard)
 
+import Durak.Common.Qr as Qr
 import Durak.Player.Component.Ui exposing (Ui(..))
 import Game.Client.Component.Action exposing (Button(..), buttonToChar)
 import Game.Client.Port as Port
@@ -53,10 +54,20 @@ keyboard down button data world =
                     ( world, Cmd.none )
 
                 100 ->
-                    ( { world | ui = Intro { data | selected = 200 } }, Port.open data.text )
+                    ( { world
+                        | ui = Intro { data | selected = 200 }
+                        , qr = Qr.render (world.joinPrefix ++ data.text)
+                      }
+                    , Port.open data.text
+                    )
 
                 101 ->
-                    ( { world | ui = Intro { data | selected = 201 } }, Port.connect data.text )
+                    ( { world
+                        | ui = Intro { data | selected = 201 }
+                        , qr = Qr.render (world.joinPrefix ++ data.text)
+                      }
+                    , Port.connect data.text
+                    )
 
                 _ ->
                     ( world, Cmd.none )

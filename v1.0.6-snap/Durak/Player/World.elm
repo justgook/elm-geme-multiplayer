@@ -31,6 +31,7 @@ type alias World =
     , ui : Ui
     , playersOnline : Int
     , qr : Playground.Shape
+    , joinPrefix : String
     , others : List ( Role, Int )
     }
 
@@ -57,4 +58,5 @@ empty =
     , playersOnline = 0
     , qr = Playground.group []
     , others = []
+    , joinPrefix = ""
     }
