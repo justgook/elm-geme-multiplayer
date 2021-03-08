@@ -2,7 +2,6 @@ module Rpg.Client.System.Tick exposing (system)
 
 import Game.Client.Model as Model exposing (Message(..), Model)
 import Game.Client.Port as Port
-import Game.Client.Util as Util
 import Game.Protocol.Util as ProtocolUtil
 import Playground exposing (Shape)
 import Rpg.Client.Component.HexGrid as HexGrid
