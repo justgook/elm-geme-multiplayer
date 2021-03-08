@@ -28,7 +28,7 @@ if (location.search.startsWith("?server=")) {
             meta: {
                 assets: import.meta.env.SNOWPACK_PUBLIC_URL,
                 join: new URL(location.href).searchParams.get("join") || "",
-                prefix: "https://pandemic.z0.lv/durak.html?join=",
+                prefix: `https://pandemic.z0.lv/${import.meta.env.SNOWPACK_PUBLIC_URL}durak.html?join=`,
             },
         },
         node: document.body.appendChild(document.createElement("div")),

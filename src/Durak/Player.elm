@@ -186,7 +186,7 @@ init flags initModel =
         joinUrlPrefix =
             D.decodeValue (D.at [ "meta", "prefix" ] D.string) flags |> Result.withDefault ""
     in
-    w
+    { w | joinPrefix = joinUrlPrefix }
         |> initModel
         |> (\m ->
                 m.textures
