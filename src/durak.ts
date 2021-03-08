@@ -25,7 +25,7 @@ if (location.search.startsWith("?server=")) {
                 width: window.innerWidth,
                 height: window.innerHeight,
             },
-            meta: {},
+            meta: { assets: import.meta.env.SNOWPACK_PUBLIC_URL },
         },
         node: document.body.appendChild(document.createElement("div")),
     })

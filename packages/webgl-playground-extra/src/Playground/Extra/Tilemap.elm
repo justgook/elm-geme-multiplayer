@@ -89,7 +89,8 @@ uniform vec2 uLutSize;
 uniform vec2 uTileSize;
 uniform float uA;
 float color2float(vec4 color) {
-    return color.a * 255.0 + color.b * 256.0 * 255.0 + color.g * 256.0 * 256.0 * 255.0 + color.r * 256.0 * 256.0 * 256.0 * 255.0;
+//    return color.a * 255.0 + color.b * 256.0 * 255.0 + color.g * 256.0 * 256.0 * 255.0 + color.r * 256.0 * 256.0 * 256.0 * 255.0;
+    return color.a * 255.0 + color.b * 65280.0 + color.g * 16711680.0 + color.r * 4278190080.0;
     }
 /**
  * Returns accurate MOD when arguments are approximate integers.

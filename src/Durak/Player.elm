@@ -13,7 +13,7 @@ import Game.Client
 import Game.Client.Model as Model exposing (Message, Model)
 import Game.Client.Port as Port
 import Game.Protocol.Util as ProtocolUtil
-import Json.Decode exposing (Value)
+import Json.Decode as D exposing (Value)
 import Playground
 
 
@@ -174,23 +174,26 @@ init flags initModel =
     let
         w =
             World.empty
+
+        assetsUrl =
+            D.decodeValue (D.at [ "meta", "assets" ] D.string) flags |> Result.withDefault ""
     in
     initModel { w | qr = Qr.render "https://pandemic.z0.lv/?asdasdas" }
         |> (\m ->
                 m.textures
                     |> Model.preload
-                        [ ( "cards-tileset", "/Durak/asset/cards.png" )
-                        , ( "logo", "/Durak/asset/logo.png" )
-                        , ( "bg0", "/Durak/asset/background/0.png" )
-                        , ( "bg1", "/Durak/asset/background/1.png" )
-                        , ( "bg2", "/Durak/asset/background/2.png" )
-                        , ( "bg3", "/Durak/asset/background/3.png" )
-                        , ( "bg4", "/Durak/asset/background/4.png" )
-                        , ( "bg5", "/Durak/asset/background/5.png" )
-                        , ( "bg6", "/Durak/asset/background/6.png" )
-                        , ( "bg7", "/Durak/asset/background/7.png" )
-                        , ( "bg8", "/Durak/asset/background/8.png" )
-                        , ( "bg9", "/Durak/asset/background/9.png" )
+                        [ ( "cards-tileset", assetsUrl ++ "/Durak/asset/cards.png" )
+                        , ( "logo", assetsUrl ++ "/Durak/asset/logo.png" )
+                        , ( "bg0", assetsUrl ++ "/Durak/asset/background/0.png" )
+                        , ( "bg1", assetsUrl ++ "/Durak/asset/background/1.png" )
+                        , ( "bg2", assetsUrl ++ "/Durak/asset/background/2.png" )
+                        , ( "bg3", assetsUrl ++ "/Durak/asset/background/3.png" )
+                        , ( "bg4", assetsUrl ++ "/Durak/asset/background/4.png" )
+                        , ( "bg5", assetsUrl ++ "/Durak/asset/background/5.png" )
+                        , ( "bg6", assetsUrl ++ "/Durak/asset/background/6.png" )
+                        , ( "bg7", assetsUrl ++ "/Durak/asset/background/7.png" )
+                        , ( "bg8", assetsUrl ++ "/Durak/asset/background/8.png" )
+                        , ( "bg9", assetsUrl ++ "/Durak/asset/background/9.png" )
                         ]
                     |> Tuple.mapFirst (\textures -> { m | textures = textures })
            )
