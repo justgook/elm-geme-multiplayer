@@ -25,7 +25,11 @@ if (location.search.startsWith("?server=")) {
                 width: window.innerWidth,
                 height: window.innerHeight,
             },
-            meta: { assets: import.meta.env.SNOWPACK_PUBLIC_URL },
+            meta: {
+                assets: import.meta.env.SNOWPACK_PUBLIC_URL,
+                join: new URL(location.href).searchParams.get("join") || "",
+                prefix: "https://pandemic.z0.lv/durak.html?join=",
+            },
         },
         node: document.body.appendChild(document.createElement("div")),
     })

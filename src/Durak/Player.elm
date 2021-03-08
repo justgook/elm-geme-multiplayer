@@ -3,6 +3,8 @@ module Durak.Player exposing (main)
 import Common.Util as Util
 import Dict
 import Durak.Common.Qr as Qr
+import Durak.Player.Component.Ui exposing (Ui(..))
+import Durak.Player.Component.Ui.Intro as Intro
 import Durak.Player.System.Data as Data
 import Durak.Player.System.Tick as Tick
 import Durak.Player.System.Ui as Ui
@@ -177,12 +179,20 @@ init flags initModel =
 
         assetsUrl =
             D.decodeValue (D.at [ "meta", "assets" ] D.string) flags |> Result.withDefault ""
+
+        joinUrl =
+            D.decodeValue (D.at [ "meta", "join" ] D.string) flags |> Result.withDefault ""
+
+        joinUrlPrefix =
+            D.decodeValue (D.at [ "meta", "prefix" ] D.string) flags |> Result.withDefault ""
     in
-    initModel { w | qr = Qr.render "https://pandemic.z0.lv/?asdasdas" }
+    w
+        |> initModel
         |> (\m ->
                 m.textures
                     |> Model.preload
-                        [ ( "cards-tileset", assetsUrl ++ "/Durak/asset/cards.png" )
+                        [ ( "buttons", assetsUrl ++ "/Durak/asset/buttons.png" )
+                        , ( "cards-tileset", assetsUrl ++ "/Durak/asset/cards.png" )
                         , ( "logo", assetsUrl ++ "/Durak/asset/logo.png" )
                         , ( "bg0", assetsUrl ++ "/Durak/asset/background/0.png" )
                         , ( "bg1", assetsUrl ++ "/Durak/asset/background/1.png" )
@@ -196,6 +206,28 @@ init flags initModel =
                         , ( "bg9", assetsUrl ++ "/Durak/asset/background/9.png" )
                         ]
                     |> Tuple.mapFirst (\textures -> { m | textures = textures })
+           )
+        |> (\( model, cmd ) ->
+                if joinUrl /= "" then
+                    let
+                        world =
+                            model.world
+
+                        data =
+                            Intro.empty
+                    in
+                    ( { model
+                        | world =
+                            { world
+                                | ui = Intro { data | selected = 201 }
+                                , qr = Qr.render (joinUrlPrefix ++ joinUrl)
+                            }
+                      }
+                    , Cmd.batch [ cmd, Port.connect joinUrl ]
+                    )
+
+                else
+                    ( model, cmd )
            )
 
 
